@@ -18,27 +18,27 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@docusaurus/core": "3.0.0",
-    "@docusaurus/preset-classic": "3.0.0",
-    "@docusaurus/theme-classic": "^3.5.2",
-    "@mdx-js/react": "^3.0.0",
-    "clsx": "^1.2.1",
+    "@docusaurus/core": "^3.7.0",
+    "@docusaurus/preset-classic": "^3.7.0",
+    "@docusaurus/theme-classic": "^3.7.0",
+    "@mdx-js/react": "^3.1.0",
+    "clsx": "^2.1.1",
     "docusaurus-plugin-image-zoom": "^2.0.0",
-    "prism-react-renderer": "^2.1.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "prism-react-renderer": "^2.4.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "3.0.0",
-    "@docusaurus/tsconfig": "3.0.0",
-    "@docusaurus/types": "3.0.0",
-    "@types/node": "^22.7.2",
-    "@types/react": "^18.3.9",
+    "@docusaurus/module-type-aliases": "^3.7.0",
+    "@docusaurus/tsconfig": "^3.7.0",
+    "@docusaurus/types": "^3.7.0",
+    "@types/node": "^22.10.5",
+    "@types/react": "^19.0.3",
     "netlify-plugin-cache": "^1.0.3",
-    "prettier": "^3.1.0",
-    "rimraf": "^5.0.5",
-    "ts-node": "^10.9.1",
-    "typescript": "~5.2.2"
+    "prettier": "^3.4.2",
+    "rimraf": "^6.0.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
   },
   "browserslist": {
     "production": [
