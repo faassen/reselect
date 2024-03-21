@@ -16,5 +16,5 @@ const selectCompletedTodos = createSelector(
   todos => {
     const completedTodos = todos.filter(todo => todo.completed === true)
     return completedTodos.length === 0 ? EMPTY_ARRAY : completedTodos
-  }
+  },
 )

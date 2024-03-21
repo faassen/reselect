@@ -11,26 +11,25 @@ import type {
   GetStateFromSelectors,
   Selector,
   SelectorResultArray,
-  TypedStructuredSelectorCreator
+  TypedStructuredSelectorCreator,
 } from 'reselect'
 import {
   createSelector,
   createSelectorCreator,
   createStructuredSelector,
   lruMemoize,
-  referenceEqualityCheck
+  referenceEqualityCheck,
 } from 'reselect'
 import { expectExactType } from './typesTestUtils'
 
-type Exact<A, B> = (<T>() => T extends A ? 1 : 0) extends <T>() => T extends B
-  ? 1
-  : 0
-  ? A extends B
-    ? B extends A
-      ? unknown
+type Exact<A, B> =
+  (<T>() => T extends A ? 1 : 0) extends <T>() => T extends B ? 1 : 0
+    ? A extends B
+      ? B extends A
+        ? unknown
+        : never
       : never
     : never
-  : never
 
 interface StateA {
   a: number
@@ -50,13 +49,13 @@ interface StateSub {
 // Test exporting
 export const testExportBasic = createSelector(
   (state: StateA) => state.a,
-  a => a
+  a => a,
 )
 
 // Test for exporting declaration of created selector creator
 export const testExportStructured = createSelectorCreator(
   lruMemoize,
-  (a, b) => typeof a === typeof b
+  (a, b) => typeof a === typeof b,
 )
 
 function testSelector() {
@@ -64,7 +63,7 @@ function testSelector() {
 
   const selector = createSelector(
     (state: State) => state.foo,
-    foo => foo
+    foo => foo,
   )
 
   const res = selector.resultFunc('test')
@@ -83,13 +82,13 @@ function testSelector() {
   createSelector(
     (state: { foo: string }) => state.foo,
     (state: { bar: number }) => state.bar,
-    (foo, bar) => 1
+    (foo, bar) => 1,
   )
 
   const selectorWithUnions = createSelector(
     (state: State, val: string | number) => state.foo,
     (state: State, val: string | number) => val,
-    (foo, val) => val
+    (foo, val) => val,
   )
 }
 
@@ -100,7 +99,7 @@ function testNestedSelector() {
     createSelector(
       (state: State) => state.foo,
       (state: State) => state.bar,
-      (foo, bar) => ({ foo, bar })
+      (foo, bar) => ({ foo, bar }),
     ),
     (state: State) => state.baz,
     ({ foo, bar }, baz) => {
@@ -115,7 +114,7 @@ function testNestedSelector() {
       const baz1: boolean = baz
       // @ts-expect-error
       const baz2: string = baz
-    }
+    },
   )
 }
 
@@ -125,7 +124,7 @@ function testSelectorAsCombiner() {
 
   const subSelector = createSelector(
     (state: SubState) => state.foo,
-    foo => foo
+    foo => foo,
   )
 
   const selector = createSelector((state: State) => state.bar, subSelector)
@@ -142,15 +141,15 @@ function testSelectorAsCombiner() {
 type Component<P> = (props: P) => any
 
 declare function connect<S, P, R>(
-  selector: Selector<S, R, [P]>
+  selector: Selector<S, R, [P]>,
 ): (component: Component<P & R>) => Component<P>
 
 function testConnect() {
   connect(
     createSelector(
       (state: { foo: string }) => state.foo,
-      foo => ({ foo })
-    )
+      foo => ({ foo }),
+    ),
   )(props => {
     // @ts-expect-error
     props.bar
@@ -161,7 +160,7 @@ function testConnect() {
   const selector2 = createSelector(
     (state: { foo: string }) => state.foo,
     (state: { baz: number }, props: { bar: number }) => props.bar,
-    (foo, bar) => ({ foo, baz: bar })
+    (foo, bar) => ({ foo, baz: bar }),
   )
 
   const connected = connect(selector2)(props => {
@@ -182,7 +181,7 @@ function testInvalidTypeInCombinator() {
   // @ts-expect-error
   createSelector(
     (state: { foo: string }) => state.foo,
-    (foo: number) => foo
+    (foo: number) => foo,
   )
 
   createSelector(
@@ -190,7 +189,7 @@ function testInvalidTypeInCombinator() {
     (state: any) => state.bar,
     (state: any) => state.baz,
     // @ts-expect-error
-    (foo: string, bar: number, baz: boolean, fizz: string) => {}
+    (foo: string, bar: number, baz: boolean, fizz: string) => {},
   )
 
   // does not allow heterogeneous parameter type
@@ -215,10 +214,10 @@ function testInvalidTypeInCombinator() {
       foo6: string,
       foo7: string,
       foo8: number,
-      foo9: string[]
+      foo9: string[],
     ) => {
       return { foo1, foo2, foo3, foo4, foo5, foo6, foo7, foo8, foo9 }
-    }
+    },
   )
 
   // does not allow a large array of heterogeneous parameter type
@@ -234,7 +233,7 @@ function testInvalidTypeInCombinator() {
       (state: { testString: string }) => state.testString,
       (state: { testString: string }) => state.testString,
       (state: { testNumber: string }) => state.testNumber,
-      (state: { testStringArray: string[] }) => state.testStringArray
+      (state: { testStringArray: string[] }) => state.testStringArray,
     ],
     (
       foo1: string,
@@ -245,10 +244,10 @@ function testInvalidTypeInCombinator() {
       foo6: string,
       foo7: string,
       foo8: number,
-      foo9: string[]
+      foo9: string[],
     ) => {
       return { foo1, foo2, foo3, foo4, foo5, foo6, foo7, foo8, foo9 }
-    }
+    },
   )
 }
 
@@ -276,23 +275,23 @@ function testParametricSelector() {
       foo6: string,
       foo7: string,
       foo8: string,
-      foo9: string[]
+      foo9: string[],
     ) => {
       return { foo1, foo2, foo3, foo4, foo5, foo6, foo7, foo8, foo9 }
-    }
+    },
   )
 
   const res1 = selector1({
     testString: 'a',
     testNumber: 42,
     testBoolean: true,
-    testStringArray: ['b', 'c']
+    testStringArray: ['b', 'c'],
   })
 
   const selector = createSelector(
     (state: State) => state.foo,
     (state: State, props: Props) => props.bar,
-    (foo, bar) => ({ foo, bar })
+    (foo, bar) => ({ foo, bar }),
   )
 
   // @ts-expect-error
@@ -317,8 +316,8 @@ function testParametricSelector() {
       foo3,
       foo4,
       foo5,
-      bar
-    })
+      bar,
+    }),
   )
 
   selector2({ foo: 'fizz' }, { bar: 42 })
@@ -329,7 +328,7 @@ function testParametricSelector() {
     (s: State, y: number) => y,
     (v, x) => {
       return x + v
-    }
+    },
   )
 
   // @ts-expect-error
@@ -340,7 +339,7 @@ function testParametricSelector() {
     (s: State, val: string | number) => val,
     (foo, val) => {
       return val
-    }
+    },
   )
 
   selector4({ foo: 'fizz' }, 42)
@@ -351,9 +350,9 @@ function testArrayArgument() {
     [
       (state: { foo: string }) => state.foo,
       (state: { foo: string }) => state.foo,
-      (state: { foo: string }, props: { bar: number }) => props.bar
+      (state: { foo: string }, props: { bar: number }) => props.bar,
     ],
-    (foo1, foo2, bar) => ({ foo1, foo2, bar })
+    (foo1, foo2, bar) => ({ foo1, foo2, bar }),
   )
 
   const ret = selector({ foo: 'fizz' }, { bar: 42 })
@@ -368,9 +367,9 @@ function testArrayArgument() {
   createSelector(
     [
       (state: { foo: string }) => state.foo,
-      (state: { foo: string }) => state.foo
+      (state: { foo: string }) => state.foo,
     ],
-    (foo: string, bar: number) => {}
+    (foo: string, bar: number) => {},
   )
 
   createSelector(
@@ -384,7 +383,7 @@ function testArrayArgument() {
       (state: { foo: string }) => state.foo,
       (state: { foo: string }) => state.foo,
       (state: { foo: string }) => state.foo,
-      (state: { foo: string }) => state.foo
+      (state: { foo: string }) => state.foo,
     ],
     (
       foo1: string,
@@ -396,8 +395,8 @@ function testArrayArgument() {
       foo7: string,
       foo8: string,
       foo9: string,
-      foo10: string
-    ) => {}
+      foo10: string,
+    ) => {},
   )
 
   // @ts-expect-error
@@ -412,9 +411,9 @@ function testArrayArgument() {
       (state: { foo: string }) => state.foo,
       (state: { foo: string }) => state.foo,
       (state: { foo: string }) => state.foo,
-      (state: { foo: string }) => state.foo
+      (state: { foo: string }) => state.foo,
     ],
-    (foo1, foo2, foo3, foo4, foo5, foo6, foo7, foo8: number, foo9, foo10) => {}
+    (foo1, foo2, foo3, foo4, foo5, foo6, foo7, foo8: number, foo9, foo10) => {},
   )
 
   // @ts-expect-error
@@ -435,11 +434,11 @@ function testArrayArgument() {
       state => state.foo,
       // @ts-expect-error
       state => state.foo,
-      1
+      1,
     ],
     // We expect an error here, but the error differs between TS versions
     // @ts-ignore
-    (foo1, foo2, foo3, foo4, foo5, foo6, foo7, foo8, foo9) => {}
+    (foo1, foo2, foo3, foo4, foo5, foo6, foo7, foo8, foo9) => {},
   )
 
   const selector2 = createSelector(
@@ -452,7 +451,7 @@ function testArrayArgument() {
       (state: { foo: string }) => state.foo,
       (state: { foo: string }) => state.foo,
       (state: { foo: string }) => state.foo,
-      (state: { foo: string }) => state.foo
+      (state: { foo: string }) => state.foo,
     ],
     (
       foo1: string,
@@ -463,10 +462,10 @@ function testArrayArgument() {
       foo6: string,
       foo7: string,
       foo8: string,
-      foo9: string
+      foo9: string,
     ) => {
       return { foo1, foo2, foo3, foo4, foo5, foo6, foo7, foo8, foo9 }
-    }
+    },
   )
 
   {
@@ -497,7 +496,7 @@ function testArrayArgument() {
       (state: { foo: string }) => state.foo,
       (state: { foo: string }) => state.foo,
       (state: { foo: string }) => state.foo,
-      (state: { foo: string }) => state.foo
+      (state: { foo: string }) => state.foo,
     ],
     (
       bar: number,
@@ -508,10 +507,10 @@ function testArrayArgument() {
       foo5: string,
       foo6: string,
       foo7: string,
-      foo8: string
+      foo8: string,
     ) => {
       return { foo1, foo2, foo3, foo4, foo5, foo6, foo7, foo8, bar }
-    }
+    },
   )
 
   // allows a large array of heterogeneous parameter type selectors
@@ -525,7 +524,7 @@ function testArrayArgument() {
       (state: { testString: string }) => state.testString,
       (state: { testString: string }) => state.testString,
       (state: { testString: string }) => state.testString,
-      (state: { testStringArray: string[] }) => state.testStringArray
+      (state: { testStringArray: string[] }) => state.testStringArray,
     ],
     (
       foo1: string,
@@ -536,10 +535,10 @@ function testArrayArgument() {
       foo6: string,
       foo7: string,
       foo8: string,
-      foo9: string[]
+      foo9: string[],
     ) => {
       return { foo1, foo2, foo3, foo4, foo5, foo6, foo7, foo8, foo9 }
-    }
+    },
   )
 
   // @ts-expect-error
@@ -572,7 +571,7 @@ function testOptionalArgumentsConflicting() {
       const baz1: boolean = baz
       // @ts-expect-error
       const baz2: number = baz
-    }
+    },
   )
 
   // @ts-expect-error the selector above has inconsistent conflicting arguments so usage should error
@@ -584,7 +583,7 @@ function testOptionalArgumentsConflicting() {
 
   const selector2 = createSelector(
     (state: State, prefix: any) => prefix + state.foo,
-    str => str
+    str => str,
   )
 
   // @ts-expect-error here we require one argument which can be anything so error if there are no arguments
@@ -596,7 +595,7 @@ function testOptionalArgumentsConflicting() {
   // here the argument is optional so it should be possible to omit the argument or pass anything
   const selector3 = createSelector(
     (state: State, prefix?: any) => prefix + state.foo,
-    str => str
+    str => str,
   )
 
   selector3({} as State)
@@ -607,7 +606,7 @@ function testOptionalArgumentsConflicting() {
   const selector4 = createSelector(
     (state: State, prefix: string, suffix: any) =>
       prefix + state.foo + String(suffix),
-    str => str
+    str => str,
   )
 
   // @ts-expect-error
@@ -620,7 +619,7 @@ function testOptionalArgumentsConflicting() {
   const selector5 = createSelector(
     (state: State, prefix: string, suffix: unknown) =>
       prefix + state.foo + String(suffix),
-    str => str
+    str => str,
   )
 
   // @ts-expect-error
@@ -650,9 +649,9 @@ function testOptionalArgumentsConflicting() {
     (
       state: State,
       // eslint-disable-next-line @typescript-eslint/no-inferrable-types
-      prefix: string = 'a'
+      prefix: string = 'a',
     ) => prefix + state.foo,
-    (str: string) => str
+    (str: string) => str,
   )
 
   selector7({} as State)
@@ -662,7 +661,7 @@ function testOptionalArgumentsConflicting() {
 
   const selector8 = createSelector(
     (state: State, prefix: unknown) => prefix,
-    str => str
+    str => str,
   )
 
   // @ts-expect-error needs a argument
@@ -684,11 +683,11 @@ function testLruMemoize() {
   const memoized2 = lruMemoize(
     (str: string, arr: string[]): { str: string; arr: string[] } => ({
       str,
-      arr
+      arr,
     }),
     <T>(a: T, b: T) => {
       return `${a}` === `${b}`
-    }
+    },
   )
 
   const ret2 = memoized2('', ['1', '2'])
@@ -701,7 +700,7 @@ function testCreateSelectorCreator() {
 
   const selector = defaultCreateSelector(
     (state: { foo: string }) => state.foo,
-    foo => foo
+    foo => foo,
   )
   const value: string = selector({ foo: 'fizz' })
 
@@ -714,7 +713,7 @@ function testCreateSelectorCreator() {
   const parametric = defaultCreateSelector(
     (state: { foo: string }) => state.foo,
     (state: { foo: string }, props: { bar: number }) => props.bar,
-    (foo, bar) => ({ foo, bar })
+    (foo, bar) => ({ foo, bar }),
   )
 
   // @ts-expect-error
@@ -735,12 +734,12 @@ function testCreateSelectorCreator() {
 function testCreateStructuredSelector() {
   const oneParamSelector = createStructuredSelector({
     foo: (state: StateAB) => state.a,
-    bar: (state: StateAB) => state.b
+    bar: (state: StateAB) => state.b,
   })
 
   const threeParamSelector = createStructuredSelector({
     foo: (state: StateAB, c: number, d: string) => state.a,
-    bar: (state: StateAB, c: number, d: string) => state.b
+    bar: (state: StateAB, c: number, d: string) => state.b,
   })
 
   interface RootState {
@@ -753,7 +752,7 @@ function testCreateStructuredSelector() {
 
   const selector = typedStructuredSelectorCreator({
     foo: state => state.foo,
-    bar: state => +state.foo
+    bar: state => +state.foo,
   })
 
   const res1 = selector({ foo: '42', bar: 1 })
@@ -768,15 +767,15 @@ function testCreateStructuredSelector() {
 
   typedStructuredSelectorCreator({
     // @ts-expect-error
-    bar: (state: { baz: boolean }) => 1
+    bar: (state: { baz: boolean }) => 1,
   })
 
   typedStructuredSelectorCreator({
-    bar: state => state.foo
+    bar: state => state.foo,
   })
 
   typedStructuredSelectorCreator({
-    baz: state => state.foo
+    baz: state => state.foo,
   })
 
   // Test automatic inference of types for createStructuredSelector via overload
@@ -786,7 +785,7 @@ function testCreateStructuredSelector() {
 
   const selector2 = createStructuredSelector({
     foo: FooSelector,
-    bar: BarSelector
+    bar: BarSelector,
   })
 
   const selectorGenerics = createStructuredSelector<{
@@ -794,7 +793,7 @@ function testCreateStructuredSelector() {
     bar: typeof BarSelector
   }>({
     foo: state => state.foo,
-    bar: state => +state.foo
+    bar: state => +state.foo,
   })
 
   type ExpectedResult = {
@@ -809,7 +808,7 @@ function testCreateStructuredSelector() {
   const resGenerics: ExpectedResult = selectorGenerics(
     { foo: '42' },
     99,
-    'test'
+    'test',
   )
 
   //@ts-expect-error
@@ -833,12 +832,12 @@ function testTypedCreateStructuredSelector() {
 
   typedStructuredSelectorCreator({
     foo: selectFoo,
-    bar: selectBar
+    bar: selectBar,
   })
 
   // @ts-expect-error Because `bar` is missing.
   typedStructuredSelectorCreator({
-    foo: selectFoo
+    foo: selectFoo,
   })
 
   // This works
@@ -847,7 +846,7 @@ function testTypedCreateStructuredSelector() {
     bar: typeof selectBar
   }>({
     foo: state => state.foo,
-    bar: state => +state.foo
+    bar: state => +state.foo,
   })
 
   // This also works
@@ -856,7 +855,7 @@ function testTypedCreateStructuredSelector() {
     bar: typeof selectBar
   }>({
     foo: state => state.foo,
-    bar: state => +state.foo
+    bar: state => +state.foo,
   })
 
   // Their types are the same.
@@ -870,33 +869,33 @@ function testDynamicArrayArgument() {
   }
   const data: ReadonlyArray<Elem> = [
     { val1: 'a', val2: 'aa' },
-    { val1: 'b', val2: 'bb' }
+    { val1: 'b', val2: 'bb' },
   ]
 
   createSelector(
     data.map(obj => () => obj.val1),
-    (...vals) => vals.join(',')
+    (...vals) => vals.join(','),
   )
 
   createSelector(
     data.map(obj => () => obj.val1),
     // @ts-expect-error
-    vals => vals.join(',')
+    vals => vals.join(','),
   )
 
   createSelector(
     data.map(obj => () => obj.val1),
-    (...vals: string[]) => 0
+    (...vals: string[]) => 0,
   )
   // @ts-expect-error
   createSelector(
     data.map(obj => () => obj.val1),
-    (...vals: number[]) => 0
+    (...vals: number[]) => 0,
   )
 
   const s = createSelector(
     data.map(obj => (state: StateA, fld: keyof Elem) => obj[fld]),
-    (...vals) => vals.join(',')
+    (...vals) => vals.join(','),
   )
   s({ a: 42 }, 'val1')
   s({ a: 42 }, 'val2')
@@ -916,7 +915,7 @@ function testStructuredSelectorTypeParams() {
   // Output state should be the same as input, if not provided
   // @ts-expect-error
   createStructuredSelector<GlobalState>({
-    foo: selectFoo
+    foo: selectFoo,
     // bar: selectBar,
     // ^^^ because this is missing, an error is thrown
   })
@@ -926,7 +925,7 @@ function multiArgMemoize<F extends (...args: any[]) => any>(
   func: F,
   a: number,
   b: string,
-  equalityCheck = referenceEqualityCheck
+  equalityCheck = referenceEqualityCheck,
 ): F {
   // @ts-ignore
   return () => {}
@@ -947,19 +946,19 @@ function multiArgMemoize<F extends (...args: any[]) => any>(
 
   const createTransactionsSelector = createSelectorCreator(
     lruMemoize,
-    collectionsEqual
+    collectionsEqual,
   )
 
   const createMultiMemoizeArgSelector = createSelectorCreator(
     multiArgMemoize,
     42,
     'abcd',
-    referenceEqualityCheck
+    referenceEqualityCheck,
   )
 
   const select = createMultiMemoizeArgSelector(
     (state: { foo: string }) => state.foo,
-    foo => foo + '!'
+    foo => foo + '!',
   )
   // error is not applicable anymore
   select.clearCache()
@@ -968,13 +967,13 @@ function multiArgMemoize<F extends (...args: any[]) => any>(
     multiArgMemoize,
     42,
     // @ts-expect-error
-    referenceEqualityCheck
+    referenceEqualityCheck,
   )
 
   const groupTransactionsByLabel = lruMemoize(
     (transactions: Transaction[]) =>
       groupBy(transactions, item => item.transactionId),
-    collectionsEqual
+    collectionsEqual,
   )
 }
 
@@ -997,18 +996,18 @@ function issue445() {
 
   function generateObject1(str: string): Object1 {
     return {
-      str
+      str,
     }
   }
   function generateObject2(num: number): Object2 {
     return {
-      num
+      num,
     }
   }
   function generateComplexObject(
     num: number,
     subObject: Object1,
-    subObject2: Object2
+    subObject2: Object2,
   ): boolean {
     return true
   }
@@ -1029,28 +1028,28 @@ function issue445() {
   // @ts-expect-error
   const getComplexObjectTest1 = createSelector(
     [getObject1],
-    generateComplexObject
+    generateComplexObject,
   )
 
   // Does error, but error is really weird and talks about "Object1 is not assignable to type number"
   // @ts-expect-error
   const getComplexObjectTest2 = createSelector(
     [getNumber, getObject1],
-    generateComplexObject
+    generateComplexObject,
   )
 
   // Should error because number can't be null
   // @ts-expect-error
   const getComplexObjectTest3 = createSelector(
     [getNumber, getObject1, getObject2],
-    generateComplexObject
+    generateComplexObject,
   )
 
   // Does error, but error is really weird and talks about "Object1 is not assignable to type number"
   // @ts-expect-error
   const getComplexObjectTest4 = createSelector(
     [getObject1, getNumber, getObject2],
-    generateComplexObject
+    generateComplexObject,
   )
 
   // Verbose selector examples
@@ -1058,40 +1057,40 @@ function issue445() {
   // Errors correctly, says str can't be null
   const getVerboseObject1 = createSelector([getString], str =>
     // @ts-expect-error
-    generateObject1(str)
+    generateObject1(str),
   )
 
   // Errors correctly, says num can't be null
   const getVerboseObject2 = createSelector([getNumber], num =>
     // @ts-expect-error
-    generateObject2(num)
+    generateObject2(num),
   )
 
   // Errors correctly
   const getVerboseComplexObjectTest1 = createSelector([getObject1], obj1 =>
     // @ts-expect-error
-    generateComplexObject(obj1)
+    generateComplexObject(obj1),
   )
 
   // Errors correctly
   const getVerboseComplexObjectTest2 = createSelector(
     [getNumber, getObject1],
     // @ts-expect-error
-    (num, obj1) => generateComplexObject(num, obj1)
+    (num, obj1) => generateComplexObject(num, obj1),
   )
 
   // Errors correctly
   const getVerboseComplexObjectTest3 = createSelector(
     [getNumber, getObject1, getObject2],
     // @ts-expect-error
-    (num, obj1, obj2) => generateComplexObject(num, obj1, obj2)
+    (num, obj1, obj2) => generateComplexObject(num, obj1, obj2),
   )
 
   // Errors correctly
   const getVerboseComplexObjectTest4 = createSelector(
     [getObject1, getNumber, getObject2],
     // @ts-expect-error
-    (num, obj1, obj2) => generateComplexObject(num, obj1, obj2)
+    (num, obj1, obj2) => generateComplexObject(num, obj1, obj2),
   )
 }
 
@@ -1100,13 +1099,13 @@ function issue492() {
   const fooPropSelector = (_: {}, ownProps: { foo: string }) => ownProps.foo
   const fooBarPropsSelector = (
     _: {},
-    ownProps: { foo: string; bar: string }
+    ownProps: { foo: string; bar: string },
   ) => [ownProps.foo, ownProps.bar]
 
   const combinedSelector = createSelector(
     fooPropSelector,
     fooBarPropsSelector,
-    (foo, fooBar) => fooBar
+    (foo, fooBar) => fooBar,
   )
 }
 
@@ -1115,7 +1114,7 @@ function customMemoizationOptionTypes() {
     f: (...args: any[]) => any,
     a: string,
     b: number,
-    c: boolean
+    c: boolean,
   ) => {
     return f
   }
@@ -1124,14 +1123,14 @@ function customMemoizationOptionTypes() {
     customMemoize,
     'a',
     42,
-    true
+    true,
   )
 
   // @ts-expect-error
   const customSelectorCreatorCustomMemoizeMissingArg = createSelectorCreator(
     customMemoize,
     'a',
-    true
+    true,
   )
 }
 
@@ -1143,8 +1142,8 @@ function createSelectorConfigOptions() {
     (a, b) => a + b,
     {
       memoize: lruMemoize,
-      memoizeOptions: (a, b) => a === b
-    }
+      memoizeOptions: (a, b) => a === b,
+    },
   )
 
   const lruMemoizeAcceptsFirstArgAsObject = createSelector(
@@ -1154,9 +1153,9 @@ function createSelectorConfigOptions() {
     {
       memoize: lruMemoize,
       memoizeOptions: {
-        equalityCheck: (a, b) => a === b
-      }
-    }
+        equalityCheck: (a, b) => a === b,
+      },
+    },
   )
 
   const lruMemoizeAcceptsArgsAsArray = createSelector(
@@ -1165,15 +1164,15 @@ function createSelectorConfigOptions() {
     (a, b) => a + b,
     {
       memoize: lruMemoize,
-      memoizeOptions: [(a, b) => a === b]
-    }
+      memoizeOptions: [(a, b) => a === b],
+    },
   )
 
   const customSelectorCreatorMicroMemoize = createSelectorCreator(
     microMemoize,
     {
-      maxSize: 42
-    }
+      maxSize: 42,
+    },
   )
 
   customSelectorCreatorMicroMemoize(
@@ -1183,10 +1182,10 @@ function createSelectorConfigOptions() {
     {
       memoizeOptions: [
         {
-          maxSize: 42
-        }
-      ]
-    }
+          maxSize: 42,
+        },
+      ],
+    },
   )
 
   const customSelectorCreatorMemoizeOne = createSelectorCreator(memoizeOne)
@@ -1196,8 +1195,8 @@ function createSelectorConfigOptions() {
     (state: StateAB) => state.b,
     (a, b) => a + b,
     {
-      memoizeOptions: (a, b) => a === b
-    }
+      memoizeOptions: (a, b) => a === b,
+    },
   )
 }
 
@@ -1232,7 +1231,7 @@ const withLotsOfInputSelectors = createSelector(
   (_state: StateA) => 26,
   (_state: StateA) => 27,
   (_state: StateA) => 28,
-  (...args) => args.length
+  (...args) => args.length,
 )
 
 type SelectorArray29 = [
@@ -1264,7 +1263,7 @@ type SelectorArray29 = [
   (_state: StateA) => 26,
   (_state: StateA) => 27,
   (_state: StateA) => 28,
-  (_state: StateA) => 29
+  (_state: StateA) => 29,
 ]
 
 type Results = SelectorResultArray<SelectorArray29>
@@ -1285,7 +1284,7 @@ type State = GetStateFromSelectors<SelectorArray29>
   const selector = createSelector(
     (state: { foo: string }) => 1,
     (state: { bar: string }) => 2,
-    (...args) => 0
+    (...args) => 0,
   )
   selector({ foo: '', bar: '' })
   // @ts-expect-error
@@ -1298,7 +1297,7 @@ type State = GetStateFromSelectors<SelectorArray29>
   const selector = createSelector(
     (state: { foo: string }) => 1,
     (state: { foo: string }) => 2,
-    (...args) => 0
+    (...args) => 0,
   )
   // @ts-expect-error
   selector({ foo: '', bar: '' })
@@ -1319,7 +1318,7 @@ function testInputSelectorWithUndefinedReturn() {
   // Make sure the selector type is honored
   const selector: SelectorType = createSelector(
     ({ field }: Input) => field,
-    args => 'test'
+    args => 'test',
   )
 
   // even when memoizeOptions are passed
@@ -1328,15 +1327,15 @@ function testInputSelectorWithUndefinedReturn() {
     args => 'test',
     {
       memoize: lruMemoize,
-      memoizeOptions: { maxSize: 42 }
-    }
+      memoizeOptions: { maxSize: 42 },
+    },
   )
 
   // Make sure inference of functions works...
   const selector3: SelectorType = createSelector(input, result)
   const selector4: SelectorType = createSelector(input, result, {
     memoize: lruMemoize,
-    memoizeOptions: { maxSize: 42 }
+    memoizeOptions: { maxSize: 42 },
   })
 }
 
@@ -1381,20 +1380,20 @@ function issue540() {
     _: StateA,
     { testNumber }: { testNumber: number },
     c: number,
-    d: string
+    d: string,
   ) => testNumber
 
   const input2 = (
     _: StateA,
     { testString }: { testString: string },
-    c: number | string
+    c: number | string,
   ) => testString
 
   const input3 = (
     _: StateA,
     { testBoolean }: { testBoolean: boolean },
     c: number | string,
-    d: string
+    d: string,
   ) => testBoolean
 
   const input4 = (_: StateA, { testString2 }: { testString2: string }) =>
@@ -1405,7 +1404,7 @@ function issue540() {
     input2,
     input3,
     input4,
-    (testNumber, testString, testBoolean) => testNumber + testString
+    (testNumber, testString, testBoolean) => testNumber + testString,
   )
 
   const state: StateA = { a: 42 }
@@ -1413,21 +1412,21 @@ function issue540() {
     state,
     { testNumber: 1, testString: '10', testBoolean: true, testString2: 'blah' },
     42,
-    'blah'
+    'blah',
   )
 
   // #541
   const selectProp1 = createSelector(
     [
       (state: StateA) => state,
-      (state: StateA, props: { prop1: number }) => props
+      (state: StateA, props: { prop1: number }) => props,
     ],
-    (state, { prop1 }) => [state, prop1]
+    (state, { prop1 }) => [state, prop1],
   )
 
   const selectProp2 = createSelector(
     [selectProp1, (state, props: { prop2: number }) => props],
-    (state, { prop2 }) => [state, prop2]
+    (state, { prop2 }) => [state, prop2],
   )
 
   selectProp1({ a: 42 }, { prop1: 1 })
@@ -1448,12 +1447,12 @@ function issue548() {
   const isLoading = createSelector(
     (state: State) => state,
     (_: State, props: Props) => props.currency,
-    ({ loading }, currency) => loading
+    ({ loading }, currency) => loading,
   )
 
   const mapData = createStructuredSelector({
     isLoading,
-    test2: (state: State) => 42
+    test2: (state: State) => 42,
   })
 
   const result = mapData({ value: null, loading: false }, { currency: 'EUR' })
@@ -1463,7 +1462,7 @@ function issue550() {
   const some = createSelector(
     (a: number) => a,
     (_a: number, b: number) => b,
-    (a, b) => a + b
+    (a, b) => a + b,
   )
 
   const test = some(1, 2)
@@ -1473,7 +1472,7 @@ function rtkIssue1750() {
   const slice = createSlice({
     name: 'test',
     initialState: 0,
-    reducers: {}
+    reducers: {},
   })
 
   interface Pokemon {
@@ -1486,25 +1485,25 @@ function rtkIssue1750() {
     baseQuery: fetchBaseQuery({ baseUrl: 'https://pokeapi.co/api/v2/' }),
     endpoints: builder => ({
       getPokemonByName: builder.query<Pokemon, string>({
-        query: name => `pokemon/${name}`
-      })
-    })
+        query: name => `pokemon/${name}`,
+      }),
+    }),
   })
 
   const store = configureStore({
     reducer: {
       test: slice.reducer,
-      [pokemonApi.reducerPath]: pokemonApi.reducer
+      [pokemonApi.reducerPath]: pokemonApi.reducer,
     },
     middleware: getDefaultMiddleware =>
-      getDefaultMiddleware().concat(pokemonApi.middleware)
+      getDefaultMiddleware().concat(pokemonApi.middleware),
   })
 
   type RootState = ReturnType<typeof store.getState>
 
   const selectTest = createSelector(
     (state: RootState) => state.test,
-    test => test
+    test => test,
   )
 
   const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
@@ -1550,7 +1549,7 @@ function issue554a() {
 
   const initialState: State = {
     foo: 'This is Foo',
-    bar: 1
+    bar: 1,
   }
 
   const getFoo = (state: State) => {
@@ -1579,7 +1578,7 @@ function issue554a() {
     firstInput,
     (foo, bar, first) => {
       return `${foo} => ${bar} || ${first}`
-    }
+    },
   )
   complexOne(initialState, 'first')
 
@@ -1590,7 +1589,7 @@ function issue554a() {
     secondInput,
     (foo, bar, first, second) => {
       return `${foo} => ${bar} || ${first} and ${second}`
-    }
+    },
   )
   // TS should complain since 'second' should be `number`
   // @ts-expect-error
@@ -1606,7 +1605,7 @@ function issue554b() {
   const selectTest = createSelector(
     (state: State, numberA?: number) => numberA,
     (state: State) => state.counter2,
-    (numberA, counter2) => (numberA ? numberA + counter2 : counter2)
+    (numberA, counter2) => (numberA ? numberA + counter2 : counter2),
   )
 
   type selectTestParams = Parameters<typeof selectTest>
@@ -1625,7 +1624,7 @@ function issue554c() {
   const selectTest = createSelector(
     (state: State, numberA?: number) => numberA, // `numberA` is optional
     (state: State) => state.counter2,
-    (numberA, counter2) => (numberA ? numberA + counter2 : counter2)
+    (numberA, counter2) => (numberA ? numberA + counter2 : counter2),
   )
 
   // @ts-expect-error
@@ -1634,7 +1633,7 @@ function issue554c() {
   const selectTest2 = createSelector(
     (state: State, numberA: number) => numberA, // `numberA` is not optional anymore
     (state: State) => state.counter2,
-    (numberA, counter2) => (numberA ? numberA + counter2 : counter2)
+    (numberA, counter2) => (numberA ? numberA + counter2 : counter2),
   )
 
   // @ts-expect-error
@@ -1652,19 +1651,19 @@ function issue555() {
   const someSelector1 = createSelector(
     (state: IReduxState, param: 'x' | 'y' | undefined) =>
       param !== undefined ? state.ui[param] : null,
-    (a: string | null) => a
+    (a: string | null) => a,
   )
 
   const someSelector2 = createSelector(
     (state: IReduxState, param?: 'x' | 'y') =>
       param !== undefined ? state.ui[param] : null,
-    (a: string | null) => a
+    (a: string | null) => a,
   )
 
   const someSelector3 = createSelector(
     (state: IReduxState, param: 'x' | 'y' | null) =>
       param !== null ? state.ui[param] : null,
-    (a: string | null) => a
+    (a: string | null) => a,
   )
 
   const state = { ui: { x: '1', y: '2' } }
@@ -1684,14 +1683,14 @@ function testCreateStructuredSelectorNew() {
   const state: State = {
     todos: [
       { id: 0, completed: false },
-      { id: 1, completed: false }
-    ]
+      { id: 1, completed: false },
+    ],
   }
 
   const selectorDefaultParametric = createSelector(
     (state: State, id: number) => id,
     (state: State) => state.todos,
-    (id, todos) => todos.filter(todo => todo.id === id)
+    (id, todos) => todos.filter(todo => todo.id === id),
   )
   const multiArgsStructuredSelector = createStructuredSelector(
     {
@@ -1700,22 +1699,22 @@ function testCreateStructuredSelectorNew() {
       selectedCompletedTodos: (
         state: State,
         id: number,
-        isCompleted: boolean
-      ) => state.todos.filter(({ completed }) => completed === isCompleted)
+        isCompleted: boolean,
+      ) => state.todos.filter(({ completed }) => completed === isCompleted),
     },
-    createSelectorCreator({ memoize: microMemoize, argsMemoize: microMemoize })
+    createSelectorCreator({ memoize: microMemoize, argsMemoize: microMemoize }),
   )
 
   multiArgsStructuredSelector.resultFunc(
     [{ id: 2, completed: true }],
     { id: 0, completed: false },
-    [{ id: 0, completed: false }]
+    [{ id: 0, completed: false }],
   ).selectedCompletedTodos
 
   multiArgsStructuredSelector.memoizedResultFunc(
     [{ id: 2, completed: true }],
     { id: 0, completed: false },
-    [{ id: 0, completed: false }]
+    [{ id: 0, completed: false }],
   ).selectedCompletedTodos
 
   multiArgsStructuredSelector.memoizedResultFunc.cache
@@ -1730,7 +1729,7 @@ function testCreateStructuredSelectorNew() {
     [
       (state: State) => State['todos'],
       (state: State, id: number) => State['todos'][number],
-      (state: State, id: number, isCompleted: boolean) => State['todos']
+      (state: State, id: number, isCompleted: boolean) => State['todos'],
     ]
   >(multiArgsStructuredSelector.dependencies)
   // @ts-expect-error Wrong number of arguments.

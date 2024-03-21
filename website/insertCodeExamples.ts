@@ -4,7 +4,7 @@ import {
   EXAMPLES_DIRECTORY,
   getTSConfig,
   hasTSXExtension,
-  tsExtensionRegex
+  tsExtensionRegex,
 } from './compileExamples'
 
 const placeholderRegex =
@@ -12,10 +12,10 @@ const placeholderRegex =
 
 const collectMarkdownFiles = (
   directory: string,
-  files: { path: string; content: string }[] = []
+  files: { path: string; content: string }[] = [],
 ) => {
   readdirSync(directory, {
-    withFileTypes: true
+    withFileTypes: true,
   }).forEach(entry => {
     const filePath = path.join(directory, entry.name)
     if (entry.isDirectory()) {
@@ -42,7 +42,7 @@ const insertCodeExamples = (examplesDirectory: string) => {
       : `import TabItem from '@theme/TabItem'\n`
     content = content.replace(
       frontMatterRegex,
-      frontMatter => `${frontMatter}\n${importTabs}${importTabItem}`
+      frontMatter => `${frontMatter}\n${importTabs}${importTabItem}`,
     )
 
     content = content.replace(
@@ -55,14 +55,14 @@ const insertCodeExamples = (examplesDirectory: string) => {
 
         const jsFileName = tsFileName.replace(
           tsExtensionRegex,
-          `.${jsFileExtension}`
+          `.${jsFileExtension}`,
         )
 
         const tsFilePath = path.join(examplesDirectory, tsFileName)
         const jsFilePath = path.join(
           examplesDirectory,
           getTSConfig(examplesDirectory).compilerOptions.outDir,
-          tsFileName.replace(tsExtensionRegex, `.${jsFileExtension}`)
+          tsFileName.replace(tsExtensionRegex, `.${jsFileExtension}`),
         )
 
         const tsFileContent = readFileSync(tsFilePath, 'utf-8')
@@ -92,7 +92,7 @@ const insertCodeExamples = (examplesDirectory: string) => {
 </Tabs>
 
 {/* END: ${tsFileName} */}`
-      }
+      },
     )
     writeFileSync(markdownFilePath, content)
   })

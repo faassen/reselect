@@ -46,7 +46,7 @@ const selectCompletedTodos = createSelector(
   todos => {
     const completedTodos = todos.filter(todo => todo.completed === true)
     return completedTodos.length === 0 ? EMPTY_ARRAY : completedTodos
-  }
+  },
 )
 ```
 
@@ -96,7 +96,7 @@ const selectCompletedTodos = createSelector(
   [(state: RootState) => state.todos],
   todos => {
     return fallbackToEmptyArray(todos.filter(todo => todo.completed === true))
-  }
+  },
 )
 ```
 

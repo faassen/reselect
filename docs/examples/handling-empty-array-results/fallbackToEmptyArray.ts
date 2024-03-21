@@ -11,5 +11,5 @@ const selectCompletedTodos = createSelector(
   [(state: RootState) => state.todos],
   todos => {
     return fallbackToEmptyArray(todos.filter(todo => todo.completed === true))
-  }
+  },
 )

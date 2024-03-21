@@ -13,7 +13,7 @@ import {
   setFunctionNames,
   setupStore,
   toggleCompleted,
-  toggleRead
+  toggleRead,
 } from '../testUtils'
 
 describe('Less vs more computation in input selectors', () => {
@@ -26,16 +26,16 @@ describe('Less vs more computation in input selectors', () => {
     todos => {
       expensiveComputation()
       return todos.filter(todo => todo.completed)
-    }
+    },
   )
   const selectorMoreInInput = createSelector(
     [
       (state: RootState) => {
         expensiveComputation()
         return state.todos
-      }
+      },
     ],
-    todos => todos.filter(todo => todo.completed)
+    todos => todos.filter(todo => todo.completed),
   )
 
   const nonMemoized = countRecomputations((state: RootState) => {
@@ -44,12 +44,12 @@ describe('Less vs more computation in input selectors', () => {
   })
   const commonOptions: Options = {
     iterations: 10,
-    time: 0
+    time: 0,
   }
   setFunctionNames({ selectorLessInInput, selectorMoreInInput, nonMemoized })
   const createOptions = <S extends OutputSelector>(
     selector: S,
-    commonOptions: Options = {}
+    commonOptions: Options = {},
   ) => {
     const options: Options = {
       setup: (task, mode) => {
@@ -60,9 +60,9 @@ describe('Less vs more computation in input selectors', () => {
           },
           afterAll: () => {
             logSelectorRecomputations(selector)
-          }
+          },
         }
-      }
+      },
     }
     return { ...commonOptions, ...options }
   }
@@ -71,14 +71,14 @@ describe('Less vs more computation in input selectors', () => {
     () => {
       runSelector(selectorLessInInput)
     },
-    createOptions(selectorLessInInput, commonOptions)
+    createOptions(selectorLessInInput, commonOptions),
   )
   bench(
     selectorMoreInInput,
     () => {
       runSelector(selectorMoreInInput)
     },
-    createOptions(selectorMoreInInput, commonOptions)
+    createOptions(selectorMoreInInput, commonOptions),
   )
   bench(
     nonMemoized,
@@ -96,10 +96,10 @@ describe('Less vs more computation in input selectors', () => {
           },
           afterAll: () => {
             logFunctionInfo(nonMemoized, nonMemoized.recomputations())
-          }
+          },
         }
-      }
-    }
+      },
+    },
   )
 })
 
@@ -118,25 +118,25 @@ describe('Reselect vs standalone memoization for field access', () => {
   }
   const fieldAccessorWithReselect = createSelector(
     [(state: RootState) => state.users],
-    users => users.appSettings
+    users => users.appSettings,
   )
   const fieldAccessorWithMemoize = countRecomputations(
     lruMemoize((state: RootState) => {
       return state.users.appSettings
-    })
+    }),
   )
   const nonMemoizedAccessor = countRecomputations(
-    (state: RootState) => state.users.appSettings
+    (state: RootState) => state.users.appSettings,
   )
 
   setFunctionNames({
     fieldAccessorWithReselect,
     fieldAccessorWithMemoize,
-    nonMemoizedAccessor
+    nonMemoizedAccessor,
   })
   const createOptions = <S extends OutputSelector>(
     selector: S,
-    commonOptions: Options = {}
+    commonOptions: Options = {},
   ) => {
     const options: Options = {
       setup: (task, mode) => {
@@ -148,9 +148,9 @@ describe('Reselect vs standalone memoization for field access', () => {
           },
           afterAll: () => {
             logSelectorRecomputations(selector)
-          }
+          },
         }
-      }
+      },
     }
     return { ...commonOptions, ...options }
   }
@@ -159,7 +159,7 @@ describe('Reselect vs standalone memoization for field access', () => {
     () => {
       runSelector(fieldAccessorWithReselect)
     },
-    createOptions(fieldAccessorWithReselect, commonOptions)
+    createOptions(fieldAccessorWithReselect, commonOptions),
   )
   bench(
     fieldAccessorWithMemoize,
@@ -179,12 +179,12 @@ describe('Reselect vs standalone memoization for field access', () => {
           afterAll: () => {
             logFunctionInfo(
               fieldAccessorWithMemoize,
-              fieldAccessorWithMemoize.recomputations()
+              fieldAccessorWithMemoize.recomputations(),
             )
-          }
+          },
         }
-      }
-    }
+      },
+    },
   )
   bench(
     nonMemoizedAccessor,
@@ -203,11 +203,11 @@ describe('Reselect vs standalone memoization for field access', () => {
           afterAll: () => {
             logFunctionInfo(
               nonMemoizedAccessor,
-              nonMemoizedAccessor.recomputations()
+              nonMemoizedAccessor.recomputations(),
             )
-          }
+          },
         }
-      }
-    }
+      },
+    },
   )
 })

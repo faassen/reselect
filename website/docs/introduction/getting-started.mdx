@@ -70,12 +70,12 @@ interface RootState {
 const state: RootState = {
   todos: [
     { id: 0, completed: false },
-    { id: 1, completed: true }
+    { id: 1, completed: true },
   ],
   alerts: [
     { id: 0, read: false },
-    { id: 1, read: true }
-  ]
+    { id: 1, read: true },
+  ],
 }
 
 const selectCompletedTodos = (state: RootState) => {
@@ -92,7 +92,7 @@ const memoizedSelectCompletedTodos = createSelector(
   todos => {
     console.log('memoized selector ran')
     return todos.filter(todo => todo.completed === true)
-  }
+  },
 )
 
 memoizedSelectCompletedTodos(state) // memoized selector ran
@@ -102,7 +102,7 @@ memoizedSelectCompletedTodos(state)
 console.log(selectCompletedTodos(state) === selectCompletedTodos(state)) //=> false
 
 console.log(
-  memoizedSelectCompletedTodos(state) === memoizedSelectCompletedTodos(state)
+  memoizedSelectCompletedTodos(state) === memoizedSelectCompletedTodos(state),
 ) //=> true
 ```
 
@@ -115,12 +115,12 @@ import { createSelector } from 'reselect'
 const state = {
   todos: [
     { id: 0, completed: false },
-    { id: 1, completed: true }
+    { id: 1, completed: true },
   ],
   alerts: [
     { id: 0, read: false },
-    { id: 1, read: true }
-  ]
+    { id: 1, read: true },
+  ],
 }
 
 const selectCompletedTodos = state => {
@@ -137,7 +137,7 @@ const memoizedSelectCompletedTodos = createSelector(
   todos => {
     console.log('memoized selector ran')
     return todos.filter(todo => todo.completed === true)
-  }
+  },
 )
 
 memoizedSelectCompletedTodos(state) // memoized selector ran
@@ -147,7 +147,7 @@ memoizedSelectCompletedTodos(state)
 console.log(selectCompletedTodos(state) === selectCompletedTodos(state)) //=> false
 
 console.log(
-  memoizedSelectCompletedTodos(state) === memoizedSelectCompletedTodos(state)
+  memoizedSelectCompletedTodos(state) === memoizedSelectCompletedTodos(state),
 ) //=> true
 ```
 
@@ -165,14 +165,15 @@ In addition to skipping unnecessary recalculations, `memoizedSelectCompletedTodo
 ## Terminology
 
 - <InternalLinks.Selector text={<b>Selector Function</b>} />
-  : A function that accepts one or more JavaScript values as arguments, and derives
-  a result. When used with <ExternalLinks.Redux />, the first argument is typically
-  the entire Redux store state.
+  : A function that accepts one or more JavaScript values as arguments, and
+  derives a result. When used with <ExternalLinks.Redux />, the first argument
+  is typically the entire Redux store state.
 - <InternalLinks.InputSelectors text={<b>Input Selectors</b>} />
-  : Basic selector functions used as building blocks for creating a memoized selector.
-  They are passed as the first argument(s) to <InternalLinks.CreateSelector />, and
-  are called with all selector arguments. They are responsible for extracting and
-  providing necessary values to the <InternalLinks.ResultFunction />.
+  : Basic selector functions used as building blocks for creating a memoized
+  selector. They are passed as the first argument(s) to <InternalLinks.CreateSelector />
+  , and are called with all selector arguments. They are responsible for
+  extracting and providing necessary values to the <InternalLinks.ResultFunction />
+  .
 - <InternalLinks.OutputSelector text={<b>Output Selector</b>} />
   : The actual memoized selectors created by <InternalLinks.CreateSelector />.
 - <InternalLinks.ResultFunction text={<b>Result Function</b>} />
@@ -188,6 +189,6 @@ The below example serves as a visual aid:
 ```ts
 const outputSelector = createSelector(
   [inputSelector1, inputSelector2, inputSelector3], // synonymous with `dependencies`.
-  resultFunc // Result function
+  resultFunc, // Result function
 )
 ```

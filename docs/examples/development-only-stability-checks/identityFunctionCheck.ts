@@ -12,5 +12,5 @@ const selectTodos = createSelector(
   // ❌ BAD: Does not contain transformation logic.
   todos => todos,
   // Will override the global setting.
-  { devModeChecks: { identityFunctionCheck: 'always' } }
+  { devModeChecks: { identityFunctionCheck: 'always' } },
 )

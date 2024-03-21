@@ -2,7 +2,7 @@ import {
   createSelector,
   createSelectorCreator,
   createStructuredSelector,
-  lruMemoize
+  lruMemoize,
 } from 'reselect'
 import type { LocalTestContext, RootState } from './testUtils'
 import { setupStore } from './testUtils'
@@ -16,7 +16,7 @@ describe(createStructuredSelector, () => {
   test('structured selector', () => {
     const selector = createStructuredSelector({
       x: (state: StateAB) => state.a,
-      y: (state: StateAB) => state.b
+      y: (state: StateAB) => state.b,
     })
     const firstResult = selector({ a: 1, b: 2 })
     expect(firstResult).toEqual({ x: 1, y: 2 })
@@ -31,31 +31,31 @@ describe(createStructuredSelector, () => {
       createStructuredSelector(
         // @ts-expect-error
         (state: StateAB) => state.a,
-        (state: StateAB) => state.b
-      )
+        (state: StateAB) => state.b,
+      ),
     ).toThrow(/expects first argument to be an object.*function/)
     expect(() =>
       createStructuredSelector({
         a: state => state.b,
         // @ts-expect-error
-        c: 'd'
-      })
+        c: 'd',
+      }),
     ).toThrow(
-      'createSelector expects all input-selectors to be functions, but received the following types: [function a(), string]'
+      'createSelector expects all input-selectors to be functions, but received the following types: [function a(), string]',
     )
   })
 
   test('structured selector with custom selector creator', () => {
     const customSelectorCreator = createSelectorCreator(
       lruMemoize,
-      (a, b) => a === b
+      (a, b) => a === b,
     )
     const selector = createStructuredSelector(
       {
         x: (state: StateAB) => state.a,
-        y: (state: StateAB) => state.b
+        y: (state: StateAB) => state.b,
       },
-      customSelectorCreator
+      customSelectorCreator,
     )
     const firstResult = selector({ a: 1, b: 2 })
     expect(firstResult).toEqual({ x: 1, y: 2 })
@@ -77,56 +77,60 @@ describe<LocalTestContext>('structured selector created with createStructuredSel
         {
           allTodos: (state: RootState) => state.todos,
           allAlerts: (state: RootState) => state.alerts,
-          selectedTodo: (state: RootState, id: number) => state.todos[id]
+          selectedTodo: (state: RootState, id: number) => state.todos[id],
         },
-        createSelector
+        createSelector,
       )
       const selector = createSelector(
         [
           (state: RootState) => state.todos,
           (state: RootState) => state.alerts,
-          (state: RootState, id: number) => state.todos[id]
+          (state: RootState, id: number) => state.todos[id],
         ],
         (allTodos, allAlerts, selectedTodo) => {
           return {
             allTodos,
             allAlerts,
-            selectedTodo
+            selectedTodo,
           }
-        }
+        },
       )
       expect(selector(state, 1).selectedTodo.id).toBe(
-        structuredSelector(state, 1).selectedTodo.id
+        structuredSelector(state, 1).selectedTodo.id,
       )
       expect(structuredSelector.dependencies)
         .to.be.an('array')
         .with.lengthOf(selector.dependencies.length)
       expect(
-        structuredSelector.resultFunc(state.todos, state.alerts, state.todos[0])
+        structuredSelector.resultFunc(
+          state.todos,
+          state.alerts,
+          state.todos[0],
+        ),
       ).toStrictEqual(
-        selector.resultFunc(state.todos, state.alerts, state.todos[0])
+        selector.resultFunc(state.todos, state.alerts, state.todos[0]),
       )
       expect(
         structuredSelector.memoizedResultFunc(
           state.todos,
           state.alerts,
-          state.todos[0]
-        )
+          state.todos[0],
+        ),
       ).toStrictEqual(
-        selector.memoizedResultFunc(state.todos, state.alerts, state.todos[0])
+        selector.memoizedResultFunc(state.todos, state.alerts, state.todos[0]),
       )
       expect(structuredSelector.argsMemoize).toBe(selector.argsMemoize)
       expect(structuredSelector.memoize).toBe(selector.memoize)
       expect(structuredSelector.recomputations()).toBe(
-        selector.recomputations()
+        selector.recomputations(),
       )
       expect(structuredSelector.lastResult()).toStrictEqual(
-        selector.lastResult()
+        selector.lastResult(),
       )
       expect(Object.keys(structuredSelector)).toStrictEqual(
-        Object.keys(selector)
+        Object.keys(selector),
       )
-    }
+    },
   )
 
   localTest(
@@ -139,10 +143,10 @@ describe<LocalTestContext>('structured selector created with createStructuredSel
           selectedTodo: (
             state: RootState,
             id: number,
-            field: keyof RootState['todos'][number]
-          ) => state.todos[id][field]
+            field: keyof RootState['todos'][number],
+          ) => state.todos[id][field],
         },
-        createSelector
+        createSelector,
       )
       const selector = createSelector(
         [
@@ -151,22 +155,22 @@ describe<LocalTestContext>('structured selector created with createStructuredSel
           (
             state: RootState,
             id: number,
-            field: keyof RootState['todos'][number]
-          ) => state.todos[id][field]
+            field: keyof RootState['todos'][number],
+          ) => state.todos[id][field],
         ],
         (allTodos, allAlerts, selectedTodo) => {
           return {
             allTodos,
             allAlerts,
-            selectedTodo
+            selectedTodo,
           }
-        }
+        },
       )
       // These two cases are the same.
       // @ts-expect-error
       expect(() => structuredSelector(state)).toThrowError(TypeError)
       // @ts-expect-error
       expect(() => selector(state)).toThrowError(TypeError)
-    }
+    },
   )
 })

@@ -11,8 +11,8 @@ const selectTodoIds = createAppSelector(
   [
     // Type of `state` is set to `RootState`, no need to manually set the type
     // highlight-start
-    state => state.todos
+    state => state.todos,
     // highlight-end
   ],
-  todos => todos.map(({ id }) => id)
+  todos => todos.map(({ id }) => id),
 )

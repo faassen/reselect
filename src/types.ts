@@ -24,7 +24,7 @@ export type { MergeParameters } from './versionedTypes'
 export type Selector<
   State = any,
   Result = unknown,
-  Params extends readonly any[] = any[]
+  Params extends readonly any[] = any[],
 > = Distribute<
   /**
    * A function that takes a state and returns data that is based on that state.
@@ -65,7 +65,7 @@ export interface CreateSelectorOptions<
   MemoizeFunction extends UnknownMemoizer = typeof weakMapMemoize,
   ArgsMemoizeFunction extends UnknownMemoizer = typeof weakMapMemoize,
   OverrideMemoizeFunction extends UnknownMemoizer = never,
-  OverrideArgsMemoizeFunction extends UnknownMemoizer = never
+  OverrideArgsMemoizeFunction extends UnknownMemoizer = never,
 > {
   /**
    * Reselect performs additional checks in development mode to help identify
@@ -179,7 +179,7 @@ export type OutputSelectorFields<
   InputSelectors extends SelectorArray = SelectorArray,
   Result = unknown,
   MemoizeFunction extends UnknownMemoizer = typeof weakMapMemoize,
-  ArgsMemoizeFunction extends UnknownMemoizer = typeof weakMapMemoize
+  ArgsMemoizeFunction extends UnknownMemoizer = typeof weakMapMemoize,
 > = {
   /**
    * The final function passed to `createSelector`. Otherwise known as the `combiner`.
@@ -253,7 +253,7 @@ export type OutputSelector<
   InputSelectors extends SelectorArray = SelectorArray,
   Result = unknown,
   MemoizeFunction extends UnknownMemoizer = typeof weakMapMemoize,
-  ArgsMemoizeFunction extends UnknownMemoizer = typeof weakMapMemoize
+  ArgsMemoizeFunction extends UnknownMemoizer = typeof weakMapMemoize,
 > = Selector<
   GetStateFromSelectors<InputSelectors>,
   Result,
@@ -385,7 +385,7 @@ export type GetParamsFromSelectors<Selectors extends SelectorArray> = ArrayTail<
  * @public
  */
 export type UnknownMemoizer<
-  FunctionType extends UnknownFunction = UnknownFunction
+  FunctionType extends UnknownFunction = UnknownFunction,
 > = (func: FunctionType, ...options: any[]) => FunctionType
 
 /**
@@ -398,7 +398,7 @@ export type UnknownMemoizer<
  * @public
  */
 export type MemoizeOptionsFromParameters<
-  MemoizeFunction extends UnknownMemoizer
+  MemoizeFunction extends UnknownMemoizer,
 > =
   | (
       | NonFunctionType<DropFirstParameter<MemoizeFunction>[0]>
@@ -421,7 +421,7 @@ export type MemoizeOptionsFromParameters<
  */
 export type OverrideMemoizeOptions<
   MemoizeFunction extends UnknownMemoizer,
-  OverrideMemoizeFunction extends UnknownMemoizer = never
+  OverrideMemoizeFunction extends UnknownMemoizer = never,
 > = IfNever<
   OverrideMemoizeFunction,
   Simplify<MemoizeOptionsFromParameters<MemoizeFunction>>,
@@ -557,7 +557,7 @@ export type Distribute<T> = T extends T ? T : never
  */
 export type FirstArrayElement<ArrayType> = ArrayType extends readonly [
   unknown,
-  ...unknown[]
+  ...unknown[],
 ]
   ? ArrayType[0]
   : never
@@ -569,7 +569,7 @@ export type FirstArrayElement<ArrayType> = ArrayType extends readonly [
  */
 export type ArrayTail<ArrayType> = ArrayType extends readonly [
   unknown,
-  ...infer Tail
+  ...infer Tail,
 ]
   ? Tail
   : []
@@ -670,11 +670,10 @@ type Push<T extends any[], V> = [...T, V]
  *
  * @internal
  */
-type LastOf<T> = UnionToIntersection<
-  T extends any ? () => T : never
-> extends () => infer R
-  ? R
-  : never
+type LastOf<T> =
+  UnionToIntersection<T extends any ? () => T : never> extends () => infer R
+    ? R
+    : never
 
 /**
  * TS4.1+
@@ -685,7 +684,7 @@ type LastOf<T> = UnionToIntersection<
 export type TuplifyUnion<
   T,
   L = LastOf<T>,
-  N = [T] extends [never] ? true : false
+  N = [T] extends [never] ? true : false,
 > = true extends N ? [] : Push<TuplifyUnion<Exclude<T, L>>, L>
 
 /**
@@ -697,7 +696,7 @@ export type TuplifyUnion<
 export type ObjectValuesToTuple<
   T,
   KS extends any[] = TuplifyUnion<keyof T>,
-  R extends any[] = []
+  R extends any[] = [],
 > = KS extends [infer K, ...infer KT]
   ? ObjectValuesToTuple<T, KT, [...R, T[K & keyof T]]>
   : R
@@ -790,8 +789,8 @@ export type BuiltIn =
 export type Expand<T> = T extends (...args: infer A) => infer R
   ? (...args: Expand<A>) => Expand<R>
   : T extends infer O
-  ? { [K in keyof O]: O[K] }
-  : never
+    ? { [K in keyof O]: O[K] }
+    : never
 
 /**
  * Expand an item recursively.
@@ -802,10 +801,10 @@ export type Expand<T> = T extends (...args: infer A) => infer R
 export type ExpandRecursively<T> = T extends (...args: infer A) => infer R
   ? (...args: ExpandRecursively<A>) => ExpandRecursively<R>
   : T extends object
-  ? T extends infer O
-    ? { [K in keyof O]: ExpandRecursively<O[K]> }
-    : never
-  : T
+    ? T extends infer O
+      ? { [K in keyof O]: ExpandRecursively<O[K]> }
+      : never
+    : T
 
 /**
  * @internal
@@ -867,10 +866,10 @@ export type ComputeDeep<A, Seen = never> = A extends BuiltIn
             } & unknown)[]
           : A
         : A extends readonly any[]
-        ? A extends readonly Record<PropertyKey, any>[]
-          ? readonly ({
-              [K in keyof A[number]]: ComputeDeep<A[number][K], A | Seen>
-            } & unknown)[]
-          : A
-        : { [K in keyof A]: ComputeDeep<A[K], A | Seen> } & unknown
+          ? A extends readonly Record<PropertyKey, any>[]
+            ? readonly ({
+                [K in keyof A[number]]: ComputeDeep<A[number][K], A | Seen>
+              } & unknown)[]
+            : A
+          : { [K in keyof A]: ComputeDeep<A[K], A | Seen> } & unknown
     >

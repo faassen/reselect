@@ -9,7 +9,7 @@ import type { DevModeChecks } from '../types'
  */
 export const globalDevModeChecks: DevModeChecks = {
   inputStabilityCheck: 'once',
-  identityFunctionCheck: 'once'
+  identityFunctionCheck: 'once',
 }
 
 /**
@@ -57,7 +57,7 @@ export const globalDevModeChecks: DevModeChecks = {
  * @public
  */
 export const setGlobalDevModeChecks = (
-  devModeChecks: Partial<DevModeChecks>
+  devModeChecks: Partial<DevModeChecks>,
 ) => {
   Object.assign(globalDevModeChecks, devModeChecks)
 }

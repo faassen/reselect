@@ -66,9 +66,9 @@ export const structuredSelector = createStructuredSelector(
   {
     todos: (state: RootState) => state.todos,
     alerts: (state: RootState) => state.alerts,
-    todoById: (state: RootState, id: number) => state.todos[id]
+    todoById: (state: RootState, id: number) => state.todos[id],
   },
-  createSelector
+  createSelector,
 )
 
 // Is essentially the same as this:
@@ -76,15 +76,15 @@ export const selector = createSelector(
   [
     (state: RootState) => state.todos,
     (state: RootState) => state.alerts,
-    (state: RootState, id: number) => state.todos[id]
+    (state: RootState, id: number) => state.todos[id],
   ],
   (todos, alerts, todoById) => {
     return {
       todos,
       alerts,
-      todoById
+      todoById,
     }
-  }
+  },
 )
 ```
 
@@ -99,9 +99,9 @@ export const structuredSelector = createStructuredSelector(
   {
     todos: state => state.todos,
     alerts: state => state.alerts,
-    todoById: (state, id) => state.todos[id]
+    todoById: (state, id) => state.todos[id],
   },
-  createSelector
+  createSelector,
 )
 
 // Is essentially the same as this:
@@ -111,9 +111,9 @@ export const selector = createSelector(
     return {
       todos,
       alerts,
-      todoById
+      todoById,
     }
-  }
+  },
 )
 ```
 
@@ -147,7 +147,7 @@ interface Props {
 
 const MyComponent: FC<Props> = ({ id }) => {
   const { todos, alerts, todoById } = useSelector((state: RootState) =>
-    structuredSelector(state, id)
+    structuredSelector(state, id),
   )
 
   return (
@@ -175,7 +175,7 @@ import { useSelector } from 'react-redux'
 
 const MyComponent = ({ id }) => {
   const { todos, alerts, todoById } = useSelector(state =>
-    structuredSelector(state, id)
+    structuredSelector(state, id),
   )
 
   return (
@@ -209,7 +209,7 @@ const selectB = state => state.b
 // is simply building an object from the input selectors
 const structuredSelector = createSelector(selectA, selectB, (a, b) => ({
   a,
-  b
+  b,
 }))
 
 const result = structuredSelector({ a: 1, b: 2 }) // will produce { x: 1, y: 2 }
@@ -223,7 +223,7 @@ const selectB = state => state.b
 
 const structuredSelector = createStructuredSelector({
   x: selectA,
-  y: selectB
+  y: selectB,
 })
 
 const result = structuredSelector({ a: 1, b: 2 }) // will produce { x: 1, y: 2 }
@@ -235,12 +235,12 @@ Structured selectors can be nested:
 const nestedSelector = createStructuredSelector({
   subA: createStructuredSelector({
     selectorA,
-    selectorB
+    selectorB,
   }),
   subB: createStructuredSelector({
     selectorC,
-    selectorD
-  })
+    selectorD,
+  }),
 })
 ```
 
@@ -278,7 +278,7 @@ const structuredAppSelector = createStructuredAppSelector({
   todos: state => state.todos,
   // highlight-end
   alerts: state => state.alerts,
-  todoById: (state, id: number) => state.todos[id]
+  todoById: (state, id: number) => state.todos[id],
 })
 ```
 
@@ -296,7 +296,7 @@ const structuredAppSelector = createStructuredAppSelector({
   todos: state => state.todos,
   // highlight-end
   alerts: state => state.alerts,
-  todoById: (state, id) => state.todos[id]
+  todoById: (state, id) => state.todos[id],
 })
 ```
 

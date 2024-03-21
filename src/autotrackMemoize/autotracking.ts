@@ -131,11 +131,11 @@ type CellValue<T extends Cell<unknown>> = T extends Cell<infer U> ? U : never
 
 export function setValue<T extends Cell<unknown>>(
   storage: T,
-  value: CellValue<T>
+  value: CellValue<T>,
 ): void {
   if (!(storage instanceof Cell)) {
     throw new TypeError(
-      'setValue must be passed a tracked store created with `createStorage`.'
+      'setValue must be passed a tracked store created with `createStorage`.',
     )
   }
 
@@ -144,7 +144,7 @@ export function setValue<T extends Cell<unknown>>(
 
 export function createCell<T = unknown>(
   initialValue: T,
-  isEqual: EqualityFn = tripleEq
+  isEqual: EqualityFn = tripleEq,
 ): Cell<T> {
   return new Cell(initialValue, isEqual)
 }
@@ -152,7 +152,7 @@ export function createCell<T = unknown>(
 export function createCache<T = unknown>(fn: () => T): TrackingCache {
   assertIsFunction(
     fn,
-    'the first parameter to `createCache` must be a function'
+    'the first parameter to `createCache` must be a function',
   )
 
   return new TrackingCache(fn)

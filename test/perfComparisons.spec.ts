@@ -4,7 +4,7 @@ import {
   unstable_autotrackMemoize as autotrackMemoize,
   createSelectorCreator,
   lruMemoize,
-  weakMapMemoize
+  weakMapMemoize,
 } from 'reselect'
 import { vi } from 'vitest'
 
@@ -37,14 +37,14 @@ describe('More perf comparisons', () => {
           really: {
             deeply: {
               nested: {
-                c1: { value: 0 }
-              }
-            }
-          }
-        }
+                c1: { value: 0 },
+              },
+            },
+          },
+        },
       },
 
-      c2: { value: 0 }
+      c2: { value: 0 },
     },
     reducers: {
       increment1(state) {
@@ -53,8 +53,8 @@ describe('More perf comparisons', () => {
       },
       increment2(state) {
         state.c2.value++
-      }
-    }
+      },
+    },
   })
 
   const todosSlice = createSlice({
@@ -62,7 +62,7 @@ describe('More perf comparisons', () => {
     initialState: [
       { id: 0, name: 'a', completed: false },
       { id: 1, name: 'b', completed: false },
-      { id: 2, name: 'c', completed: false }
+      { id: 2, name: 'c', completed: false },
     ] as TodosState,
     reducers: {
       toggleCompleted(state, action: PayloadAction<number>) {
@@ -73,20 +73,20 @@ describe('More perf comparisons', () => {
       },
       setName(state) {
         state[1].name = 'd'
-      }
-    }
+      },
+    },
   })
 
   const store = configureStore({
     reducer: {
       counter: counterSlice.reducer,
-      todos: todosSlice.reducer
+      todos: todosSlice.reducer,
     },
     middleware: gDM =>
       gDM({
         serializableCheck: false,
-        immutableCheck: false
-      })
+        immutableCheck: false,
+      }),
   })
 
   type RootState = ReturnType<typeof store.getState>
@@ -112,7 +112,7 @@ describe('More perf comparisons', () => {
       (state: RootState) => state.counter.c2.value,
       (c1, c2) => {
         return c1 + c2
-      }
+      },
     )
 
     const cdCounters2 = csDefault(
@@ -120,21 +120,21 @@ describe('More perf comparisons', () => {
       (state: RootState) => state.counter.c2,
       (c1, c2) => {
         return c1.value + c2.value
-      }
+      },
     )
 
     const cdTodoIds = csDefault(
       (state: RootState) => state.todos,
       todos => {
         return todos.map(todo => todo.id)
-      }
+      },
     )
 
     const cdTodoIdsAndNames = csDefault(
       (state: RootState) => state.todos,
       todos => {
         return todos.map(todo => ({ id: todo.id, name: todo.name }))
-      }
+      },
     )
 
     const cdCompletedTodos = csDefault(
@@ -142,7 +142,7 @@ describe('More perf comparisons', () => {
       todos => {
         const completed = todos.filter(todo => todo.completed)
         return completed.length
-      }
+      },
     )
 
     const cdCompletedTodos2 = csDefault(
@@ -150,7 +150,7 @@ describe('More perf comparisons', () => {
       todos => {
         const completed = todos.filter(todo => todo.completed)
         return completed.length
-      }
+      },
     )
 
     const caCounters1 = csDefault(
@@ -159,7 +159,7 @@ describe('More perf comparisons', () => {
       (state: RootState) => state.counter.c2.value,
       (c1, c2) => {
         return c1 + c2
-      }
+      },
     )
 
     const caCounters2 = csAutotrack(
@@ -168,21 +168,21 @@ describe('More perf comparisons', () => {
       (c1, c2) => {
         // console.log('inside caCounters2: ', { c1, c2 })
         return c1.value + c2.value
-      }
+      },
     )
 
     const caTodoIds = csAutotrack(
       (state: RootState) => state.todos,
       todos => {
         return todos.map(todo => todo.id)
-      }
+      },
     )
 
     const caTodoIdsAndNames = csAutotrack(
       (state: RootState) => state.todos,
       todos => {
         return todos.map(todo => ({ id: todo.id, name: todo.name }))
-      }
+      },
     )
 
     const caCompletedTodos = csAutotrack(
@@ -190,7 +190,7 @@ describe('More perf comparisons', () => {
       todos => {
         const completed = todos.filter(todo => todo.completed)
         return completed.length
-      }
+      },
     )
 
     const caCompletedTodos2 = csAutotrack(
@@ -198,7 +198,7 @@ describe('More perf comparisons', () => {
       todos => {
         const completed = todos.filter(todo => todo.completed)
         return completed.length
-      }
+      },
     )
 
     const defaultStart = performance.now()
@@ -238,7 +238,7 @@ describe('More perf comparisons', () => {
       caTodoIds,
       caTodoIdsAndNames,
       caCompletedTodos,
-      caCompletedTodos2
+      caCompletedTodos2,
     }
 
     // console.log('\nTotal recomputations:')
@@ -266,7 +266,7 @@ describe('More perf comparisons', () => {
       (c1, c2) => {
         // console.log('inside caCounters2: ', { c1, c2 })
         return c1.value + c2.value
-      }
+      },
     )
 
     for (let i = 0; i < 10; i++) {
@@ -293,13 +293,13 @@ describe('More perf comparisons', () => {
     const store = configureStore({
       reducer: {
         counter: counterSlice.reducer,
-        todos: todosSlice.reducer
+        todos: todosSlice.reducer,
       },
       middleware: gDM =>
         gDM({
           serializableCheck: false,
-          immutableCheck: false
-        })
+          immutableCheck: false,
+        }),
     })
 
     const reduxStates: RootState[] = []
@@ -318,7 +318,7 @@ describe('More perf comparisons', () => {
       todos => {
         // console.log('Recalculating todo IDs')
         return todos.map(todo => ({ id: todo.id, name: todo.name }))
-      }
+      },
     )
 
     for (const state of reduxStates) {

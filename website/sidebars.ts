@@ -21,8 +21,8 @@ const sidebars: SidebarsConfig = {
       items: [
         'introduction/getting-started',
         'introduction/how-does-reselect-work',
-        'introduction/v5-summary'
-      ]
+        'introduction/v5-summary',
+      ],
     },
     {
       type: 'category',
@@ -40,10 +40,10 @@ const sidebars: SidebarsConfig = {
           items: [
             'api/lruMemoize',
             'api/weakMapMemoize',
-            'api/unstable_autotrackMemoize'
-          ]
-        }
-      ]
+            'api/unstable_autotrackMemoize',
+          ],
+        },
+      ],
     },
 
     {
@@ -52,13 +52,13 @@ const sidebars: SidebarsConfig = {
       items: [
         'usage/best-practices',
         'usage/common-mistakes',
-        'usage/handling-empty-array-results'
-      ]
+        'usage/handling-empty-array-results',
+      ],
     },
     'FAQ',
     'external-references',
-    'related-projects'
-  ]
+    'related-projects',
+  ],
 }
 
 export default sidebars

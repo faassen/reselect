@@ -7,7 +7,7 @@ describe('identityFunctionCheck', () => {
   const identityFunction = vi.fn(<T>(state: T) => state)
   let badSelector = createSelector(
     [(state: RootState) => state],
-    identityFunction
+    identityFunction,
   )
 
   afterEach(() => {
@@ -15,7 +15,7 @@ describe('identityFunctionCheck', () => {
     identityFunction.mockClear()
     badSelector = createSelector(
       [(state: RootState) => state],
-      identityFunction
+      identityFunction,
     )
   })
   afterAll(() => {
@@ -26,7 +26,7 @@ describe('identityFunctionCheck', () => {
     ({ state }) => {
       const goodSelector = createSelector(
         [(state: RootState) => state],
-        state => state.todos
+        state => state.todos,
       )
 
       expect(goodSelector(state)).toBe(state.todos)
@@ -38,7 +38,7 @@ describe('identityFunctionCheck', () => {
       expect(identityFunction).toHaveBeenCalledTimes(2)
 
       expect(consoleSpy).toHaveBeenCalledOnce()
-    }
+    },
   )
 
   localTest('includes stack with warning', ({ state }) => {
@@ -48,11 +48,11 @@ describe('identityFunctionCheck', () => {
 
     expect(consoleSpy).toHaveBeenCalledWith(
       expect.stringContaining(
-        'The result function returned its own inputs without modification'
+        'The result function returned its own inputs without modification',
       ),
       {
-        stack: expect.any(String)
-      }
+        stack: expect.any(String),
+      },
     )
   })
 
@@ -74,7 +74,7 @@ describe('identityFunctionCheck', () => {
       const badSelector = createSelector(
         [(state: RootState) => state],
         identityFunction,
-        { devModeChecks: { identityFunctionCheck: 'never' } }
+        { devModeChecks: { identityFunctionCheck: 'never' } },
       )
 
       expect(badSelector(state)).toBe(state)
@@ -82,7 +82,7 @@ describe('identityFunctionCheck', () => {
       expect(identityFunction).toHaveBeenCalledOnce()
 
       expect(consoleSpy).not.toHaveBeenCalled()
-    }
+    },
   )
 
   localTest('disables check in production', ({ state }) => {
@@ -102,7 +102,7 @@ describe('identityFunctionCheck', () => {
     const badSelector = createSelector(
       [(state: RootState) => state],
       identityFunction,
-      { devModeChecks: { identityFunctionCheck: 'once' } }
+      { devModeChecks: { identityFunctionCheck: 'once' } },
     )
     expect(badSelector(state)).toBe(state)
 
@@ -121,7 +121,7 @@ describe('identityFunctionCheck', () => {
 
   localTest('allows always running the check', () => {
     const badSelector = createSelector([state => state], identityFunction, {
-      devModeChecks: { identityFunctionCheck: 'always' }
+      devModeChecks: { identityFunctionCheck: 'always' },
     })
 
     const state = {}
@@ -149,7 +149,7 @@ describe('identityFunctionCheck', () => {
     const badSelector = createSelector(
       [(state: RootState) => state],
       identityFunction,
-      { devModeChecks: {} }
+      { devModeChecks: {} },
     )
     expect(badSelector(state)).toBe(state)
 
@@ -169,7 +169,7 @@ describe('identityFunctionCheck', () => {
   localTest('uses the memoize provided', ({ state }) => {
     const badSelector = createSelector(
       [(state: RootState) => state.todos],
-      identityFunction
+      identityFunction,
     )
     expect(badSelector(state)).toBe(state.todos)
 
@@ -190,13 +190,13 @@ describe('identityFunctionCheck', () => {
       // function).
       const getFirstAlertIfMessageIsEmpty = createSelector(
         [(state: RootState) => state.alerts[0]],
-        firstAlert => (!firstAlert.message ? firstAlert : null)
+        firstAlert => (!firstAlert.message ? firstAlert : null),
       )
 
       expect(getFirstAlertIfMessageIsEmpty(state)).toBeNull()
 
       expect(consoleSpy).not.toHaveBeenCalled()
-    }
+    },
   )
 
   localTest(
@@ -207,13 +207,13 @@ describe('identityFunctionCheck', () => {
       // result function).
       const getFirstAlertIfMessageIsNotEmpty = createSelector(
         [(state: RootState) => state.alerts[0]],
-        firstAlert => (firstAlert.message ? firstAlert : null)
+        firstAlert => (firstAlert.message ? firstAlert : null),
       )
 
       expect(getFirstAlertIfMessageIsNotEmpty(state)).toBe(state.alerts[0])
 
       expect(consoleSpy).not.toHaveBeenCalled()
-    }
+    },
   )
 
   localTest(
@@ -223,14 +223,14 @@ describe('identityFunctionCheck', () => {
         [
           (state: RootState) => state.alerts,
           (state: RootState) =>
-            state.users.user.details.preferences.notifications.sms
+            state.users.user.details.preferences.notifications.sms,
         ],
-        (alerts, smsEnabled) => (!smsEnabled ? alerts : [])
+        (alerts, smsEnabled) => (!smsEnabled ? alerts : []),
       )
 
       expect(getAllNotificationsIfSmsNotEnabled(state)).toBe(state.alerts)
 
       expect(consoleSpy).not.toHaveBeenCalled()
-    }
+    },
   )
 })

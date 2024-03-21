@@ -50,16 +50,16 @@ const customCreateSelector = createSelectorCreator({
   memoize: customMemoize, // Function to be used to memoize `resultFunc`
   memoizeOptions: [memoizeOption1, memoizeOption2], // Options passed to `customMemoize` as the second argument onwards
   argsMemoize: customArgsMemoize, // Function to be used to memoize the selector's arguments
-  argsMemoizeOptions: [argsMemoizeOption1, argsMemoizeOption2] // Options passed to `customArgsMemoize` as the second argument onwards
+  argsMemoizeOptions: [argsMemoizeOption1, argsMemoizeOption2], // Options passed to `customArgsMemoize` as the second argument onwards
 })
 
 const customSelector = customCreateSelector(
   [inputSelector1, inputSelector2],
-  resultFunc // `resultFunc` will be passed as the first argument to `customMemoize`
+  resultFunc, // `resultFunc` will be passed as the first argument to `customMemoize`
 )
 
 customSelector(
-  ...selectorArgs // Will be memoized by `customArgsMemoize`
+  ...selectorArgs, // Will be memoized by `customArgsMemoize`
 )
 ```
 
@@ -76,12 +76,12 @@ const customSelectorCreator = createSelectorCreator(
   customMemoize, // Function to be used to memoize `resultFunc`
   option1, // `option1` will be passed as second argument to `customMemoize`
   option2, // `option2` will be passed as third argument to `customMemoize`
-  option3 // `option3` will be passed as fourth argument to `customMemoize`
+  option3, // `option3` will be passed as fourth argument to `customMemoize`
 )
 
 const customSelector = customSelectorCreator(
   [inputSelector1, inputSelector2],
-  resultFunc // `resultFunc` will be passed as first argument to `customMemoize`
+  resultFunc, // `resultFunc` will be passed as first argument to `customMemoize`
 )
 ```
 
@@ -105,7 +105,7 @@ const createDeepEqualSelector = createSelectorCreator(lruMemoize, isEqual)
 // use the new "selector creator" to create a selector
 const selectSum = createDeepEqualSelector(
   [state => state.values.filter(val => val < 5)],
-  values => values.reduce((acc, val) => acc + val, 0)
+  values => values.reduce((acc, val) => acc + val, 0),
 )
 ```
 
@@ -122,6 +122,6 @@ const customSelectorCreator = createSelectorCreator(memoize, hashFn)
 
 const selector = customSelectorCreator(
   [state => state.a, state => state.b],
-  (a, b) => a + b
+  (a, b) => a + b,
 )
 ```

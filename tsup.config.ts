@@ -11,19 +11,19 @@ if (process.env.NODE_ENV === 'production') {
   module.exports = require('./reselect.production.min.cjs')
 } else {
   module.exports = require('./reselect.development.cjs')
-}`
+}`,
   )
 }
 
 export default defineConfig((options): Options[] => {
   const commonOptions: Options = {
     entry: {
-      reselect: 'src/index.ts'
+      reselect: 'src/index.ts',
     },
     sourcemap: true,
     target: ['esnext'],
     clean: true,
-    ...options
+    ...options,
   }
 
   return [
@@ -32,7 +32,7 @@ export default defineConfig((options): Options[] => {
       name: 'Modern ESM',
       target: ['esnext'],
       format: ['esm'],
-      outExtension: () => ({ js: '.mjs' })
+      outExtension: () => ({ js: '.mjs' }),
     },
 
     // Support Webpack 4 by pointing `"module"` to a file with a `.js` extension
@@ -41,11 +41,11 @@ export default defineConfig((options): Options[] => {
       ...commonOptions,
       name: 'Legacy ESM, Webpack 4',
       entry: {
-        'reselect.legacy-esm': 'src/index.ts'
+        'reselect.legacy-esm': 'src/index.ts',
       },
       format: ['esm'],
       outExtension: () => ({ js: '.js' }),
-      target: ['es2017']
+      target: ['es2017'],
     },
 
     // Meant to be served up via CDNs like `unpkg`.
@@ -53,37 +53,37 @@ export default defineConfig((options): Options[] => {
       ...commonOptions,
       name: 'Browser-ready ESM',
       entry: {
-        'reselect.browser': 'src/index.ts'
+        'reselect.browser': 'src/index.ts',
       },
       platform: 'browser',
       env: {
-        NODE_ENV: 'production'
+        NODE_ENV: 'production',
       },
       format: ['esm'],
       outExtension: () => ({ js: '.mjs' }),
-      minify: true
+      minify: true,
     },
     {
       ...commonOptions,
       name: 'CJS Development',
       entry: {
-        'reselect.development': 'src/index.ts'
+        'reselect.development': 'src/index.ts',
       },
       env: {
-        NODE_ENV: 'development'
+        NODE_ENV: 'development',
       },
       format: ['cjs'],
       outDir: './dist/cjs/',
-      outExtension: () => ({ js: '.cjs' })
+      outExtension: () => ({ js: '.cjs' }),
     },
     {
       ...commonOptions,
       name: 'CJS production',
       entry: {
-        'reselect.production.min': 'src/index.ts'
+        'reselect.production.min': 'src/index.ts',
       },
       env: {
-        NODE_ENV: 'production'
+        NODE_ENV: 'production',
       },
       format: ['cjs'],
       outDir: './dist/cjs/',
@@ -91,13 +91,13 @@ export default defineConfig((options): Options[] => {
       minify: true,
       onSuccess: async () => {
         await writeCommonJSEntry()
-      }
+      },
     },
     {
       ...commonOptions,
       name: 'CJS Type Definitions',
       format: ['cjs'],
-      dts: { only: true }
-    }
+      dts: { only: true },
+    },
   ]
 })

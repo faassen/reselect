@@ -7,7 +7,7 @@ import {
   consumeTag,
   createTag,
   dirtyCollection,
-  dirtyTag
+  dirtyTag,
 } from './tracking'
 
 export const REDUX_PROXY_LABEL = /* @__PURE__ */ Symbol()
@@ -81,14 +81,14 @@ const objectProxyHandler = {
 
   getOwnPropertyDescriptor(
     node: Node,
-    prop: string | symbol
+    prop: string | symbol,
   ): PropertyDescriptor | undefined {
     return Reflect.getOwnPropertyDescriptor(node.value, prop)
   },
 
   has(node: Node, prop: string | symbol): boolean {
     return Reflect.has(node.value, prop)
-  }
+  },
 }
 
 class ArrayTreeNode<T extends Array<unknown>> implements Node<T> {
@@ -120,18 +120,18 @@ const arrayProxyHandler = {
 
   getOwnPropertyDescriptor(
     [node]: [Node],
-    prop: string | symbol
+    prop: string | symbol,
   ): PropertyDescriptor | undefined {
     return objectProxyHandler.getOwnPropertyDescriptor(node, prop)
   },
 
   has([node]: [Node], prop: string | symbol): boolean {
     return objectProxyHandler.has(node, prop)
-  }
+  },
 }
 
 export function createNode<T extends Array<unknown> | Record<string, unknown>>(
-  value: T
+  value: T,
 ): Node<T> {
   if (Array.isArray(value)) {
     return new ArrayTreeNode(value)
@@ -147,7 +147,7 @@ const keysMap = new WeakMap<
 
 export function updateNode<T extends Array<unknown> | Record<string, unknown>>(
   node: Node<T>,
-  newValue: T
+  newValue: T,
 ): void {
   const { value, tags, children } = node
 

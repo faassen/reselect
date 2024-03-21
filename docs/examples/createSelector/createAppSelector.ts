@@ -13,24 +13,24 @@ export const createAppSelector = createSelectorCreator({
   memoizeOptions: {
     maxSize: 10,
     equalityCheck: shallowEqual,
-    resultEqualityCheck: shallowEqual
+    resultEqualityCheck: shallowEqual,
   },
   argsMemoizeOptions: {
     isEqual: shallowEqual,
-    maxSize: 10
+    maxSize: 10,
   },
   devModeChecks: {
     identityFunctionCheck: 'never',
-    inputStabilityCheck: 'always'
-  }
+    inputStabilityCheck: 'always',
+  },
 }).withTypes<RootState>()
 
 const selectReadAlerts = createAppSelector(
   [
     // Type of `state` is set to `RootState`, no need to manually set the type
     // highlight-start
-    state => state.alerts
+    state => state.alerts,
     // highlight-end
   ],
-  alerts => alerts.filter(({ read }) => read)
+  alerts => alerts.filter(({ read }) => read),
 )

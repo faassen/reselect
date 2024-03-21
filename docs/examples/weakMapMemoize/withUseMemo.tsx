@@ -6,7 +6,7 @@ import type { RootState } from './cacheSizeProblem'
 
 const makeSelectItemsByCategory = (category: string) =>
   createSelector([(state: RootState) => state.items], items =>
-    items.filter(item => item.category === category)
+    items.filter(item => item.category === category),
   )
 
 interface Props {
@@ -16,7 +16,7 @@ interface Props {
 const MyComponent: FC<Props> = ({ category }) => {
   const selectItemsByCategory = useMemo(
     () => makeSelectItemsByCategory(category),
-    [category]
+    [category],
   )
 
   const itemsByCategory = useSelector(selectItemsByCategory)

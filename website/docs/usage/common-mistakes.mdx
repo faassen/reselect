@@ -16,7 +16,7 @@ A somewhat common mistake is to write an <InternalLinks.InputSelectors text="inp
 // ❌ BROKEN: this will not memoize correctly, and does nothing useful!
 const brokenSelector = createSelector(
   [(state: RootState) => state.todos],
-  todos => todos
+  todos => todos,
 )
 ```
 
@@ -28,6 +28,6 @@ Similarly:
 // ❌ BROKEN: this will not memoize correctly!
 const brokenSelector = createSelector(
   [(state: RootState) => state],
-  state => state.todos
+  state => state.todos,
 )
 ```

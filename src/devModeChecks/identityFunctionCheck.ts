@@ -20,7 +20,7 @@ import type { AnyFunction } from '../types'
 export const runIdentityFunctionCheck = (
   resultFunc: AnyFunction,
   inputSelectorsResults: unknown[],
-  outputSelectorResult: unknown
+  outputSelectorResult: unknown,
 ) => {
   if (
     inputSelectorsResults.length === 1 &&
@@ -46,7 +46,7 @@ export const runIdentityFunctionCheck = (
           '\n`createSelector([state => state.todos], todos => todos)`' +
           '\nThis could lead to inefficient memoization and unnecessary re-renders.' +
           '\nEnsure transformation logic is in the result function, and extraction logic is in the input selectors.',
-        { stack }
+        { stack },
       )
     }
   }

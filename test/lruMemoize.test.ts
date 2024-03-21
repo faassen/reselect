@@ -4,14 +4,14 @@ import { shallowEqual } from 'react-redux'
 import {
   createSelectorCreator,
   lruMemoize,
-  referenceEqualityCheck
+  referenceEqualityCheck,
 } from 'reselect'
 import type { RootState } from './testUtils'
 import { localTest, toggleCompleted } from './testUtils'
 
 const createSelectorLru = createSelectorCreator({
   memoize: lruMemoize,
-  argsMemoize: lruMemoize
+  argsMemoize: lruMemoize,
 })
 
 describe(lruMemoize, () => {
@@ -33,7 +33,7 @@ describe(lruMemoize, () => {
 
   test('Memoizes with multiple arguments', () => {
     const memoized = lruMemoize((...args) =>
-      args.reduce((sum, value) => sum + value, 0)
+      args.reduce((sum, value) => sum + value, 0),
     )
     expect(memoized(1, 2)).toBe(3)
     expect(memoized(1)).toBe(1)
@@ -117,8 +117,8 @@ describe(lruMemoize, () => {
         return state
       },
       {
-        maxSize: 3
-      }
+        maxSize: 3,
+      },
     )
 
     // Initial call
@@ -167,7 +167,7 @@ describe(lruMemoize, () => {
     const todos1: Todo[] = [
       { id: 1, name: 'a' },
       { id: 2, name: 'b' },
-      { id: 3, name: 'c' }
+      { id: 3, name: 'c' },
     ]
     const todos2 = todos1.slice()
     todos2[2] = { id: 3, name: 'd' }
@@ -219,8 +219,8 @@ describe(lruMemoize, () => {
         },
         {
           maxSize,
-          resultEqualityCheck: shallowEqual
-        }
+          resultEqualityCheck: shallowEqual,
+        },
       )
 
       const ids1 = memoizer(todos1)
@@ -244,7 +244,7 @@ describe(lruMemoize, () => {
     const memoizedFn = lruMemoize(selector, {
       maxSize: 1,
       resultEqualityCheck,
-      equalityCheck
+      equalityCheck,
     })
 
     // initialize the cache
@@ -269,14 +269,14 @@ describe(lruMemoize, () => {
   test('Allows caching a value of `undefined`', () => {
     const state = {
       foo: { baz: 'baz' },
-      bar: 'qux'
+      bar: 'qux',
     }
 
     const fooChangeSpy = vi.fn()
 
     const fooChangeHandler = createSelectorLru(
       (state: any) => state.foo,
-      fooChangeSpy
+      fooChangeSpy,
     )
 
     fooChangeHandler(state)
@@ -308,7 +308,7 @@ describe(lruMemoize, () => {
       equalityCheck: (a, b) => {
         memoizer1Calls++
         return a === b
-      }
+      },
     })
 
     acceptsEqualityCheckAsOption(42)
@@ -324,7 +324,7 @@ describe(lruMemoize, () => {
       },
       {
         // no args
-      }
+      },
     )
 
     const o1 = { a: 1 }
@@ -346,8 +346,8 @@ describe(lruMemoize, () => {
         return state
       },
       {
-        maxSize: 1
-      }
+        maxSize: 1,
+      },
     )
 
     // Initial call
@@ -375,8 +375,8 @@ describe(lruMemoize, () => {
       },
       {
         memoizeOptions: { maxSize: 3 },
-        devModeChecks: { identityFunctionCheck: 'never' }
-      }
+        devModeChecks: { identityFunctionCheck: 'never' },
+      },
     )
 
     // Initial call
@@ -428,7 +428,7 @@ describe(lruMemoize, () => {
 
     const createSelector = createSelectorCreator({
       memoize: lruMemoize,
-      argsMemoize: lruMemoize
+      argsMemoize: lruMemoize,
     }).withTypes<State>()
 
     const selector = createSelector(
@@ -436,8 +436,8 @@ describe(lruMemoize, () => {
       state => state,
       {
         argsMemoizeOptions: { maxSize: 10 },
-        memoizeOptions: { maxSize: 10 }
-      }
+        memoizeOptions: { maxSize: 10 },
+      },
     )
 
     const firstResult = selector(state, 0)
@@ -460,15 +460,15 @@ describe(lruMemoize, () => {
         memoize: lruMemoize,
         argsMemoize: lruMemoize,
         memoizeOptions: { maxSize: 0 },
-        argsMemoizeOptions: { maxSize: 0 }
+        argsMemoizeOptions: { maxSize: 0 },
       }).withTypes<RootState>()
 
       const selectTodoIds = createSelectorLru([state => state.todos], todos =>
-        todos.map(({ id }) => id)
+        todos.map(({ id }) => id),
       )
 
       expect(selectTodoIds(store.getState())).toBe(
-        selectTodoIds(store.getState())
+        selectTodoIds(store.getState()),
       )
 
       expect(selectTodoIds.recomputations()).toBe(1)
@@ -476,18 +476,18 @@ describe(lruMemoize, () => {
       store.dispatch(toggleCompleted(0))
 
       expect(selectTodoIds(store.getState())).toBe(
-        selectTodoIds(store.getState())
+        selectTodoIds(store.getState()),
       )
 
       expect(selectTodoIds.recomputations()).toBe(2)
 
       const selectTodoIdsLru = lruMemoize(
         (state: RootState) => state.todos.map(({ id }) => id),
-        { maxSize: -2 }
+        { maxSize: -2 },
       )
 
       expect(selectTodoIdsLru(state)).toBe(selectTodoIdsLru(state))
-    }
+    },
   )
 })
 
@@ -507,7 +507,7 @@ describe('lruMemoize integration with resultEqualityCheck', () => {
     ({ store }) => {
       const selectTodoIds = lruMemoize(
         (state: RootState) => state.todos.map(({ id }) => id),
-        { resultEqualityCheck }
+        { resultEqualityCheck },
       )
 
       const firstResult = selectTodoIds(store.getState())
@@ -519,7 +519,7 @@ describe('lruMemoize integration with resultEqualityCheck', () => {
       expect(firstResult).toBe(secondResult)
 
       expect(selectTodoIds.resultsCount()).toBe(1)
-    }
+    },
   )
 
   localTest(
@@ -530,8 +530,8 @@ describe('lruMemoize integration with resultEqualityCheck', () => {
         todos => todos.map(({ id }) => id),
         {
           memoizeOptions: { resultEqualityCheck },
-          devModeChecks: { inputStabilityCheck: 'once' }
-        }
+          devModeChecks: { inputStabilityCheck: 'once' },
+        },
       )
 
       expect(selectTodoIds(store.getState())).to.be.an('array').that.is.not
@@ -566,7 +566,7 @@ describe('lruMemoize integration with resultEqualityCheck', () => {
       expect(selectTodoIds.resultsCount()).toBe(3)
 
       expect(selectTodoIds.dependencyRecomputations()).toBe(3)
-    }
+    },
   )
 
   localTest(
@@ -578,7 +578,7 @@ describe('lruMemoize integration with resultEqualityCheck', () => {
 
       const selectTodoIdsWithResultEqualityCheck = lruMemoize(
         (state: RootState) => state.todos.map(({ id }) => id),
-        { resultEqualityCheck }
+        { resultEqualityCheck },
       )
 
       const firstResultWithResultEqualityCheck =
@@ -592,17 +592,17 @@ describe('lruMemoize integration with resultEqualityCheck', () => {
         selectTodoIdsWithResultEqualityCheck(store.getState())
 
       expect(firstResultWithResultEqualityCheck).not.toBe(
-        secondResultWithResultEqualityCheck
+        secondResultWithResultEqualityCheck,
       )
 
       expect(firstResultWithResultEqualityCheck).toStrictEqual(
-        secondResultWithResultEqualityCheck
+        secondResultWithResultEqualityCheck,
       )
 
       expect(selectTodoIdsWithResultEqualityCheck.resultsCount()).toBe(2)
 
       const selectTodoIds = lruMemoize((state: RootState) =>
-        state.todos.map(({ id }) => id)
+        state.todos.map(({ id }) => id),
       )
 
       const firstResult = selectTodoIds(store.getState())
@@ -618,7 +618,7 @@ describe('lruMemoize integration with resultEqualityCheck', () => {
       expect(selectTodoIds.resultsCount()).toBe(2)
 
       resultEqualityCheck.mockClear()
-    }
+    },
   )
 })
 
@@ -638,7 +638,7 @@ describe('lruMemoize integration with resultEqualityCheck', () => {
     ({ store }) => {
       const selectTodoIds = lruMemoize(
         (state: RootState) => state.todos.map(({ id }) => id),
-        { resultEqualityCheck }
+        { resultEqualityCheck },
       )
 
       const firstResult = selectTodoIds(store.getState())
@@ -650,7 +650,7 @@ describe('lruMemoize integration with resultEqualityCheck', () => {
       expect(firstResult).toBe(secondResult)
 
       expect(selectTodoIds.resultsCount()).toBe(1)
-    }
+    },
   )
 
   localTest(
@@ -661,8 +661,8 @@ describe('lruMemoize integration with resultEqualityCheck', () => {
         todos => todos.map(({ id }) => id),
         {
           memoizeOptions: { resultEqualityCheck },
-          devModeChecks: { inputStabilityCheck: 'once' }
-        }
+          devModeChecks: { inputStabilityCheck: 'once' },
+        },
       )
 
       expect(selectTodoIds(store.getState())).to.be.an('array').that.is.not
@@ -697,7 +697,7 @@ describe('lruMemoize integration with resultEqualityCheck', () => {
       expect(selectTodoIds.resultsCount()).toBe(3)
 
       expect(selectTodoIds.dependencyRecomputations()).toBe(3)
-    }
+    },
   )
 
   localTest(
@@ -709,7 +709,7 @@ describe('lruMemoize integration with resultEqualityCheck', () => {
 
       const selectTodoIdsWithResultEqualityCheck = lruMemoize(
         (state: RootState) => state.todos.map(({ id }) => id),
-        { resultEqualityCheck }
+        { resultEqualityCheck },
       )
 
       const firstResultWithResultEqualityCheck =
@@ -723,17 +723,17 @@ describe('lruMemoize integration with resultEqualityCheck', () => {
         selectTodoIdsWithResultEqualityCheck(store.getState())
 
       expect(firstResultWithResultEqualityCheck).not.toBe(
-        secondResultWithResultEqualityCheck
+        secondResultWithResultEqualityCheck,
       )
 
       expect(firstResultWithResultEqualityCheck).toStrictEqual(
-        secondResultWithResultEqualityCheck
+        secondResultWithResultEqualityCheck,
       )
 
       expect(selectTodoIdsWithResultEqualityCheck.resultsCount()).toBe(2)
 
       const selectTodoIds = lruMemoize((state: RootState) =>
-        state.todos.map(({ id }) => id)
+        state.todos.map(({ id }) => id),
       )
 
       const firstResult = selectTodoIds(store.getState())
@@ -749,6 +749,6 @@ describe('lruMemoize integration with resultEqualityCheck', () => {
       expect(selectTodoIds.resultsCount()).toBe(2)
 
       resultEqualityCheck.mockClear()
-    }
+    },
   )
 })

@@ -18,7 +18,7 @@ const FeatureList: FeatureItem[] = [
         memoizing functions. Extract input values, recalculate when any input
         changes.
       </>
-    )
+    ),
   },
   {
     title: 'Optimized',
@@ -31,7 +31,7 @@ const FeatureList: FeatureItem[] = [
         , reuses existing result references if nothing has changed, and improves
         performance.
       </>
-    )
+    ),
   },
   {
     title: 'Customizable',
@@ -41,7 +41,7 @@ const FeatureList: FeatureItem[] = [
         <b>flexible customization options</b>. Swap memoization methods, change
         equality checks, and customize for your needs.
       </>
-    )
+    ),
   },
   {
     title: 'Type-Safe',
@@ -50,8 +50,8 @@ const FeatureList: FeatureItem[] = [
         Reselect is designed for <b>great TypeScript support</b>. Generated
         selectors infer all types from input selectors.
       </>
-    )
-  }
+    ),
+  },
 ]
 
 const Feature: FC<FeatureItem> = memo(({ title, description }) => {

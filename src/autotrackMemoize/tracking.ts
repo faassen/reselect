@@ -2,7 +2,7 @@ import type { Cell } from './autotracking'
 import {
   getValue as consumeTag,
   createCell as createStorage,
-  setValue
+  setValue,
 } from './autotracking'
 
 export type Tag = Cell<unknown>
@@ -20,7 +20,7 @@ export function dirtyTag(tag: Tag, value: any): void {
 export interface Node<
   T extends Array<unknown> | Record<string, unknown> =
     | Array<unknown>
-    | Record<string, unknown>
+    | Record<string, unknown>,
 > {
   collectionTag: Tag | null
   tag: Tag | null

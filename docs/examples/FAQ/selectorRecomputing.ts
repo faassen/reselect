@@ -8,7 +8,7 @@ export interface RootState {
 const selectAlertsByType = createSelector(
   [
     (state: RootState) => state.alerts,
-    (state: RootState, type: string) => type
+    (state: RootState, type: string) => type,
   ],
   (alerts, type) => alerts.filter(todo => todo.type === type),
   {
@@ -20,7 +20,7 @@ const selectAlertsByType = createSelector(
           console.log('Changed argument:', a, 'to', b)
         }
         return a === b
-      }
-    }
-  }
+      },
+    },
+  },
 )

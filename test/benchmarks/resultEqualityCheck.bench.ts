@@ -4,7 +4,7 @@ import {
   createSelector,
   lruMemoize,
   referenceEqualityCheck,
-  weakMapMemoize
+  weakMapMemoize,
 } from 'reselect'
 import type { Options } from 'tinybench'
 import { bench } from 'vitest'
@@ -13,7 +13,7 @@ import {
   setFunctionNames,
   setupStore,
   toggleCompleted,
-  type RootState
+  type RootState,
 } from '../testUtils'
 
 describe('memoize functions performance with resultEqualityCheck set to referenceEqualityCheck vs. without resultEqualityCheck', () => {
@@ -24,7 +24,7 @@ describe('memoize functions performance with resultEqualityCheck set to referenc
 
     const commonOptions: Options = {
       iterations: 10_000,
-      time: 0
+      time: 0,
     }
 
     const runSelector = <S extends Selector>(selector: S) => {
@@ -37,7 +37,7 @@ describe('memoize functions performance with resultEqualityCheck set to referenc
 
     const selectTodoIdsWeakMap = createAppSelector(
       [state => state.todos],
-      todos => todos.map(({ id }) => id)
+      todos => todos.map(({ id }) => id),
     )
 
     const selectTodoIdsWeakMapWithResultEqualityCheck = createAppSelector(
@@ -45,14 +45,14 @@ describe('memoize functions performance with resultEqualityCheck set to referenc
       todos => todos.map(({ id }) => id),
       {
         memoizeOptions: { resultEqualityCheck: referenceEqualityCheck },
-        argsMemoizeOptions: { resultEqualityCheck: referenceEqualityCheck }
-      }
+        argsMemoizeOptions: { resultEqualityCheck: referenceEqualityCheck },
+      },
     )
 
     const selectTodoIdsLru = createAppSelector(
       [state => state.todos],
       todos => todos.map(({ id }) => id),
-      { memoize: lruMemoize, argsMemoize: lruMemoize }
+      { memoize: lruMemoize, argsMemoize: lruMemoize },
     )
 
     const selectTodoIdsLruWithResultEqualityCheck = createAppSelector(
@@ -62,15 +62,15 @@ describe('memoize functions performance with resultEqualityCheck set to referenc
         memoize: lruMemoize,
         memoizeOptions: { resultEqualityCheck: referenceEqualityCheck },
         argsMemoize: lruMemoize,
-        argsMemoizeOptions: { resultEqualityCheck: referenceEqualityCheck }
-      }
+        argsMemoizeOptions: { resultEqualityCheck: referenceEqualityCheck },
+      },
     )
 
     const selectors = {
       selectTodoIdsWeakMap,
       selectTodoIdsWeakMapWithResultEqualityCheck,
       selectTodoIdsLru,
-      selectTodoIdsLruWithResultEqualityCheck
+      selectTodoIdsLruWithResultEqualityCheck,
     }
 
     setFunctionNames(selectors)
@@ -87,9 +87,9 @@ describe('memoize functions performance with resultEqualityCheck set to referenc
 
             afterAll: () => {
               logSelectorRecomputations(selector)
-            }
+            },
           }
-        }
+        },
       }
       return { ...commonOptions, ...options }
     }
@@ -100,7 +100,7 @@ describe('memoize functions performance with resultEqualityCheck set to referenc
         () => {
           runSelector(selector)
         },
-        createOptions(selector)
+        createOptions(selector),
       )
     })
   })
@@ -110,12 +110,12 @@ describe('memoize functions performance with resultEqualityCheck set to referenc
 
     const arrayOfNumbers = Array.from(
       { length: 100_000 },
-      (num, index) => index
+      (num, index) => index,
     )
 
     const commonOptions: Options = {
       iterations: 1000,
-      time: 0
+      time: 0,
     }
 
     const runSelector = <S extends Selector>(selector: S) => {
@@ -125,36 +125,36 @@ describe('memoize functions performance with resultEqualityCheck set to referenc
     }
 
     const selectTodoIdsWeakMap = weakMapMemoize((state: RootState) =>
-      state.todos.map(({ id }) => id)
+      state.todos.map(({ id }) => id),
     )
 
     const selectTodoIdsWeakMapWithResultEqualityCheck = weakMapMemoize(
       (state: RootState) => state.todos.map(({ id }) => id),
-      { resultEqualityCheck: referenceEqualityCheck }
+      { resultEqualityCheck: referenceEqualityCheck },
     )
 
     const selectTodoIdsLru = lruMemoize((state: RootState) =>
-      state.todos.map(({ id }) => id)
+      state.todos.map(({ id }) => id),
     )
 
     const selectTodoIdsLruWithResultEqualityCheck = lruMemoize(
       (state: RootState) => state.todos.map(({ id }) => id),
-      { resultEqualityCheck: referenceEqualityCheck }
+      { resultEqualityCheck: referenceEqualityCheck },
     )
 
     const memoizedFunctions = {
       selectTodoIdsWeakMap,
       selectTodoIdsWeakMapWithResultEqualityCheck,
       selectTodoIdsLru,
-      selectTodoIdsLruWithResultEqualityCheck
+      selectTodoIdsLruWithResultEqualityCheck,
     }
 
     setFunctionNames(memoizedFunctions)
 
     const createOptions = <
-      Func extends AnyFunction & { resultsCount: () => number }
+      Func extends AnyFunction & { resultsCount: () => number },
     >(
-      memoizedFunction: Func
+      memoizedFunction: Func,
     ) => {
       const options: Options = {
         setup: (task, mode) => {
@@ -168,11 +168,11 @@ describe('memoize functions performance with resultEqualityCheck set to referenc
             afterAll: () => {
               console.log(
                 memoizedFunction.name,
-                memoizedFunction.resultsCount()
+                memoizedFunction.resultsCount(),
               )
-            }
+            },
           }
-        }
+        },
       }
       return { ...commonOptions, ...options }
     }
@@ -183,7 +183,7 @@ describe('memoize functions performance with resultEqualityCheck set to referenc
         () => {
           runSelector(memoizedFunction)
         },
-        createOptions(memoizedFunction)
+        createOptions(memoizedFunction),
       )
     })
   })

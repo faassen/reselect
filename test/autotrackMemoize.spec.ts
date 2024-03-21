@@ -1,6 +1,6 @@
 import {
   unstable_autotrackMemoize as autotrackMemoize,
-  createSelectorCreator
+  createSelectorCreator,
 } from 'reselect'
 import { setEnvToProd } from './testUtils'
 
@@ -35,7 +35,7 @@ describe('Basic selector behavior with autotrack', () => {
     const selector = createSelector(
       (state: StateA) => state.a,
       a => a,
-      { devModeChecks: { identityFunctionCheck: 'never' } }
+      { devModeChecks: { identityFunctionCheck: 'never' } },
     )
     const firstState = { a: 1 }
     const firstStateNewPointer = { a: 1 }
@@ -54,7 +54,7 @@ describe('Basic selector behavior with autotrack', () => {
     const selector = createSelector(
       (...params: any[]) => params.length,
       a => a,
-      { devModeChecks: { identityFunctionCheck: 'never' } }
+      { devModeChecks: { identityFunctionCheck: 'never' } },
     )
     expect(selector({})).toBe(1)
   })
@@ -63,7 +63,7 @@ describe('Basic selector behavior with autotrack', () => {
     const selector = createSelector(
       (state: StateAB) => state.a,
       (state: StateAB) => state.b,
-      (a, b) => a + b
+      (a, b) => a + b,
     )
     const state1 = { a: 1, b: 2 }
     expect(selector(state1)).toBe(3)
@@ -84,17 +84,17 @@ describe('Basic selector behavior with autotrack', () => {
           return state.b
         },
         'not a function',
-        (a: any, b: any) => a + b
-      )
+        (a: any, b: any) => a + b,
+      ),
     ).toThrow(
-      'createSelector expects all input-selectors to be functions, but received the following types: [function unnamed(), function input2(), string]'
+      'createSelector expects all input-selectors to be functions, but received the following types: [function unnamed(), function input2(), string]',
     )
 
     expect(() =>
       // @ts-ignore
-      createSelector((state: StateAB) => state.a, 'not a function')
+      createSelector((state: StateAB) => state.a, 'not a function'),
     ).toThrow(
-      'createSelector expects an output function after the inputs, but received: [string]'
+      'createSelector expects an output function after the inputs, but received: [string]',
     )
   })
 
@@ -109,7 +109,7 @@ describe('Basic selector behavior with autotrack', () => {
         (state: StateAB) => state.a,
         (state: StateAB) => state.b,
         (a, b) => a + b,
-        { devModeChecks: { identityFunctionCheck: 'never' } }
+        { devModeChecks: { identityFunctionCheck: 'never' } },
       )
       const state1 = { a: 1, b: 2 }
 
@@ -130,7 +130,7 @@ describe('Basic selector behavior with autotrack', () => {
         (state: StateAB) => state.a,
         (state: StateAB) => state.b,
         (a, b) => a + b,
-        { devModeChecks: { identityFunctionCheck: 'never' } }
+        { devModeChecks: { identityFunctionCheck: 'never' } },
       )
 
       const start = performance.now()
@@ -150,7 +150,7 @@ describe('Basic selector behavior with autotrack', () => {
   test('memoized composite arguments', () => {
     const selector = createSelector(
       (state: StateSub) => state.sub,
-      sub => sub.a
+      sub => sub.a,
     )
     const state1 = { sub: { a: 1 } }
     expect(selector(state1)).toEqual(1)
@@ -166,7 +166,7 @@ describe('Basic selector behavior with autotrack', () => {
       [state => state.a, state => state.b],
       (a, b) => {
         return a + b
-      }
+      },
     )
     expect(selector({ a: 1, b: 2 })).toBe(3)
     expect(selector({ a: 1, b: 2 })).toBe(3)
@@ -184,7 +184,7 @@ describe('Basic selector behavior with autotrack', () => {
       (a, b, c) => {
         called++
         return a + b + c
-      }
+      },
     )
     expect(selector({ a: 1, b: 2 }, { c: 100 })).toBe(103)
   })
@@ -197,7 +197,7 @@ describe('Basic selector behavior with autotrack', () => {
         called++
         throw Error('test error')
       },
-      { devModeChecks: { identityFunctionCheck: 'never' } }
+      { devModeChecks: { identityFunctionCheck: 'never' } },
     )
     expect(() => selector({ a: 1 })).toThrow('test error')
     expect(() => selector({ a: 1 })).toThrow('test error')
@@ -213,7 +213,7 @@ describe('Basic selector behavior with autotrack', () => {
         if (a > 1) throw Error('test error')
         return a
       },
-      { devModeChecks: { identityFunctionCheck: 'never' } }
+      { devModeChecks: { identityFunctionCheck: 'never' } },
     )
     const state1 = { a: 1 }
     const state2 = { a: 2 }

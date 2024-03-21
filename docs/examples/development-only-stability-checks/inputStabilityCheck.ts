@@ -11,9 +11,9 @@ const selectCompletedTodosLength = createSelector(
     // ❌ Incorrect Use Case: This input selector will not be
     // memoized properly since it always returns a new reference.
     (state: RootState) =>
-      state.todos.filter(({ completed }) => completed === true)
+      state.todos.filter(({ completed }) => completed === true),
   ],
   completedTodos => completedTodos.length,
   // Will override the global setting.
-  { devModeChecks: { inputStabilityCheck: 'always' } }
+  { devModeChecks: { inputStabilityCheck: 'always' } },
 )

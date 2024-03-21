@@ -2,14 +2,14 @@ import type {
   OutputSelector,
   Selector,
   SelectorArray,
-  UnknownMemoizer
+  UnknownMemoizer,
 } from 'reselect'
 import {
   unstable_autotrackMemoize as autotrackMemoize,
   createSelector,
   createSelectorCreator,
   lruMemoize,
-  weakMapMemoize
+  weakMapMemoize,
 } from 'reselect'
 import { test } from 'vitest'
 import type { RootState } from './testUtils'
@@ -27,7 +27,7 @@ const selectCompletedTodos = createSelector(
   [(state: RootState) => state.todos],
   todos => {
     return fallbackToEmptyArray(todos.filter(todo => todo.completed === true))
-  }
+  },
 )
 
 const completedTodos = selectCompletedTodos(store.getState())
@@ -42,12 +42,12 @@ test('identity', () => {
   const identity = <Func extends (...args: any[]) => any>(func: Func) => func
   const createNonMemoizedSelector = createSelectorCreator({
     memoize: identity,
-    argsMemoize: identity
+    argsMemoize: identity,
   })
   const nonMemoizedSelector = createNonMemoizedSelector(
     [(state: RootState) => state.todos],
     todos => todos.filter(todo => todo.completed === true),
-    { devModeChecks: { inputStabilityCheck: 'never' } }
+    { devModeChecks: { inputStabilityCheck: 'never' } },
   )
 
   nonMemoizedSelector(store.getState())
@@ -67,7 +67,7 @@ test.todo('Top Level Selectors', () => {
   const topLevelSelectors: TopLevelSelectors<RootState> = {
     selectAlerts: state => state.alerts,
     selectTodos: state => state.todos,
-    selectUsers: state => state.users
+    selectUsers: state => state.users,
   }
 })
 
@@ -75,7 +75,7 @@ test.todo('Find Fastest Selector', () => {
   const store = setupStore()
   const selectTodoIds = createSelector(
     [(state: RootState) => state.todos],
-    todos => todos.map(({ id }) => id)
+    todos => todos.map(({ id }) => id),
   )
   const findFastestSelector = <S extends OutputSelector>(
     selector: S,
@@ -87,7 +87,7 @@ test.todo('Find Fastest Selector', () => {
         const alternateSelector = createSelector(
           selector.dependencies as [...SelectorArray],
           selector.resultFunc,
-          { memoize }
+          { memoize },
         )
         const start = performance.now()
         alternateSelector.apply(null, selectorArgs)
@@ -96,7 +96,7 @@ test.todo('Find Fastest Selector', () => {
       })
       .sort((a, b) => a.time - b.time)
     const fastest = results.reduce((minResult, currentResult) =>
-      currentResult.time < minResult.time ? currentResult : minResult
+      currentResult.time < minResult.time ? currentResult : minResult,
     )
     const ratios = results
       .filter(({ time }) => time !== fastest.time)
@@ -104,7 +104,7 @@ test.todo('Find Fastest Selector', () => {
         ({ time, name }) =>
           `\x1B[33m \x1B[1m${
             time / fastest.time
-          }\x1B[0m times faster than \x1B[1;41m${name}\x1B[0m.`
+          }\x1B[0m times faster than \x1B[1;41m${name}\x1B[0m.`,
       )
     if (fastest.selector.memoize.name !== selector.memoize.name) {
       console.warn(
@@ -116,7 +116,7 @@ test.todo('Find Fastest Selector', () => {
           fastest.selector.memoize.name
         }\x1B[0m to be more efficient.\nYou should use \x1B[32m\x1B[1m${
           fastest.name
-        }\x1B[0m because it is${ratios.join('\nand\n')}`
+        }\x1B[0m because it is${ratios.join('\nand\n')}`,
       )
     }
     return { results, fastest } as const
@@ -127,12 +127,12 @@ test('TypedCreateSelector', () => {
   type TypedCreateSelector<
     State,
     MemoizeFunction extends UnknownMemoizer = typeof weakMapMemoize,
-    ArgsMemoizeFunction extends UnknownMemoizer = typeof weakMapMemoize
+    ArgsMemoizeFunction extends UnknownMemoizer = typeof weakMapMemoize,
   > = <
     InputSelectors extends readonly Selector<State>[],
     Result,
     OverrideMemoizeFunction extends UnknownMemoizer = MemoizeFunction,
-    OverrideArgsMemoizeFunction extends UnknownMemoizer = ArgsMemoizeFunction
+    OverrideArgsMemoizeFunction extends UnknownMemoizer = ArgsMemoizeFunction,
   >(
     ...createSelectorArgs: Parameters<
       typeof createSelector<
@@ -153,7 +153,7 @@ test('TypedCreateSelector', () => {
   const createAppSelector: TypedCreateSelector<RootState> = createSelector
   const selector = createAppSelector(
     [state => state.todos, (state, id: number) => id],
-    (todos, id) => todos.find(todo => todo.id === id)?.completed
+    (todos, id) => todos.find(todo => todo.id === id)?.completed,
   )
 })
 
@@ -163,9 +163,9 @@ test('createCurriedSelector copy paste pattern', () => {
     State,
     Result,
     Params extends readonly any[],
-    AdditionalFields
+    AdditionalFields,
   >(
-    selector: ((state: State, ...args: Params) => Result) & AdditionalFields
+    selector: ((state: State, ...args: Params) => Result) & AdditionalFields,
   ) => {
     const curriedSelector = (...args: Params) => {
       return (state: State) => {
@@ -179,7 +179,7 @@ test('createCurriedSelector copy paste pattern', () => {
     InputSelectors extends SelectorArray,
     Result,
     OverrideMemoizeFunction extends UnknownMemoizer = typeof weakMapMemoize,
-    OverrideArgsMemoizeFunction extends UnknownMemoizer = typeof weakMapMemoize
+    OverrideArgsMemoizeFunction extends UnknownMemoizer = typeof weakMapMemoize,
   >(
     ...args: Parameters<
       typeof createSelector<
@@ -194,14 +194,14 @@ test('createCurriedSelector copy paste pattern', () => {
   }
   const selectTodoById = createSelector(
     [(state: RootState) => state.todos, (state: RootState, id: number) => id],
-    (todos, id) => todos.find(todo => todo.id === id)
+    (todos, id) => todos.find(todo => todo.id === id),
   )
   const selectTodoByIdCurried = createCurriedSelector(
     [(state: RootState) => state.todos, (state: RootState, id: number) => id],
-    (todos, id) => todos.find(todo => todo.id === id)
+    (todos, id) => todos.find(todo => todo.id === id),
   )
   expect(selectTodoById(state, 0)).toStrictEqual(
-    selectTodoByIdCurried(0)(state)
+    selectTodoByIdCurried(0)(state),
   )
   expect(selectTodoById.argsMemoize).toBe(selectTodoByIdCurried.argsMemoize)
   expect(selectTodoById.lastResult()).toBeDefined()
@@ -209,12 +209,12 @@ test('createCurriedSelector copy paste pattern', () => {
   expect(selectTodoById.lastResult()).toBe(selectTodoByIdCurried.lastResult())
   expect(selectTodoById.memoize).toBe(selectTodoByIdCurried.memoize)
   expect(selectTodoById.memoizedResultFunc(state.todos, 0)).toBe(
-    selectTodoByIdCurried.memoizedResultFunc(state.todos, 0)
+    selectTodoByIdCurried.memoizedResultFunc(state.todos, 0),
   )
   expect(selectTodoById.recomputations()).toBe(
-    selectTodoByIdCurried.recomputations()
+    selectTodoByIdCurried.recomputations(),
   )
   expect(selectTodoById.resultFunc(state.todos, 0)).toBe(
-    selectTodoByIdCurried.resultFunc(state.todos, 0)
+    selectTodoByIdCurried.resultFunc(state.todos, 0),
   )
 })

@@ -10,7 +10,7 @@ import {
   createSelector,
   lruMemoize,
   unstable_autotrackMemoize,
-  weakMapMemoize
+  weakMapMemoize,
 } from 'reselect'
 
 import type { OutputSelector } from 'reselect'
@@ -20,7 +20,7 @@ import { addTodo, setupStore, toggleCompleted } from './testUtils'
 describe('Computations and re-rendering with React components', () => {
   const selector = createSelector(
     (a: number) => a,
-    a => a
+    a => a,
   )
 
   test('passes', () => {
@@ -46,7 +46,7 @@ describe('Computations and re-rendering with React components', () => {
   type SelectTodoById = OutputSelector<
     [
       (state: RootState) => RootState['todos'],
-      (state: RootState, id: number) => number
+      (state: RootState, id: number) => number,
     ],
     readonly [todo: Todo | undefined],
     typeof lruMemoize | typeof weakMapMemoize,
@@ -67,12 +67,12 @@ describe('Computations and re-rendering with React components', () => {
   const selectTodoIdsResultEquality = createSelector(
     [selectTodos],
     mapTodoIds,
-    { memoizeOptions: { resultEqualityCheck: shallowEqual } }
+    { memoizeOptions: { resultEqualityCheck: shallowEqual } },
   )
 
   const selectTodoIdsWeakMap = createSelector([selectTodos], mapTodoIds, {
     argsMemoize: weakMapMemoize,
-    memoize: weakMapMemoize
+    memoize: weakMapMemoize,
   })
 
   const selectTodoIdsWeakMapResultEquality = createSelector(
@@ -81,13 +81,13 @@ describe('Computations and re-rendering with React components', () => {
     {
       argsMemoize: weakMapMemoize,
       memoize: weakMapMemoize,
-      memoizeOptions: { resultEqualityCheck: shallowEqual }
-    }
+      memoizeOptions: { resultEqualityCheck: shallowEqual },
+    },
   )
 
   const selectTodoByIdDefault = createSelector(
     [selectTodos, selectTodoId],
-    mapTodoById
+    mapTodoById,
   )
 
   const selectTodoByIdResultEquality = createSelector(
@@ -95,14 +95,14 @@ describe('Computations and re-rendering with React components', () => {
     mapTodoById,
     {
       memoize: lruMemoize,
-      memoizeOptions: { resultEqualityCheck: shallowEqual, maxSize: 500 }
-    }
+      memoizeOptions: { resultEqualityCheck: shallowEqual, maxSize: 500 },
+    },
   )
 
   const selectTodoByIdWeakMap = createSelector(
     [selectTodos, selectTodoId],
     mapTodoById,
-    { argsMemoize: weakMapMemoize, memoize: weakMapMemoize }
+    { argsMemoize: weakMapMemoize, memoize: weakMapMemoize },
   )
 
   const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
@@ -113,7 +113,7 @@ describe('Computations and re-rendering with React components', () => {
 
   const TodoListItem = React.memo(function TodoListItem({
     id,
-    selectTodoById
+    selectTodoById,
   }: {
     id: number
     selectTodoById: SelectTodoById
@@ -122,7 +122,7 @@ describe('Computations and re-rendering with React components', () => {
     // due to passing in a new selector reference
     const memoizedSelectTodoById = useMemo(
       () => (state: RootState) => selectTodoById(state, id),
-      [id]
+      [id],
     )
     const [todo] = useAppSelector(memoizedSelectTodoById)
 
@@ -139,7 +139,7 @@ describe('Computations and re-rendering with React components', () => {
 
   const TodoList = ({
     selectTodoIds,
-    selectTodoById
+    selectTodoById,
   }: {
     selectTodoIds: SelectTodoIds
     selectTodoById: SelectTodoById
@@ -164,15 +164,15 @@ describe('Computations and re-rendering with React components', () => {
     [
       'resultEquality',
       selectTodoIdsResultEquality,
-      selectTodoByIdResultEquality
+      selectTodoByIdResultEquality,
     ],
     ['weakMap', selectTodoIdsWeakMap, selectTodoByIdWeakMap],
 
     [
       'weakMapResultEquality',
       selectTodoIdsWeakMapResultEquality,
-      selectTodoByIdWeakMap
-    ]
+      selectTodoByIdWeakMap,
+    ],
   ]
 
   test.each(testCases)(`%s`, async (name, selectTodoIds, selectTodoById) => {
@@ -190,7 +190,7 @@ describe('Computations and re-rendering with React components', () => {
           selectTodoIds={selectTodoIds}
           selectTodoById={selectTodoById}
         />
-      </Provider>
+      </Provider>,
     )
 
     // console.log(`Recomputations after render (${name}): `)
@@ -248,20 +248,20 @@ describe('resultEqualityCheck in weakMapMemoize', () => {
     const selectorWeakMap = createSelector(
       [(state: RootState) => state.todos],
       todos => todos.map(({ id }) => id),
-      { memoize: weakMapMemoize }
+      { memoize: weakMapMemoize },
     )
     const selectorWeakMapShallow = createSelector(
       [(state: RootState) => state.todos],
       todos => todos.map(({ id }) => id),
       {
         memoize: weakMapMemoize,
-        memoizeOptions: { resultEqualityCheck: shallowEqual }
-      }
+        memoizeOptions: { resultEqualityCheck: shallowEqual },
+      },
     )
     const selectorAutotrack = createSelector(
       [(state: RootState) => state.todos],
       todos => todos.map(({ id }) => id),
-      { memoize: unstable_autotrackMemoize }
+      { memoize: unstable_autotrackMemoize },
     )
     const firstResult = selectorWeakMap(store.getState())
     store.dispatch(toggleCompleted(0))
@@ -278,11 +278,11 @@ describe('resultEqualityCheck in weakMapMemoize', () => {
     expect(firstResultAutotrack).toBe(secondResultAutotrack)
 
     const memoized = weakMapMemoize((state: RootState) =>
-      state.todos.map(({ id }) => id)
+      state.todos.map(({ id }) => id),
     )
     const memoizedShallow = weakMapMemoize(
       (state: RootState) => state.todos.map(({ id }) => id),
-      { resultEqualityCheck: shallowEqual }
+      { resultEqualityCheck: shallowEqual },
     )
     expect(memoized.resetResultsCount).to.be.a('function')
     expect(memoized.resultsCount).to.be.a('function')

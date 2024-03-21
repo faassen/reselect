@@ -1,6 +1,6 @@
 export function assert(
   condition: any,
-  msg = 'Assertion failed!'
+  msg = 'Assertion failed!',
 ): asserts condition {
   if (!condition) {
     console.error(msg)

@@ -3,7 +3,7 @@ import {
   createSelector,
   lruMemoize,
   referenceEqualityCheck,
-  setGlobalDevModeChecks
+  setGlobalDevModeChecks,
 } from 'reselect'
 import type { RootState } from './testUtils'
 import { localTest } from './testUtils'
@@ -27,7 +27,7 @@ describe('inputStabilityCheck', () => {
   it('calls each input selector twice, and warns to console if unstable reference is returned', () => {
     const stableAddNums = createSelector(
       [(a: number) => a, (a: number, b: number) => b],
-      (a, b) => a + b
+      (a, b) => a + b,
     )
 
     expect(stableAddNums(1, 2)).toBe(3)
@@ -44,13 +44,13 @@ describe('inputStabilityCheck', () => {
         // IArguments isn't an array :(
         arguments: expect.anything(),
         firstInputs: expect.arrayContaining([
-          expect.objectContaining({ a: 1, b: 2 })
+          expect.objectContaining({ a: 1, b: 2 }),
         ]),
         secondInputs: expect.arrayContaining([
-          expect.objectContaining({ a: 1, b: 2 })
+          expect.objectContaining({ a: 1, b: 2 }),
         ]),
-        stack: expect.any(String)
-      })
+        stack: expect.any(String),
+      }),
     )
   })
 
@@ -68,7 +68,7 @@ describe('inputStabilityCheck', () => {
 
   it('disables check if specified in the selector options', () => {
     const addNums = createSelector([unstableInput], ({ a, b }) => a + b, {
-      devModeChecks: { inputStabilityCheck: 'never' }
+      devModeChecks: { inputStabilityCheck: 'never' },
     })
 
     expect(addNums(1, 2)).toBe(3)
@@ -94,7 +94,7 @@ describe('inputStabilityCheck', () => {
 
   it('allows running the check only once', () => {
     const addNums = createSelector([unstableInput], ({ a, b }) => a + b, {
-      devModeChecks: { inputStabilityCheck: 'once' }
+      devModeChecks: { inputStabilityCheck: 'once' },
     })
 
     expect(addNums(1, 2)).toBe(3)
@@ -112,7 +112,7 @@ describe('inputStabilityCheck', () => {
 
   it('allows always running the check', () => {
     const addNums = createSelector([unstableInput], ({ a, b }) => a + b, {
-      devModeChecks: { inputStabilityCheck: 'always' }
+      devModeChecks: { inputStabilityCheck: 'always' },
     })
 
     expect(addNums(1, 2)).toBe(3)
@@ -136,7 +136,7 @@ describe('inputStabilityCheck', () => {
 
   it('runs once when devModeChecks is an empty object', () => {
     const addNums = createSelector([unstableInput], ({ a, b }) => a + b, {
-      devModeChecks: {}
+      devModeChecks: {},
     })
 
     expect(addNums(1, 2)).toBe(3)
@@ -159,9 +159,9 @@ describe('inputStabilityCheck', () => {
       {
         memoize: lruMemoize,
         memoizeOptions: {
-          equalityCheck: shallowEqual
-        }
-      }
+          equalityCheck: shallowEqual,
+        },
+      },
     )
 
     expect(addNumsShallow(1, 2)).toBe(3)
@@ -191,8 +191,8 @@ describe('the effects of inputStabilityCheck with resultEqualityCheck', () => {
         todos => todos.map(({ id }) => id),
         {
           memoizeOptions: { resultEqualityCheck },
-          devModeChecks: { inputStabilityCheck: 'once' }
-        }
+          devModeChecks: { inputStabilityCheck: 'once' },
+        },
       )
 
       const firstResult = selectTodoIds(store.getState())
@@ -210,7 +210,7 @@ describe('the effects of inputStabilityCheck with resultEqualityCheck', () => {
       expect(secondResult).toBe(thirdResult)
 
       expect(resultEqualityCheck).not.toHaveBeenCalled()
-    }
+    },
   )
 
   localTest(
@@ -221,8 +221,8 @@ describe('the effects of inputStabilityCheck with resultEqualityCheck', () => {
         todos => todos.map(({ id }) => id),
         {
           memoizeOptions: { resultEqualityCheck },
-          devModeChecks: { inputStabilityCheck: 'always' }
-        }
+          devModeChecks: { inputStabilityCheck: 'always' },
+        },
       )
 
       const firstResult = selectTodoIds(store.getState())
@@ -240,7 +240,7 @@ describe('the effects of inputStabilityCheck with resultEqualityCheck', () => {
       expect(secondResult).toBe(thirdResult)
 
       expect(resultEqualityCheck).not.toHaveBeenCalled()
-    }
+    },
   )
 
   localTest(
@@ -251,8 +251,8 @@ describe('the effects of inputStabilityCheck with resultEqualityCheck', () => {
         todos => todos.map(({ id }) => id),
         {
           memoizeOptions: { resultEqualityCheck },
-          devModeChecks: { inputStabilityCheck: 'never' }
-        }
+          devModeChecks: { inputStabilityCheck: 'never' },
+        },
       )
 
       const firstResult = selectTodoIds(store.getState())
@@ -270,6 +270,6 @@ describe('the effects of inputStabilityCheck with resultEqualityCheck', () => {
       expect(secondResult).toBe(thirdResult)
 
       expect(resultEqualityCheck).not.toHaveBeenCalled()
-    }
+    },
   )
 })

@@ -25,7 +25,7 @@ const config: Config = {
   // may want to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: 'en',
-    locales: ['en']
+    locales: ['en'],
   },
 
   presets: [
@@ -39,13 +39,13 @@ const config: Config = {
           routeBasePath: '/',
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl: 'https://github.com/reduxjs/reselect/edit/master/website'
+          editUrl: 'https://github.com/reduxjs/reselect/edit/master/website',
         },
         theme: {
-          customCss: './src/css/custom.css'
-        }
-      } satisfies Options
-    ]
+          customCss: './src/css/custom.css',
+        },
+      } satisfies Options,
+    ],
   ],
 
   themeConfig: {
@@ -59,20 +59,20 @@ const config: Config = {
           type: 'doc',
           position: 'right',
           label: 'Getting Started',
-          docId: 'introduction/getting-started'
+          docId: 'introduction/getting-started',
         },
         {
           type: 'doc',
           position: 'right',
           label: 'API',
-          docId: 'api/createSelector'
+          docId: 'api/createSelector',
         },
         {
           href: 'https://www.github.com/reduxjs/reselect',
           label: 'GitHub',
-          position: 'right'
-        }
-      ]
+          position: 'right',
+        },
+      ],
     },
     footer: {
       style: 'dark',
@@ -82,30 +82,30 @@ const config: Config = {
           items: [
             {
               label: 'Stack Overflow',
-              href: 'https://stackoverflow.com/questions/tagged/reselect'
+              href: 'https://stackoverflow.com/questions/tagged/reselect',
             },
             {
               label: 'Discord',
-              href: 'https://discord.gg/0ZcbPKXt5bZ6au5t'
-            }
-          ]
+              href: 'https://discord.gg/0ZcbPKXt5bZ6au5t',
+            },
+          ],
         },
         {
           title: 'More',
           items: [
             {
               label: 'GitHub',
-              href: 'https://github.com/reduxjs/reselect'
-            }
-          ]
-        }
+              href: 'https://github.com/reduxjs/reselect',
+            },
+          ],
+        },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} by the Redux Maintainers. Built with Docusaurus.`
+      copyright: `Copyright © ${new Date().getFullYear()} by the Redux Maintainers. Built with Docusaurus.`,
     },
     prism: {
-      theme: require('./monokaiTheme.js')
-    }
-  } satisfies ThemeConfig
+      theme: require('./monokaiTheme.js'),
+    },
+  } satisfies ThemeConfig,
 }
 
 export default config

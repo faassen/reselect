@@ -6,7 +6,7 @@ export const createCurriedSelector = <
   InputSelectors extends SelectorArray,
   Result,
   OverrideMemoizeFunction extends UnknownMemoizer = typeof weakMapMemoize,
-  OverrideArgsMemoizeFunction extends UnknownMemoizer = typeof weakMapMemoize
+  OverrideArgsMemoizeFunction extends UnknownMemoizer = typeof weakMapMemoize,
 >(
   ...args: Parameters<
     typeof createSelector<

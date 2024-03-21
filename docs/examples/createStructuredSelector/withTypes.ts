@@ -14,5 +14,5 @@ const structuredAppSelector = createStructuredAppSelector({
   todos: state => state.todos,
   // highlight-end
   alerts: state => state.alerts,
-  todoById: (state, id: number) => state.todos[id]
+  todoById: (state, id: number) => state.todos[id],
 })

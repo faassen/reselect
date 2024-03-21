@@ -7,7 +7,7 @@ import type {
   OutputSelector,
   Selector,
   Simplify,
-  UnknownMemoizer
+  UnknownMemoizer,
 } from './types'
 import { assertIsObject } from './utils'
 import type { weakMapMemoize } from './weakMapMemoize'
@@ -154,15 +154,16 @@ export type TypedStructuredSelectorCreator<RootState = any> =
    * @see {@link https://reselect.js.org/api/createStructuredSelector `createStructuredSelector`}
    */
   <
-    InputSelectorsObject extends RootStateSelectors<RootState> = RootStateSelectors<RootState>,
+    InputSelectorsObject extends
+      RootStateSelectors<RootState> = RootStateSelectors<RootState>,
     MemoizeFunction extends UnknownMemoizer = typeof weakMapMemoize,
-    ArgsMemoizeFunction extends UnknownMemoizer = typeof weakMapMemoize
+    ArgsMemoizeFunction extends UnknownMemoizer = typeof weakMapMemoize,
   >(
     inputSelectorsObject: InputSelectorsObject,
     selectorCreator?: CreateSelectorFunction<
       MemoizeFunction,
       ArgsMemoizeFunction
-    >
+    >,
   ) => OutputSelector<
     ObjectValuesToTuple<InputSelectorsObject>,
     Simplify<SelectorResultsMap<InputSelectorsObject>>,
@@ -303,13 +304,13 @@ export interface StructuredSelectorCreator<StateType = any> {
   <
     InputSelectorsObject extends SelectorsObject<StateType>,
     MemoizeFunction extends UnknownMemoizer = typeof weakMapMemoize,
-    ArgsMemoizeFunction extends UnknownMemoizer = typeof weakMapMemoize
+    ArgsMemoizeFunction extends UnknownMemoizer = typeof weakMapMemoize,
   >(
     inputSelectorsObject: InputSelectorsObject,
     selectorCreator?: CreateSelectorFunction<
       MemoizeFunction,
       ArgsMemoizeFunction
-    >
+    >,
   ): OutputSelector<
     ObjectValuesToTuple<InputSelectorsObject>,
     Simplify<SelectorResultsMap<InputSelectorsObject>>,
@@ -356,7 +357,7 @@ export interface StructuredSelectorCreator<StateType = any> {
    * @since 5.1.0
    */
   withTypes: <
-    OverrideStateType extends StateType
+    OverrideStateType extends StateType,
   >() => StructuredSelectorCreator<OverrideStateType>
 }
 
@@ -419,7 +420,7 @@ export const createStructuredSelector: StructuredSelectorCreator =
     <
       InputSelectorsObject extends SelectorsObject,
       MemoizeFunction extends UnknownMemoizer = typeof weakMapMemoize,
-      ArgsMemoizeFunction extends UnknownMemoizer = typeof weakMapMemoize
+      ArgsMemoizeFunction extends UnknownMemoizer = typeof weakMapMemoize,
     >(
       inputSelectorsObject: InputSelectorsObject,
       selectorCreator: CreateSelectorFunction<
@@ -428,16 +429,16 @@ export const createStructuredSelector: StructuredSelectorCreator =
       > = createSelector as CreateSelectorFunction<
         MemoizeFunction,
         ArgsMemoizeFunction
-      >
+      >,
     ) => {
       assertIsObject(
         inputSelectorsObject,
         'createStructuredSelector expects first argument to be an object ' +
-          `where each property is a selector, instead received a ${typeof inputSelectorsObject}`
+          `where each property is a selector, instead received a ${typeof inputSelectorsObject}`,
       )
       const inputSelectorKeys = Object.keys(inputSelectorsObject)
       const dependencies = inputSelectorKeys.map(
-        key => inputSelectorsObject[key]
+        key => inputSelectorsObject[key],
       )
       const structuredSelector = selectorCreator(
         dependencies,
@@ -446,9 +447,9 @@ export const createStructuredSelector: StructuredSelectorCreator =
             composition[inputSelectorKeys[index]] = value
             return composition
           }, {})
-        }
+        },
       )
       return structuredSelector
     },
-    { withTypes: () => createStructuredSelector }
+    { withTypes: () => createStructuredSelector },
   ) as StructuredSelectorCreator

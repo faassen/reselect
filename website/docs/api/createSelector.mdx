@@ -24,12 +24,12 @@ const selectTodosByCategory = createSelector(
   [
     // Pass input selectors with typed arguments
     (state: RootState) => state.todos,
-    (state: RootState, category: string) => category
+    (state: RootState, category: string) => category,
   ],
   // Extracted values are passed to the result function for recalculation
   (todos, category) => {
     return todos.filter(t => t.category === category)
-  }
+  },
 )
 ```
 
@@ -102,10 +102,10 @@ const selectTodoIds = createAppSelector(
   [
     // Type of `state` is set to `RootState`, no need to manually set the type
     // highlight-start
-    state => state.todos
+    state => state.todos,
     // highlight-end
   ],
-  todos => todos.map(({ id }) => id)
+  todos => todos.map(({ id }) => id),
 )
 ```
 
@@ -121,10 +121,10 @@ const selectTodoIds = createAppSelector(
   [
     // Type of `state` is set to `RootState`, no need to manually set the type
     // highlight-start
-    state => state.todos
+    state => state.todos,
     // highlight-end
   ],
-  todos => todos.map(({ id }) => id)
+  todos => todos.map(({ id }) => id),
 )
 ```
 
@@ -182,7 +182,7 @@ const selectTodoIds = createAppSelector(
   // ❌ Known limitation: Parameter types are not inferred in this scenario
   // so you will have to manually annotate them.
   // highlight-start
-  (todos: Todo[]) => todos.map(({ id }) => id)
+  (todos: Todo[]) => todos.map(({ id }) => id),
   // highlight-end
 )
 ```
@@ -201,7 +201,7 @@ const selectTodoIds = createAppSelector(
   // ❌ Known limitation: Parameter types are not inferred in this scenario
   // so you will have to manually annotate them.
   // highlight-start
-  todos => todos.map(({ id }) => id)
+  todos => todos.map(({ id }) => id),
   // highlight-end
 )
 ```
@@ -244,26 +244,26 @@ export const createAppSelector = createSelectorCreator({
   memoizeOptions: {
     maxSize: 10,
     equalityCheck: shallowEqual,
-    resultEqualityCheck: shallowEqual
+    resultEqualityCheck: shallowEqual,
   },
   argsMemoizeOptions: {
     isEqual: shallowEqual,
-    maxSize: 10
+    maxSize: 10,
   },
   devModeChecks: {
     identityFunctionCheck: 'never',
-    inputStabilityCheck: 'always'
-  }
+    inputStabilityCheck: 'always',
+  },
 }).withTypes<RootState>()
 
 const selectReadAlerts = createAppSelector(
   [
     // Type of `state` is set to `RootState`, no need to manually set the type
     // highlight-start
-    state => state.alerts
+    state => state.alerts,
     // highlight-end
   ],
-  alerts => alerts.filter(({ read }) => read)
+  alerts => alerts.filter(({ read }) => read),
 )
 ```
 
@@ -281,26 +281,26 @@ export const createAppSelector = createSelectorCreator({
   memoizeOptions: {
     maxSize: 10,
     equalityCheck: shallowEqual,
-    resultEqualityCheck: shallowEqual
+    resultEqualityCheck: shallowEqual,
   },
   argsMemoizeOptions: {
     isEqual: shallowEqual,
-    maxSize: 10
+    maxSize: 10,
   },
   devModeChecks: {
     identityFunctionCheck: 'never',
-    inputStabilityCheck: 'always'
-  }
+    inputStabilityCheck: 'always',
+  },
 }).withTypes()
 
 const selectReadAlerts = createAppSelector(
   [
     // Type of `state` is set to `RootState`, no need to manually set the type
     // highlight-start
-    state => state.alerts
+    state => state.alerts,
     // highlight-end
   ],
-  alerts => alerts.filter(({ read }) => read)
+  alerts => alerts.filter(({ read }) => read),
 )
 ```
 
