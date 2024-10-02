@@ -54,6 +54,9 @@
     "url": "https://github.com/reduxjs/reselect.git"
   },
   "license": "MIT",
+  "workspaces": [
+    "codemods"
+  ],
   "devDependencies": {
     "@reduxjs/toolkit": "^2.0.1",
     "@testing-library/react": "^14.1.2",
