@@ -34,6 +34,7 @@
     "type-check": "vitest --run --typecheck.only",
     "type-check:trace": "vitest --run --typecheck.only && tsc --noEmit -p typescript_test/tsconfig.json --generateTrace trace && npx @typescript/analyze-trace trace && rimraf trace",
     "test:typescript": "tsc --noEmit -p typescript_test/tsconfig.json",
+    "size": "size-limit",
     "docs:start": "yarn --cwd website start",
     "docs:build": "yarn --cwd website build",
     "docs:clear": "yarn --cwd website clear",
@@ -56,8 +57,11 @@
   "license": "MIT",
   "devDependencies": {
     "@reduxjs/toolkit": "^2.0.1",
+    "@size-limit/file": "^11.1.6",
+    "@size-limit/webpack": "^11.1.6",
     "@testing-library/react": "^14.1.2",
     "@types/lodash": "^4.14.175",
+    "@types/node": "^22.10.5",
     "@types/react": "^18.2.38",
     "@types/react-dom": "^18.2.17",
     "@types/shelljs": "^0.8.11",
@@ -80,6 +84,7 @@
     "react-redux": "^9.0.4",
     "rimraf": "^3.0.2",
     "shelljs": "^0.8.5",
+    "size-limit": "^11.1.6",
     "tsup": "^8.2.4",
     "typescript": "^5.4.2",
     "vitest": "^1.6.0"
