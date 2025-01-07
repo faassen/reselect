@@ -58,6 +58,7 @@
     "@reduxjs/toolkit": "^2.0.1",
     "@testing-library/react": "^14.1.2",
     "@types/lodash": "^4.14.175",
+    "@types/node": "^22.10.5",
     "@types/react": "^18.2.38",
     "@types/react-dom": "^18.2.17",
     "@types/shelljs": "^0.8.11",
@@ -81,6 +82,7 @@
     "rimraf": "^3.0.2",
     "shelljs": "^0.8.5",
     "tsup": "^8.2.4",
+    "tsx": "^4.19.2",
     "typescript": "^5.4.2",
     "vitest": "^1.6.0"
   },
