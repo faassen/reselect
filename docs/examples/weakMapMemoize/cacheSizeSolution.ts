@@ -1,4 +1,4 @@
-import { createSelector, weakMapMemoize } from 'reselect'
+import { createSelector } from 'reselect'
 import type { RootState } from './cacheSizeProblem'
 
 const state: RootState = {
@@ -10,16 +10,13 @@ const state: RootState = {
   ]
 }
 
+// `createSelector` uses `weakMapMemoize` by default.
 const selectItemsByCategory = createSelector(
   [
     (state: RootState) => state.items,
     (state: RootState, category: string) => category
   ],
-  (items, category) => items.filter(item => item.category === category),
-  {
-    memoize: weakMapMemoize,
-    argsMemoize: weakMapMemoize
-  }
+  (items, category) => items.filter(item => item.category === category)
 )
 
 selectItemsByCategory(state, 'Electronics') // Selector runs

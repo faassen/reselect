@@ -1,5 +1,6 @@
 import type { Options, ThemeConfig } from '@docusaurus/preset-classic'
 import type { Config } from '@docusaurus/types'
+import monokaiTheme from './monokaiTheme.js'
 
 const config: Config = {
   title: 'Reselect',
@@ -19,6 +20,7 @@ const config: Config = {
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
+  plugins: ['docusaurus-plugin-image-zoom'],
 
   // Even if you don't use internationalization, you can use this field to set
   // useful metadata like html lang. For example, if your site is Chinese, you
@@ -49,6 +51,9 @@ const config: Config = {
   ],
 
   themeConfig: {
+    zoom: {
+      selector: '.markdown :not(em) > img'
+    },
     // Replace with your project's social card
     // image: 'img/docusaurus-social-card.jpg',
     navbar: {
@@ -103,7 +108,7 @@ const config: Config = {
       copyright: `Copyright © ${new Date().getFullYear()} by the Redux Maintainers. Built with Docusaurus.`
     },
     prism: {
-      theme: require('./monokaiTheme.js')
+      theme: monokaiTheme
     }
   } satisfies ThemeConfig
 }

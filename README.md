@@ -10,6 +10,8 @@ A library for creating memoized "selector" functions. Commonly used with Redux, 
 
 The **Redux docs usage page on [Deriving Data with Selectors](https://redux.js.org/usage/deriving-data-selectors)** covers the purpose and motivation for selectors, why memoized selectors are useful, typical Reselect usage patterns, and using selectors with [React-Redux].
 
+<a id="installation" />
+
 ## Installation
 
 ### Redux Toolkit
@@ -38,16 +40,16 @@ yarn add reselect
 
 The Reselect docs are available at **https://reselect.js.org**, and include usage guides and API references:
 
-- [**Introduction**](#https://reselect.js.org/introduction/getting-started)
-- [**How Does Reselect Work?**](#https://reselect.js.org/introduction/how-does-reselect-work)
+- [**Introduction**](https://reselect.js.org/introduction/getting-started)
+- [**How Does Reselect Work?**](https://reselect.js.org/introduction/how-does-reselect-work)
 - **API Reference**:
   - **[`createSelector`]**
   - **[`createSelectorCreator`]**
   - **[`createStructuredSelector`]**
-  - [**Development-Only Stability Checks**](#https://reselect.js.org/api/development-only-stability-checks)
+  - [**Development-Only Stability Checks**](https://reselect.js.org/api/development-only-stability-checks)
   - **[`lruMemoize`]**
   - **[`weakMapMemoize`]**
-- [**FAQ**](#https://reselect.js.org/FAQ)
+- [**FAQ**](https://reselect.js.org/FAQ)
 
 ## Basic Usage
 
@@ -162,7 +164,7 @@ These updates aim to enhance flexibility, performance, and developer experience.
 
   - Removed `ParametricSelector` and `OutputParametricSelector` types. Their functionalities are now integrated into `Selector` and `OutputSelector` respectively, which inherently support additional parameters.
 
-<div align="right">[ <a href="installation">↑ Back to top ↑</a> ]</div>
+<div align="right">[ <a href="#installation">↑ Back to top ↑</a> ]</div>
 
 ---
 

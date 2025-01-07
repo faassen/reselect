@@ -13,7 +13,15 @@ import { ExternalLinks } from '@site/src/components/ExternalLinks'
 
 # `lruMemoize`
 
-A memoization function that uses a provided equality check function to compare its inputs. This was originally known as `defaultMemoize`, and was the default inside of <InternalLinks.CreateSelector /> up through version 4.x.
+:::info
+
+- **Previous Versions:** Prior to version 5.0.0, Reselect used `lruMemoize` as the default memoizer in <InternalLinks.CreateSelector />. At that time, it was referred to as `defaultMemoize`.
+
+- **Reselect 5.0.0 and Later:** Starting with version 5.0.0, Reselect has switched to using <InternalLinks.WeakMapMemoize /> as the default memoizer in <InternalLinks.CreateSelector />.
+
+:::
+
+A memoization function that uses a provided equality check function to compare its inputs. **This was originally known as `defaultMemoize`**, and was the default inside of <InternalLinks.CreateSelector /> up through version 4.x.
 
 It has a default cache size of 1. This means it always recalculates when the value of an argument changes. However, this can be customized as needed with a specific max cache size (since 4.1.0).
 
@@ -57,7 +65,7 @@ const referenceEqualityCheck = (previousValue, currentValue) => {
 | `func`                   | The function to be memoized.                              |
 | `equalityCheckOrOptions` | Either an equality check function or an `options` object. |
 
-Since 4.1.0, `lruMemoize` also accepts an options object as its first argument instead of an `equalityCheck` function. The `options` object may contain:
+Since 4.1.0, `lruMemoize` also accepts an options object as its second argument instead of an `equalityCheck` function. The `options` object may contain:
 
 ```ts
 type EqualityFn<T = any> = (a: T, b: T) => boolean
@@ -69,11 +77,11 @@ interface LruMemoizeOptions<Result = any> {
 }
 ```
 
-| Name                  | Description                                                                                                                                                                                                                                                                                                                                                                         |
-| :-------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `equalityCheck`       | Used to compare the individual arguments of the provided calculation function. <br /> **`Default`** = `defaultEqualityCheck`                                                                                                                                                                                                                                                        |
-| `resultEqualityCheck` | If provided, used to compare a newly generated output value against previous values in the cache. If a match is found, the old value is returned. This addresses the common <code>todos.map(todo => todo.id)</code> use case, where an update to another field in the original data causes a recalculation due to changed references, but the output is still effectively the same. |
-| `maxSize`             | The cache size for the selector. If greater than 1, the selector will use an LRU cache internally. <br /> **`Default`** = 1                                                                                                                                                                                                                                                         |
+| Name                  | Description                                                                                                                                                                                                                                                                                                                                                                                            |
+| :-------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `equalityCheck`       | Used to compare the individual arguments of the provided calculation function. <br /> **`Default`** = `referenceEqualityCheck`                                                                                                                                                                                                                                                                         |
+| `resultEqualityCheck` | If provided, used to compare a newly generated output value against previous values in the cache. If a match is found, the old value is returned. This addresses the common <code>todos.map(todo => todo.id)</code> use case, where an update to another field in the original data causes a recalculation due to changed references, but the output is still effectively the same. <br /> Since 4.1.0 |
+| `maxSize`             | The cache size for the selector. If greater than 1, the selector will use an LRU cache internally. <br /> **`Default`** = 1                                                                                                                                                                                                                                                                            |
 
 :::warning
 

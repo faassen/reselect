@@ -36,11 +36,11 @@ Since this is a common mistake, we've added a development mode check to catch th
 type DevModeCheckFrequency = 'always' | 'once' | 'never'
 ```
 
-| Possible Values | Description                                     |
-| :-------------- | :---------------------------------------------- |
-| `once`          | Run only the first time the selector is called. |
-| `always`        | Run every time the selector is called.          |
-| `never`         | Never run the input stability check.            |
+| Possible Values | Description                                               |
+| :-------------- | :-------------------------------------------------------- |
+| `once`          | Run only the first time the selector is called. (default) |
+| `always`        | Run every time the selector is called.                    |
+| `never`         | Never run the input stability check.                      |
 
 :::info
 
@@ -158,11 +158,11 @@ const brokenSelector = createSelector(
 type DevModeCheckFrequency = 'always' | 'once' | 'never'
 ```
 
-| Possible Values | Description                                     |
-| :-------------- | :---------------------------------------------- |
-| `once`          | Run only the first time the selector is called. |
-| `always`        | Run every time the selector is called.          |
-| `never`         | Never run the identity function check.          |
+| Possible Values | Description                                               |
+| :-------------- | :-------------------------------------------------------- |
+| `once`          | Run only the first time the selector is called. (default) |
+| `always`        | Run every time the selector is called.                    |
+| `never`         | Never run the identity function check.                    |
 
 :::info
 

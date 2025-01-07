@@ -13,6 +13,12 @@ import { ExternalLinks } from '@site/src/components/ExternalLinks'
 
 # `weakMapMemoize`
 
+:::info
+
+Starting in Reselect 5.0.0, `weakMapMemoize` is the default memoizer used in <InternalLinks.CreateSelector />.
+
+:::
+
 <InternalLinks.LruMemoize /> has to be explicitly configured to have a cache
 size larger than 1, and uses an LRU cache internally.
 
@@ -283,7 +289,7 @@ Starting in 5.0.0, you can eliminate this problem using `weakMapMemoize`.
   <TabItem value='ts'>
 
 ```ts title="weakMapMemoize/cacheSizeSolution.ts"
-import { createSelector, weakMapMemoize } from 'reselect'
+import { createSelector } from 'reselect'
 import type { RootState } from './cacheSizeProblem'
 
 const state: RootState = {
@@ -295,16 +301,13 @@ const state: RootState = {
   ]
 }
 
+// `createSelector` uses `weakMapMemoize` by default.
 const selectItemsByCategory = createSelector(
   [
     (state: RootState) => state.items,
     (state: RootState, category: string) => category
   ],
-  (items, category) => items.filter(item => item.category === category),
-  {
-    memoize: weakMapMemoize,
-    argsMemoize: weakMapMemoize
-  }
+  (items, category) => items.filter(item => item.category === category)
 )
 
 selectItemsByCategory(state, 'Electronics') // Selector runs
@@ -317,7 +320,7 @@ selectItemsByCategory(state, 'Electronics') // Still cached!
   <TabItem value='js'>
 
 ```js title="weakMapMemoize/cacheSizeSolution.js"
-import { createSelector, weakMapMemoize } from 'reselect'
+import { createSelector } from 'reselect'
 
 const state = {
   items: [
@@ -328,13 +331,10 @@ const state = {
   ]
 }
 
+// `createSelector` uses `weakMapMemoize` by default.
 const selectItemsByCategory = createSelector(
   [state => state.items, (state, category) => category],
-  (items, category) => items.filter(item => item.category === category),
-  {
-    memoize: weakMapMemoize,
-    argsMemoize: weakMapMemoize
-  }
+  (items, category) => items.filter(item => item.category === category)
 )
 
 selectItemsByCategory(state, 'Electronics') // Selector runs
@@ -352,9 +352,11 @@ This solves the problem of having to know and set the cache size prior to creati
 
 ## Parameters
 
-| Name   | Description                  |
-| :----- | :--------------------------- |
-| `func` | The function to be memoized. |
+| Name                           | Description                                                                                                                                                                                                                                                                                                                                                                                            |
+| :----------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `func`                         | The function to be memoized.                                                                                                                                                                                                                                                                                                                                                                           |
+| `options?`                     | An options object containing an optional `resultEqualityCheck` function.                                                                                                                                                                                                                                                                                                                               |
+| `options.resultEqualityCheck?` | If provided, used to compare a newly generated output value against previous values in the cache. If a match is found, the old value is returned. This addresses the common <code>todos.map(todo => todo.id)</code> use case, where an update to another field in the original data causes a recalculation due to changed references, but the output is still effectively the same. <br /> Since 5.0.0 |
 
 ## Returns
 
@@ -382,6 +384,7 @@ A memoized function with a `.clearCache()` method attached.
   <TabItem value='ts'>
 
 ```ts title="weakMapMemoize/usingWithCreateSelector.ts"
+import { shallowEqual } from 'react-redux'
 import { createSelector, weakMapMemoize } from 'reselect'
 import type { RootState } from './cacheSizeProblem'
 
@@ -402,7 +405,13 @@ const selectItemsByCategory = createSelector(
   (items, category) => items.filter(item => item.category === category),
   {
     memoize: weakMapMemoize,
-    argsMemoize: weakMapMemoize
+    argsMemoize: weakMapMemoize,
+    argsMemoizeOptions: {
+      resultEqualityCheck: shallowEqual
+    },
+    memoizeOptions: {
+      resultEqualityCheck: shallowEqual
+    }
   }
 )
 
@@ -416,6 +425,7 @@ selectItemsByCategory(state, 'Electronics')
   <TabItem value='js'>
 
 ```js title="weakMapMemoize/usingWithCreateSelector.js"
+import { shallowEqual } from 'react-redux'
 import { createSelector, weakMapMemoize } from 'reselect'
 
 const state = {
@@ -432,7 +442,13 @@ const selectItemsByCategory = createSelector(
   (items, category) => items.filter(item => item.category === category),
   {
     memoize: weakMapMemoize,
-    argsMemoize: weakMapMemoize
+    argsMemoize: weakMapMemoize,
+    argsMemoizeOptions: {
+      resultEqualityCheck: shallowEqual
+    },
+    memoizeOptions: {
+      resultEqualityCheck: shallowEqual
+    }
   }
 )
 
@@ -461,6 +477,7 @@ selectItemsByCategory(state, 'Electronics')
   <TabItem value='ts'>
 
 ```ts title="weakMapMemoize/usingWithCreateSelectorCreator.ts"
+import { shallowEqual } from 'react-redux'
 import { createSelectorCreator, weakMapMemoize } from 'reselect'
 import type { RootState } from './cacheSizeProblem'
 
@@ -475,7 +492,13 @@ const state: RootState = {
 
 const createSelectorWeakMap = createSelectorCreator({
   memoize: weakMapMemoize,
-  argsMemoize: weakMapMemoize
+  argsMemoize: weakMapMemoize,
+  argsMemoizeOptions: {
+    resultEqualityCheck: shallowEqual
+  },
+  memoizeOptions: {
+    resultEqualityCheck: shallowEqual
+  }
 })
 
 const selectItemsByCategory = createSelectorWeakMap(
@@ -496,6 +519,7 @@ selectItemsByCategory(state, 'Electronics')
   <TabItem value='js'>
 
 ```js title="weakMapMemoize/usingWithCreateSelectorCreator.js"
+import { shallowEqual } from 'react-redux'
 import { createSelectorCreator, weakMapMemoize } from 'reselect'
 
 const state = {
@@ -509,7 +533,13 @@ const state = {
 
 const createSelectorWeakMap = createSelectorCreator({
   memoize: weakMapMemoize,
-  argsMemoize: weakMapMemoize
+  argsMemoize: weakMapMemoize,
+  argsMemoizeOptions: {
+    resultEqualityCheck: shallowEqual
+  },
+  memoizeOptions: {
+    resultEqualityCheck: shallowEqual
+  }
 })
 
 const selectItemsByCategory = createSelectorWeakMap(

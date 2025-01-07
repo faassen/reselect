@@ -1,3 +1,4 @@
+import { shallowEqual } from 'react-redux'
 import { createSelectorCreator, weakMapMemoize } from 'reselect'
 import type { RootState } from './cacheSizeProblem'
 
@@ -12,7 +13,13 @@ const state: RootState = {
 
 const createSelectorWeakMap = createSelectorCreator({
   memoize: weakMapMemoize,
-  argsMemoize: weakMapMemoize
+  argsMemoize: weakMapMemoize,
+  argsMemoizeOptions: {
+    resultEqualityCheck: shallowEqual
+  },
+  memoizeOptions: {
+    resultEqualityCheck: shallowEqual
+  }
 })
 
 const selectItemsByCategory = createSelectorWeakMap(

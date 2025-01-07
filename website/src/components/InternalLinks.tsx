@@ -9,6 +9,7 @@ interface Props {
 export const InternalLinks = {
   Selector: memo(({ text = 'selector' }) => (
     <Link
+      id="selector-function"
       to="/introduction/getting-started#selector-function"
       title="Selector Function"
     >
@@ -17,6 +18,7 @@ export const InternalLinks = {
   )),
   InputSelectors: memo(({ text = 'input selectors' }) => (
     <Link
+      id="input-selectors"
       to="/introduction/getting-started#input-selectors"
       title="Input Selectors"
     >
@@ -25,6 +27,7 @@ export const InternalLinks = {
   )),
   OutputSelector: memo(({ text = 'output selector' }) => (
     <Link
+      id="output-selector"
       to="/introduction/getting-started#output-selector"
       title="Output Selector"
     >
@@ -33,6 +36,7 @@ export const InternalLinks = {
   )),
   ResultFunction: memo(({ text = 'result function' }) => (
     <Link
+      id="result-function"
       to="/introduction/getting-started#result-function"
       title="Result Function"
     >
@@ -40,7 +44,11 @@ export const InternalLinks = {
     </Link>
   )),
   Dependencies: memo(({ text = 'dependencies' }) => (
-    <Link to="/introduction/getting-started#dependencies" title="Dependencies">
+    <Link
+      id="dependencies"
+      to="/introduction/getting-started#dependencies"
+      title="Dependencies"
+    >
       {text}
     </Link>
   )),

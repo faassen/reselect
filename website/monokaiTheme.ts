@@ -1,4 +1,6 @@
-module.exports = {
+import type { PrismTheme } from 'prism-react-renderer'
+
+const monokaiTheme: PrismTheme = {
   plain: {
     color: '#f8f8f2',
     backgroundColor: '#272822'
@@ -60,3 +62,5 @@ module.exports = {
     }
   ]
 }
+
+export default monokaiTheme
