@@ -17,7 +17,7 @@ export default defineConfig({
       reselect: path.join(__dirname, 'src/index.ts'), // @remap-prod-remove-line
 
       // this mapping is disabled as we want `dist` imports in the tests only to be used for "type-only" imports which don't play a role for jest
-      '@internal': path.join(__dirname, 'src')
-    }
-  }
+      '@internal': path.join(__dirname, 'src'),
+    },
+  },
 })

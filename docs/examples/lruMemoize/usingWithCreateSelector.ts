@@ -19,13 +19,13 @@ const selectTodoIds = createSelector(
     memoizeOptions: {
       equalityCheck: shallowEqual,
       resultEqualityCheck: shallowEqual,
-      maxSize: 10
+      maxSize: 10,
     },
     argsMemoize: lruMemoize,
     argsMemoizeOptions: {
       equalityCheck: shallowEqual,
       resultEqualityCheck: shallowEqual,
-      maxSize: 10
-    }
-  }
+      maxSize: 10,
+    },
+  },
 )

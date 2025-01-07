@@ -9,7 +9,7 @@ interface Props {
 
 const MyComponent: FC<Props> = ({ id }) => {
   const { todos, alerts, todoById } = useSelector((state: RootState) =>
-    structuredSelector(state, id)
+    structuredSelector(state, id),
   )
 
   return (

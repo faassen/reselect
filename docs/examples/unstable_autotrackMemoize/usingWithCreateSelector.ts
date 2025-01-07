@@ -8,5 +8,5 @@ export interface RootState {
 const selectTodoIds = createSelector(
   [(state: RootState) => state.todos],
   todos => todos.map(todo => todo.id),
-  { memoize: unstable_autotrackMemoize }
+  { memoize: unstable_autotrackMemoize },
 )

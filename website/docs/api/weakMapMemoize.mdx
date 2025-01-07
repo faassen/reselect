@@ -64,16 +64,16 @@ const state: RootState = {
     { id: 1, category: 'Electronics', name: 'Wireless Headphones' },
     { id: 2, category: 'Books', name: 'The Great Gatsby' },
     { id: 3, category: 'Home Appliances', name: 'Blender' },
-    { id: 4, category: 'Stationery', name: 'Sticky Notes' }
-  ]
+    { id: 4, category: 'Stationery', name: 'Sticky Notes' },
+  ],
 }
 
 const selectItemsByCategory = createSelector(
   [
     (state: RootState) => state.items,
-    (state: RootState, category: string) => category
+    (state: RootState, category: string) => category,
   ],
-  (items, category) => items.filter(item => item.category === category)
+  (items, category) => items.filter(item => item.category === category),
 )
 
 selectItemsByCategory(state, 'Electronics') // Selector runs
@@ -93,13 +93,13 @@ const state = {
     { id: 1, category: 'Electronics', name: 'Wireless Headphones' },
     { id: 2, category: 'Books', name: 'The Great Gatsby' },
     { id: 3, category: 'Home Appliances', name: 'Blender' },
-    { id: 4, category: 'Stationery', name: 'Sticky Notes' }
-  ]
+    { id: 4, category: 'Stationery', name: 'Sticky Notes' },
+  ],
 }
 
 const selectItemsByCategory = createSelector(
   [state => state.items, (state, category) => category],
-  (items, category) => items.filter(item => item.category === category)
+  (items, category) => items.filter(item => item.category === category),
 )
 
 selectItemsByCategory(state, 'Electronics') // Selector runs
@@ -135,15 +135,15 @@ import type { RootState } from './cacheSizeProblem'
 const selectItemsByCategory = createSelector(
   [
     (state: RootState) => state.items,
-    (state: RootState, category: string) => category
+    (state: RootState, category: string) => category,
   ],
   (items, category) => items.filter(item => item.category === category),
   {
     memoize: lruMemoize,
     memoizeOptions: {
-      maxSize: 10
-    }
-  }
+      maxSize: 10,
+    },
+  },
 )
 ```
 
@@ -159,9 +159,9 @@ const selectItemsByCategory = createSelector(
   {
     memoize: lruMemoize,
     memoizeOptions: {
-      maxSize: 10
-    }
-  }
+      maxSize: 10,
+    },
+  },
 )
 ```
 
@@ -194,7 +194,7 @@ import type { RootState } from './cacheSizeProblem'
 
 const makeSelectItemsByCategory = (category: string) =>
   createSelector([(state: RootState) => state.items], items =>
-    items.filter(item => item.category === category)
+    items.filter(item => item.category === category),
   )
 
 interface Props {
@@ -204,7 +204,7 @@ interface Props {
 const MyComponent: FC<Props> = ({ category }) => {
   const selectItemsByCategory = useMemo(
     () => makeSelectItemsByCategory(category),
-    [category]
+    [category],
   )
 
   const itemsByCategory = useSelector(selectItemsByCategory)
@@ -229,13 +229,13 @@ import { createSelector } from 'reselect'
 
 const makeSelectItemsByCategory = category =>
   createSelector([state => state.items], items =>
-    items.filter(item => item.category === category)
+    items.filter(item => item.category === category),
   )
 
 const MyComponent = ({ category }) => {
   const selectItemsByCategory = useMemo(
     () => makeSelectItemsByCategory(category),
-    [category]
+    [category],
   )
 
   const itemsByCategory = useSelector(selectItemsByCategory)
@@ -263,9 +263,9 @@ import { createCachedSelector } from 're-reselect'
 const selectItemsByCategory = createCachedSelector(
   [
     (state: RootState) => state.items,
-    (state: RootState, category: string) => category
+    (state: RootState, category: string) => category,
   ],
-  (items, category) => items.filter(item => item.category === category)
+  (items, category) => items.filter(item => item.category === category),
 )((state: RootState, category: string) => category)
 ```
 
@@ -291,20 +291,20 @@ const state: RootState = {
     { id: 1, category: 'Electronics', name: 'Wireless Headphones' },
     { id: 2, category: 'Books', name: 'The Great Gatsby' },
     { id: 3, category: 'Home Appliances', name: 'Blender' },
-    { id: 4, category: 'Stationery', name: 'Sticky Notes' }
-  ]
+    { id: 4, category: 'Stationery', name: 'Sticky Notes' },
+  ],
 }
 
 const selectItemsByCategory = createSelector(
   [
     (state: RootState) => state.items,
-    (state: RootState, category: string) => category
+    (state: RootState, category: string) => category,
   ],
   (items, category) => items.filter(item => item.category === category),
   {
     memoize: weakMapMemoize,
-    argsMemoize: weakMapMemoize
-  }
+    argsMemoize: weakMapMemoize,
+  },
 )
 
 selectItemsByCategory(state, 'Electronics') // Selector runs
@@ -324,8 +324,8 @@ const state = {
     { id: 1, category: 'Electronics', name: 'Wireless Headphones' },
     { id: 2, category: 'Books', name: 'The Great Gatsby' },
     { id: 3, category: 'Home Appliances', name: 'Blender' },
-    { id: 4, category: 'Stationery', name: 'Sticky Notes' }
-  ]
+    { id: 4, category: 'Stationery', name: 'Sticky Notes' },
+  ],
 }
 
 const selectItemsByCategory = createSelector(
@@ -333,8 +333,8 @@ const selectItemsByCategory = createSelector(
   (items, category) => items.filter(item => item.category === category),
   {
     memoize: weakMapMemoize,
-    argsMemoize: weakMapMemoize
-  }
+    argsMemoize: weakMapMemoize,
+  },
 )
 
 selectItemsByCategory(state, 'Electronics') // Selector runs
@@ -390,20 +390,20 @@ const state: RootState = {
     { id: 1, category: 'Electronics', name: 'Wireless Headphones' },
     { id: 2, category: 'Books', name: 'The Great Gatsby' },
     { id: 3, category: 'Home Appliances', name: 'Blender' },
-    { id: 4, category: 'Stationery', name: 'Sticky Notes' }
-  ]
+    { id: 4, category: 'Stationery', name: 'Sticky Notes' },
+  ],
 }
 
 const selectItemsByCategory = createSelector(
   [
     (state: RootState) => state.items,
-    (state: RootState, category: string) => category
+    (state: RootState, category: string) => category,
   ],
   (items, category) => items.filter(item => item.category === category),
   {
     memoize: weakMapMemoize,
-    argsMemoize: weakMapMemoize
-  }
+    argsMemoize: weakMapMemoize,
+  },
 )
 
 selectItemsByCategory(state, 'Electronics') // Selector runs
@@ -423,8 +423,8 @@ const state = {
     { id: 1, category: 'Electronics', name: 'Wireless Headphones' },
     { id: 2, category: 'Books', name: 'The Great Gatsby' },
     { id: 3, category: 'Home Appliances', name: 'Blender' },
-    { id: 4, category: 'Stationery', name: 'Sticky Notes' }
-  ]
+    { id: 4, category: 'Stationery', name: 'Sticky Notes' },
+  ],
 }
 
 const selectItemsByCategory = createSelector(
@@ -432,8 +432,8 @@ const selectItemsByCategory = createSelector(
   (items, category) => items.filter(item => item.category === category),
   {
     memoize: weakMapMemoize,
-    argsMemoize: weakMapMemoize
-  }
+    argsMemoize: weakMapMemoize,
+  },
 )
 
 selectItemsByCategory(state, 'Electronics') // Selector runs
@@ -469,21 +469,21 @@ const state: RootState = {
     { id: 1, category: 'Electronics', name: 'Wireless Headphones' },
     { id: 2, category: 'Books', name: 'The Great Gatsby' },
     { id: 3, category: 'Home Appliances', name: 'Blender' },
-    { id: 4, category: 'Stationery', name: 'Sticky Notes' }
-  ]
+    { id: 4, category: 'Stationery', name: 'Sticky Notes' },
+  ],
 }
 
 const createSelectorWeakMap = createSelectorCreator({
   memoize: weakMapMemoize,
-  argsMemoize: weakMapMemoize
+  argsMemoize: weakMapMemoize,
 })
 
 const selectItemsByCategory = createSelectorWeakMap(
   [
     (state: RootState) => state.items,
-    (state: RootState, category: string) => category
+    (state: RootState, category: string) => category,
   ],
-  (items, category) => items.filter(item => item.category === category)
+  (items, category) => items.filter(item => item.category === category),
 )
 
 selectItemsByCategory(state, 'Electronics') // Selector runs
@@ -503,18 +503,18 @@ const state = {
     { id: 1, category: 'Electronics', name: 'Wireless Headphones' },
     { id: 2, category: 'Books', name: 'The Great Gatsby' },
     { id: 3, category: 'Home Appliances', name: 'Blender' },
-    { id: 4, category: 'Stationery', name: 'Sticky Notes' }
-  ]
+    { id: 4, category: 'Stationery', name: 'Sticky Notes' },
+  ],
 }
 
 const createSelectorWeakMap = createSelectorCreator({
   memoize: weakMapMemoize,
-  argsMemoize: weakMapMemoize
+  argsMemoize: weakMapMemoize,
 })
 
 const selectItemsByCategory = createSelectorWeakMap(
   [state => state.items, (state, category) => category],
-  (items, category) => items.filter(item => item.category === category)
+  (items, category) => items.filter(item => item.category === category),
 )
 
 selectItemsByCategory(state, 'Electronics') // Selector runs

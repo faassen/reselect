@@ -40,7 +40,7 @@ const mySelector = createSelector(
   values => {
     console.log('calling..')
     return values.reduce((acc, val) => acc + val, 0)
-  }
+  },
 )
 
 var createSelector = require('./dist/reselect.js').createSelector
@@ -50,7 +50,7 @@ const mySelector = createSelector(
   values => {
     console.log('calling..')
     return values.reduce((acc, val) => acc + val, 0)
-  }
+  },
 )
 
 var state1 = { values: [1, 2, 3, 4, 5, 6, 7, 8, 9] }
@@ -189,8 +189,8 @@ const structuredSelector = createSelector(
   (a, b, c) => ({
     a,
     b,
-    c
-  })
+    c,
+  }),
 )
 ```
 
@@ -202,7 +202,7 @@ const mySelectorB = state => state.b
 
 const structuredSelector = createStructuredSelector({
   x: mySelectorA,
-  y: mySelectorB
+  y: mySelectorB,
 })
 
 const result = structuredSelector({ a: 1, b: 2 }) // will produce {x: 1, y: 2}
@@ -256,7 +256,7 @@ Selector creators can receive a variadic number of dependencies as well as an ar
 ```js
 const selector = createSelector(
   [state => state.a, state => state.b],
-  (a, b) => a * b
+  (a, b) => a * b,
 )
 ```
 
@@ -266,7 +266,7 @@ const selector = createSelector(
 const selector = createSelector(
   state => state.a,
   state => state.b,
-  (a, b) => a * b
+  (a, b) => a * b,
 )
 ```
 
@@ -279,7 +279,7 @@ const selector = createSelector(
   state => state.a,
   (state, props) => state.b * props.c,
   (_, props) => props.d,
-  (a, bc, d) => a + bc + d
+  (a, bc, d) => a + bc + d,
 )
 ```
 
@@ -297,7 +297,7 @@ const selector = customSelectorCreator(
   (a, b) => {
     called++
     return a + b
-  }
+  },
 )
 assert.equal(selector({ a: 1, b: 2 }), 3)
 assert.equal(selector({ a: 1, b: 2 }), 3)

@@ -9,19 +9,19 @@ interface RootState {
 const state: RootState = {
   todos: [
     { id: 0, completed: false },
-    { id: 1, completed: true }
+    { id: 1, completed: true },
   ],
   alerts: [
     { id: 0, read: false },
-    { id: 1, read: true }
-  ]
+    { id: 1, read: true },
+  ],
 }
 
 // With `Vitest` or `Jest`
 test('selector unit test', () => {
   const selectTodoIds = createSelector(
     [(state: RootState) => state.todos],
-    todos => todos.map(({ id }) => id)
+    todos => todos.map(({ id }) => id),
   )
   const firstResult = selectTodoIds(state)
   const secondResult = selectTodoIds(state)
@@ -42,7 +42,7 @@ test('selector unit test', () => {
 test('selector unit test', () => {
   const selectTodoIds = createSelector(
     [(state: RootState) => state.todos],
-    todos => todos.map(({ id }) => id)
+    todos => todos.map(({ id }) => id),
   )
   const firstResult = selectTodoIds(state)
   const secondResult = selectTodoIds(state)

@@ -7,7 +7,7 @@ export type {
   SelectorResultsMap,
   SelectorsObject,
   StructuredSelectorCreator,
-  TypedStructuredSelectorCreator
+  TypedStructuredSelectorCreator,
 } from './createStructuredSelector'
 export { setGlobalDevModeChecks } from './devModeChecks/setGlobalDevModeChecks'
 export { lruMemoize, referenceEqualityCheck } from './lruMemoize'
@@ -30,7 +30,7 @@ export type {
   Selector,
   SelectorArray,
   SelectorResultArray,
-  UnknownMemoizer
+  UnknownMemoizer,
 } from './types'
 export { weakMapMemoize } from './weakMapMemoize'
 export type { WeakMapMemoizeOptions } from './weakMapMemoize'

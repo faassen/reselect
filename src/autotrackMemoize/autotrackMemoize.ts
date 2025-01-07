@@ -72,7 +72,7 @@ export function autotrackMemoize<Func extends AnyFunction>(func: Func) {
   // we reference arguments instead of spreading them for performance reasons
 
   const node: Node<Record<string, unknown>> = createNode(
-    [] as unknown as Record<string, unknown>
+    [] as unknown as Record<string, unknown>,
   )
 
   let lastArgs: IArguments | null = null

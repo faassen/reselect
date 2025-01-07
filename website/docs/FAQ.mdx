@@ -48,7 +48,7 @@ export interface RootState {
 const selectAlertsByType = createSelector(
   [
     (state: RootState) => state.alerts,
-    (state: RootState, type: string) => type
+    (state: RootState, type: string) => type,
   ],
   (alerts, type) => alerts.filter(todo => todo.type === type),
   {
@@ -60,9 +60,9 @@ const selectAlertsByType = createSelector(
           console.log('Changed argument:', a, 'to', b)
         }
         return a === b
-      }
-    }
-  }
+      },
+    },
+  },
 )
 ```
 
@@ -84,9 +84,9 @@ const selectAlertsByType = createSelector(
           console.log('Changed argument:', a, 'to', b)
         }
         return a === b
-      }
-    }
-  }
+      },
+    },
+  },
 )
 ```
 
@@ -108,7 +108,7 @@ const selectTodosByCategory = createSelector(
   (state: RootState) => state.todos,
   // Extract the second argument to pass it on
   (state: RootState, category: string) => category,
-  (todos, category) => todos.filter(t => t.category === category)
+  (todos, category) => todos.filter(t => t.category === category),
 )
 ```
 
@@ -141,11 +141,11 @@ const selectAvailableItems = createSelector(
     // Second input selector forwards the category argument
     (state: RootState, category: string) => category,
     // Third input selector forwards the ID argument
-    (state: RootState, category: string, id: number) => id
+    (state: RootState, category: string, id: number) => id,
   ],
   // Output selector uses the extracted items, category, and ID
   (items, category, id) =>
-    items.filter(item => item.category === category && item.id !== id)
+    items.filter(item => item.category === category && item.id !== id),
 )
 ```
 
@@ -175,12 +175,12 @@ const selectItemId = (state: RootState, itemId: number) => itemId
 // expects an object as the second argument
 const selectVendorName = (
   state: RootState,
-  vendor: { id: number; name: string }
+  vendor: { id: number; name: string },
 ) => vendor.name
 
 const selectItemById = createSelector(
   [selectItems, selectItemId, selectVendorName],
-  (items, itemId, vendorName) => items[itemId]
+  (items, itemId, vendorName) => items[itemId],
 )
 ```
 
@@ -215,19 +215,19 @@ interface RootState {
 const state: RootState = {
   todos: [
     { id: 0, completed: false },
-    { id: 1, completed: true }
+    { id: 1, completed: true },
   ],
   alerts: [
     { id: 0, read: false },
-    { id: 1, read: true }
-  ]
+    { id: 1, read: true },
+  ],
 }
 
 // With `Vitest` or `Jest`
 test('selector unit test', () => {
   const selectTodoIds = createSelector(
     [(state: RootState) => state.todos],
-    todos => todos.map(({ id }) => id)
+    todos => todos.map(({ id }) => id),
   )
   const firstResult = selectTodoIds(state)
   const secondResult = selectTodoIds(state)
@@ -248,7 +248,7 @@ test('selector unit test', () => {
 test('selector unit test', () => {
   const selectTodoIds = createSelector(
     [(state: RootState) => state.todos],
-    todos => todos.map(({ id }) => id)
+    todos => todos.map(({ id }) => id),
   )
   const firstResult = selectTodoIds(state)
   const secondResult = selectTodoIds(state)
@@ -276,18 +276,18 @@ import { expect, test } from 'vitest'
 const state = {
   todos: [
     { id: 0, completed: false },
-    { id: 1, completed: true }
+    { id: 1, completed: true },
   ],
   alerts: [
     { id: 0, read: false },
-    { id: 1, read: true }
-  ]
+    { id: 1, read: true },
+  ],
 }
 
 // With `Vitest` or `Jest`
 test('selector unit test', () => {
   const selectTodoIds = createSelector([state => state.todos], todos =>
-    todos.map(({ id }) => id)
+    todos.map(({ id }) => id),
   )
   const firstResult = selectTodoIds(state)
   const secondResult = selectTodoIds(state)
@@ -307,7 +307,7 @@ test('selector unit test', () => {
 // With `Chai`
 test('selector unit test', () => {
   const selectTodoIds = createSelector([state => state.todos], todos =>
-    todos.map(({ id }) => id)
+    todos.map(({ id }) => id),
   )
   const firstResult = selectTodoIds(state)
   const secondResult = selectTodoIds(state)
@@ -354,7 +354,7 @@ Selectors that take arguments are commonly used inside of React-Redux's `useSele
 ```ts
 function TodosList({ category }) {
   const filteredTodos = useSelector(state =>
-    selectTodosByCategory(state, category)
+    selectTodosByCategory(state, category),
   )
 }
 ```
@@ -380,9 +380,9 @@ export const currySelector = <
   State,
   Result,
   Params extends readonly any[],
-  AdditionalFields
+  AdditionalFields,
 >(
-  selector: ((state: State, ...args: Params) => Result) & AdditionalFields
+  selector: ((state: State, ...args: Params) => Result) & AdditionalFields,
 ) => {
   const curriedSelector = (...args: Params) => {
     return (state: State) => {
@@ -395,8 +395,8 @@ export const currySelector = <
 const selectTodoByIdCurried = currySelector(
   createSelector(
     [(state: RootState) => state.todos, (state: RootState, id: number) => id],
-    (todos, id) => todos.find(todo => todo.id === id)
-  )
+    (todos, id) => todos.find(todo => todo.id === id),
+  ),
 )
 ```
 
@@ -417,8 +417,8 @@ export const currySelector = selector => {
 
 const selectTodoByIdCurried = currySelector(
   createSelector([state => state.todos, (state, id) => id], (todos, id) =>
-    todos.find(todo => todo.id === id)
-  )
+    todos.find(todo => todo.id === id),
+  ),
 )
 ```
 
@@ -449,7 +449,7 @@ export const createCurriedSelector = <
   InputSelectors extends SelectorArray,
   Result,
   OverrideMemoizeFunction extends UnknownMemoizer = typeof weakMapMemoize,
-  OverrideArgsMemoizeFunction extends UnknownMemoizer = typeof weakMapMemoize
+  OverrideArgsMemoizeFunction extends UnknownMemoizer = typeof weakMapMemoize,
 >(
   ...args: Parameters<
     typeof createSelector<
@@ -486,7 +486,7 @@ This:
 ```ts
 const selectTodoById = createSelector(
   [(state: RootState) => state.todos, (state: RootState, id: number) => id],
-  (todos, id) => todos.find(todo => todo.id === id)
+  (todos, id) => todos.find(todo => todo.id === id),
 )
 
 selectTodoById(state, 0)
@@ -543,31 +543,31 @@ const state: RootState = {
       id: 0,
       completed: false,
       title: 'Figure out if plants are really plotting world domination.',
-      description: 'They may be.'
+      description: 'They may be.',
     },
     {
       id: 1,
       completed: true,
       title: 'Practice telekinesis for 15 minutes',
-      description: 'Just do it'
-    }
+      description: 'Just do it',
+    },
   ],
   alerts: [
     { id: 0, read: false },
-    { id: 1, read: true }
-  ]
+    { id: 1, read: true },
+  ],
 }
 
 const selectTodoById = createSelector(
   [(state: RootState) => state.todos, (state: RootState, id: number) => id],
-  (todos, id) => todos.find(todo => todo.id === id)
+  (todos, id) => todos.find(todo => todo.id === id),
 )
 
 export const createParametricSelectorHook = <
   Result,
-  Params extends readonly unknown[]
+  Params extends readonly unknown[],
 >(
-  selector: (state: RootState, ...params: Params) => Result
+  selector: (state: RootState, ...params: Params) => Result,
 ) => {
   return (...args: Params) => {
     return useSelector((state: RootState) => selector(state, ...args))
@@ -590,24 +590,24 @@ const state = {
       id: 0,
       completed: false,
       title: 'Figure out if plants are really plotting world domination.',
-      description: 'They may be.'
+      description: 'They may be.',
     },
     {
       id: 1,
       completed: true,
       title: 'Practice telekinesis for 15 minutes',
-      description: 'Just do it'
-    }
+      description: 'Just do it',
+    },
   ],
   alerts: [
     { id: 0, read: false },
-    { id: 1, read: true }
-  ]
+    { id: 1, read: true },
+  ],
 }
 
 const selectTodoById = createSelector(
   [state => state.todos, (state, id) => id],
-  (todos, id) => todos.find(todo => todo.id === id)
+  (todos, id) => todos.find(todo => todo.id === id),
 )
 
 export const createParametricSelectorHook = selector => {
@@ -679,7 +679,7 @@ import type {
   OutputSelector,
   Selector,
   SelectorArray,
-  UnknownMemoizer
+  UnknownMemoizer,
 } from 'reselect'
 import { createSelector } from 'reselect'
 
@@ -691,12 +691,12 @@ interface RootState {
 export type TypedCreateSelector<
   State,
   MemoizeFunction extends UnknownMemoizer = typeof weakMapMemoize,
-  ArgsMemoizeFunction extends UnknownMemoizer = typeof weakMapMemoize
+  ArgsMemoizeFunction extends UnknownMemoizer = typeof weakMapMemoize,
 > = <
   InputSelectors extends readonly Selector<State>[],
   Result,
   OverrideMemoizeFunction extends UnknownMemoizer = MemoizeFunction,
-  OverrideArgsMemoizeFunction extends UnknownMemoizer = ArgsMemoizeFunction
+  OverrideArgsMemoizeFunction extends UnknownMemoizer = ArgsMemoizeFunction,
 >(
   ...createSelectorArgs: Parameters<
     typeof createSelector<
@@ -746,7 +746,7 @@ const identity = <Func extends (...args: any[]) => any>(func: Func) => func
 
 const createNonMemoizedSelector = createSelectorCreator({
   memoize: identity,
-  argsMemoize: identity
+  argsMemoize: identity,
 })
 ```
 
@@ -760,7 +760,7 @@ const identity = func => func
 
 const createNonMemoizedSelector = createSelectorCreator({
   memoize: identity,
-  argsMemoize: identity
+  argsMemoize: identity,
 })
 ```
 

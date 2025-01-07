@@ -23,6 +23,6 @@ const selectTodoIds = createAppSelector(
   // ❌ Known limitation: Parameter types are not inferred in this scenario
   // so you will have to manually annotate them.
   // highlight-start
-  (todos: Todo[]) => todos.map(({ id }) => id)
+  (todos: Todo[]) => todos.map(({ id }) => id),
   // highlight-end
 )

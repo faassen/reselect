@@ -89,5 +89,5 @@ export const InternalLinks = {
     <Link to="/api/createStructuredSelector" title="createStructuredSelector">
       <code>createStructuredSelector</code>
     </Link>
-  ))
+  )),
 } as const satisfies Record<string, FC<Props>>

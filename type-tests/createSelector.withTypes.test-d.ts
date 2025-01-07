@@ -19,12 +19,12 @@ interface RootState {
 const rootState: RootState = {
   todos: [
     { id: 0, completed: false },
-    { id: 1, completed: false }
+    { id: 1, completed: false },
   ],
   alerts: [
     { id: 0, read: false },
-    { id: 1, read: false }
-  ]
+    { id: 1, read: false },
+  ],
 }
 
 describe('createSelector.withTypes<RootState>()', () => {
@@ -33,7 +33,7 @@ describe('createSelector.withTypes<RootState>()', () => {
   describe('when input selectors are provided as a single array', () => {
     test('locks down state type and infers result function parameter types correctly', () => {
       expectTypeOf(createSelector.withTypes).returns.toEqualTypeOf(
-        createSelector
+        createSelector,
       )
 
       // Type of state is locked and the parameter types of the result function
@@ -44,13 +44,13 @@ describe('createSelector.withTypes<RootState>()', () => {
             expectTypeOf(state).toEqualTypeOf<RootState>(rootState)
 
             return state.todos
-          }
+          },
         ],
         todos => {
           expectTypeOf(todos).toEqualTypeOf<Todo[]>(rootState.todos)
 
           return todos.map(({ id }) => id)
-        }
+        },
       )
     })
   })
@@ -76,7 +76,7 @@ describe('createSelector.withTypes<RootState>()', () => {
           // the parameter types of the result function when
           // input selectors are provided as a single array.
           return todos.map(({ id }) => id)
-        }
+        },
       )
     })
 
@@ -104,14 +104,14 @@ describe('createSelector.withTypes<RootState>()', () => {
           // the parameter types of the result function when
           // input selectors are provided as a single array.
           return todos.map(({ id }) => id)
-        }
+        },
       )
     })
 
     test('can annotate parameter types of the result function to workaround type inference issue', () => {
       createAppSelector(
         state => state.todos,
-        (todos: Todo[]) => todos.map(({ id }) => id)
+        (todos: Todo[]) => todos.map(({ id }) => id),
       )
     })
   })

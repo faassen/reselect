@@ -13,7 +13,7 @@ import type {
   SelectorArray,
   SetRequired,
   Simplify,
-  UnknownMemoizer
+  UnknownMemoizer,
 } from './types'
 
 import {
@@ -21,7 +21,7 @@ import {
   collectInputSelectorResults,
   ensureIsArray,
   getDependencies,
-  getDevModeChecksExecutionInfo
+  getDevModeChecksExecutionInfo,
 } from './utils'
 
 /**
@@ -36,7 +36,7 @@ import {
 export interface CreateSelectorFunction<
   MemoizeFunction extends UnknownMemoizer = typeof weakMapMemoize,
   ArgsMemoizeFunction extends UnknownMemoizer = typeof weakMapMemoize,
-  StateType = any
+  StateType = any,
 > {
   /**
    * Creates a memoized selector function.
@@ -54,7 +54,7 @@ export interface CreateSelectorFunction<
   <InputSelectors extends SelectorArray<StateType>, Result>(
     ...createSelectorArgs: [
       ...inputSelectors: InputSelectors,
-      combiner: Combiner<InputSelectors, Result>
+      combiner: Combiner<InputSelectors, Result>,
     ]
   ): OutputSelector<
     InputSelectors,
@@ -81,7 +81,7 @@ export interface CreateSelectorFunction<
     InputSelectors extends SelectorArray<StateType>,
     Result,
     OverrideMemoizeFunction extends UnknownMemoizer = MemoizeFunction,
-    OverrideArgsMemoizeFunction extends UnknownMemoizer = ArgsMemoizeFunction
+    OverrideArgsMemoizeFunction extends UnknownMemoizer = ArgsMemoizeFunction,
   >(
     ...createSelectorArgs: [
       ...inputSelectors: InputSelectors,
@@ -93,7 +93,7 @@ export interface CreateSelectorFunction<
           OverrideMemoizeFunction,
           OverrideArgsMemoizeFunction
         >
-      >
+      >,
     ]
   ): OutputSelector<
     InputSelectors,
@@ -122,7 +122,7 @@ export interface CreateSelectorFunction<
     InputSelectors extends SelectorArray<StateType>,
     Result,
     OverrideMemoizeFunction extends UnknownMemoizer = MemoizeFunction,
-    OverrideArgsMemoizeFunction extends UnknownMemoizer = ArgsMemoizeFunction
+    OverrideArgsMemoizeFunction extends UnknownMemoizer = ArgsMemoizeFunction,
   >(
     inputSelectors: [...InputSelectors],
     combiner: Combiner<InputSelectors, Result>,
@@ -133,7 +133,7 @@ export interface CreateSelectorFunction<
         OverrideMemoizeFunction,
         OverrideArgsMemoizeFunction
       >
-    >
+    >,
   ): OutputSelector<
     InputSelectors,
     Result,
@@ -219,7 +219,7 @@ export interface CreateSelectorFunction<
  */
 export function createSelectorCreator<
   MemoizeFunction extends UnknownMemoizer,
-  ArgsMemoizeFunction extends UnknownMemoizer = typeof weakMapMemoize
+  ArgsMemoizeFunction extends UnknownMemoizer = typeof weakMapMemoize,
 >(
   options: Simplify<
     SetRequired<
@@ -231,7 +231,7 @@ export function createSelectorCreator<
       >,
       'memoize'
     >
-  >
+  >,
 ): CreateSelectorFunction<MemoizeFunction, ArgsMemoizeFunction>
 
 /**
@@ -287,7 +287,7 @@ export function createSelectorCreator<
     | SetRequired<
         CreateSelectorOptions<MemoizeFunction, ArgsMemoizeFunction>,
         'memoize'
-      >
+      >,
 >(
   memoizeOrOptions: MemoizeOrOptions,
   ...memoizeOptionsFromArgs: MemoizeOrOptions extends SetRequired<
@@ -304,7 +304,7 @@ export function createSelectorCreator<
   > = typeof memoizeOrOptions === 'function'
     ? {
         memoize: memoizeOrOptions as MemoizeFunction,
-        memoizeOptions: memoizeOptionsFromArgs
+        memoizeOptions: memoizeOptionsFromArgs,
       }
     : memoizeOrOptions
 
@@ -312,7 +312,7 @@ export function createSelectorCreator<
     InputSelectors extends SelectorArray,
     Result,
     OverrideMemoizeFunction extends UnknownMemoizer = MemoizeFunction,
-    OverrideArgsMemoizeFunction extends UnknownMemoizer = ArgsMemoizeFunction
+    OverrideArgsMemoizeFunction extends UnknownMemoizer = ArgsMemoizeFunction,
   >(
     ...createSelectorArgs: [
       ...inputSelectors: [...InputSelectors],
@@ -322,7 +322,7 @@ export function createSelectorCreator<
         ArgsMemoizeFunction,
         OverrideMemoizeFunction,
         OverrideArgsMemoizeFunction
-      >
+      >,
     ]
   ) => {
     let recomputations = 0
@@ -358,21 +358,21 @@ export function createSelectorCreator<
 
     assertIsFunction(
       resultFunc,
-      `createSelector expects an output function after the inputs, but received: [${typeof resultFunc}]`
+      `createSelector expects an output function after the inputs, but received: [${typeof resultFunc}]`,
     )
 
     // Determine which set of options we're using. Prefer options passed directly,
     // but fall back to options given to `createSelectorCreator`.
     const combinedOptions = {
       ...createSelectorCreatorOptions,
-      ...directlyPassedOptions
+      ...directlyPassedOptions,
     }
 
     const {
       memoize,
       memoizeOptions = [],
       argsMemoize = weakMapMemoize,
-      argsMemoizeOptions = []
+      argsMemoizeOptions = [],
     } = combinedOptions
 
     // Simplifying assumption: it's unlikely that the first options arg of the provided memoizer
@@ -384,63 +384,69 @@ export function createSelectorCreator<
     const finalArgsMemoizeOptions = ensureIsArray(argsMemoizeOptions)
     const dependencies = getDependencies(createSelectorArgs) as InputSelectors
 
-    const memoizedResultFunc = memoize(function recomputationWrapper() {
-      recomputations++
-      // apply arguments instead of spreading for performance.
-      // @ts-ignore
-      return (resultFunc as Combiner<InputSelectors, Result>).apply(
-        null,
-        arguments as unknown as Parameters<Combiner<InputSelectors, Result>>
-      )
-    }, ...finalMemoizeOptions) as Combiner<InputSelectors, Result> &
+    const memoizedResultFunc = memoize(
+      function recomputationWrapper() {
+        recomputations++
+        // apply arguments instead of spreading for performance.
+        // @ts-ignore
+        return (resultFunc as Combiner<InputSelectors, Result>).apply(
+          null,
+          arguments as unknown as Parameters<Combiner<InputSelectors, Result>>,
+        )
+      },
+      ...finalMemoizeOptions,
+    ) as Combiner<InputSelectors, Result> &
       ExtractMemoizerFields<OverrideMemoizeFunction>
 
     let firstRun = true
 
     // If a selector is called with the exact same arguments we don't need to traverse our dependencies again.
-    const selector = argsMemoize(function dependenciesChecker() {
-      dependencyRecomputations++
-      /** Return values of input selectors which the `resultFunc` takes as arguments. */
-      const inputSelectorResults = collectInputSelectorResults(
-        dependencies,
-        arguments
-      )
+    const selector = argsMemoize(
+      function dependenciesChecker() {
+        dependencyRecomputations++
+        /** Return values of input selectors which the `resultFunc` takes as arguments. */
+        const inputSelectorResults = collectInputSelectorResults(
+          dependencies,
+          arguments,
+        )
 
-      // apply arguments instead of spreading for performance.
-      // @ts-ignore
-      lastResult = memoizedResultFunc.apply(null, inputSelectorResults)
+        // apply arguments instead of spreading for performance.
+        // @ts-ignore
+        lastResult = memoizedResultFunc.apply(null, inputSelectorResults)
 
-      if (process.env.NODE_ENV !== 'production') {
-        const { devModeChecks = {} } = combinedOptions
-        const { identityFunctionCheck, inputStabilityCheck } =
-          getDevModeChecksExecutionInfo(firstRun, devModeChecks)
-        if (identityFunctionCheck.shouldRun) {
-          identityFunctionCheck.run(
-            resultFunc as Combiner<InputSelectors, Result>,
-            inputSelectorResults,
-            lastResult
-          )
+        if (process.env.NODE_ENV !== 'production') {
+          const { devModeChecks = {} } = combinedOptions
+          const { identityFunctionCheck, inputStabilityCheck } =
+            getDevModeChecksExecutionInfo(firstRun, devModeChecks)
+          if (identityFunctionCheck.shouldRun) {
+            identityFunctionCheck.run(
+              resultFunc as Combiner<InputSelectors, Result>,
+              inputSelectorResults,
+              lastResult,
+            )
+          }
+
+          if (inputStabilityCheck.shouldRun) {
+            // make a second copy of the params, to check if we got the same results
+            const inputSelectorResultsCopy = collectInputSelectorResults(
+              dependencies,
+              arguments,
+            )
+
+            inputStabilityCheck.run(
+              { inputSelectorResults, inputSelectorResultsCopy },
+              { memoize, memoizeOptions: finalMemoizeOptions },
+              arguments,
+            )
+          }
+
+          if (firstRun) firstRun = false
         }
 
-        if (inputStabilityCheck.shouldRun) {
-          // make a second copy of the params, to check if we got the same results
-          const inputSelectorResultsCopy = collectInputSelectorResults(
-            dependencies,
-            arguments
-          )
-
-          inputStabilityCheck.run(
-            { inputSelectorResults, inputSelectorResultsCopy },
-            { memoize, memoizeOptions: finalMemoizeOptions },
-            arguments
-          )
-        }
-
-        if (firstRun) firstRun = false
-      }
-
-      return lastResult
-    }, ...finalArgsMemoizeOptions) as unknown as Selector<
+        return lastResult
+      },
+      ...finalArgsMemoizeOptions,
+    ) as unknown as Selector<
       GetStateFromSelectors<InputSelectors>,
       Result,
       GetParamsFromSelectors<InputSelectors>
@@ -461,7 +467,7 @@ export function createSelectorCreator<
         recomputations = 0
       },
       memoize,
-      argsMemoize
+      argsMemoize,
     }) as OutputSelector<
       InputSelectors,
       Result,
@@ -471,7 +477,7 @@ export function createSelectorCreator<
   }
 
   Object.assign(createSelector, {
-    withTypes: () => createSelector
+    withTypes: () => createSelector,
   })
 
   return createSelector as CreateSelectorFunction<

@@ -9,8 +9,8 @@ describe('createSelector exposed utils', () => {
       {
         memoize: lruMemoize,
         argsMemoize: lruMemoize,
-        devModeChecks: { identityFunctionCheck: 'never' }
-      }
+        devModeChecks: { identityFunctionCheck: 'never' },
+      },
     )
     expect(selector({ a: 1 })).toBe(1)
     expect(selector({ a: 1 })).toBe(1)
@@ -50,7 +50,7 @@ describe('createSelector exposed utils', () => {
     const selector = createSelector(
       (state: StateAB) => state.a,
       (state: StateAB) => state.b,
-      (a, b) => a + b
+      (a, b) => a + b,
     )
 
     const result = selector({ a: 1, b: 2 })

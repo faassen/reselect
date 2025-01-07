@@ -7,7 +7,7 @@ import {
   createSelector,
   createSelectorCreator,
   lruMemoize,
-  weakMapMemoize
+  weakMapMemoize,
 } from 'reselect'
 
 import type { OutputSelector, OutputSelectorFields } from 'reselect'
@@ -18,7 +18,7 @@ import {
   isMemoizedSelector,
   localTest,
   setEnvToProd,
-  toggleCompleted
+  toggleCompleted,
 } from './testUtils'
 
 // Construct 1E6 states for perf test outside of the perf test so as to not change the execute time of the test function
@@ -49,7 +49,7 @@ describe('Basic selector behavior', () => {
     const selector = createSelector(
       (state: StateA) => state.a,
       a => a,
-      { devModeChecks: { identityFunctionCheck: 'never' } }
+      { devModeChecks: { identityFunctionCheck: 'never' } },
     )
     const firstState = { a: 1 }
     const firstStateNewPointer = { a: 1 }
@@ -68,7 +68,7 @@ describe('Basic selector behavior', () => {
     const selector = createSelector(
       (...params: any[]) => params.length,
       a => a,
-      { devModeChecks: { identityFunctionCheck: 'never' } }
+      { devModeChecks: { identityFunctionCheck: 'never' } },
     )
     expect(selector({})).toBe(1)
   })
@@ -77,7 +77,7 @@ describe('Basic selector behavior', () => {
     const selector = createSelector(
       (state: StateAB) => state.a,
       (state: StateAB) => state.b,
-      (a, b) => a + b
+      (a, b) => a + b,
     )
     const state1 = { a: 1, b: 2 }
     expect(selector(state1)).toBe(3)
@@ -98,17 +98,17 @@ describe('Basic selector behavior', () => {
           return state.b
         },
         'not a function',
-        (a: any, b: any) => a + b
-      )
+        (a: any, b: any) => a + b,
+      ),
     ).toThrow(
-      'createSelector expects all input-selectors to be functions, but received the following types: [function unnamed(), function input2(), string]'
+      'createSelector expects all input-selectors to be functions, but received the following types: [function unnamed(), function input2(), string]',
     )
 
     expect(() =>
       // @ts-ignore
-      createSelector((state: StateAB) => state.a, 'not a function')
+      createSelector((state: StateAB) => state.a, 'not a function'),
     ).toThrow(
-      'createSelector expects an output function after the inputs, but received: [string]'
+      'createSelector expects an output function after the inputs, but received: [string]',
     )
   })
 
@@ -122,7 +122,7 @@ describe('Basic selector behavior', () => {
       const selector = createSelector(
         (state: StateAB) => state.a,
         (state: StateAB) => state.b,
-        (a, b) => a + b
+        (a, b) => a + b,
       )
       const state1 = { a: 1, b: 2 }
 
@@ -145,7 +145,7 @@ describe('Basic selector behavior', () => {
         const selector = createSelector(
           (state: StateAB) => state.a,
           (state: StateAB) => state.b,
-          (a, b) => a + b
+          (a, b) => a + b,
         )
 
         const start = new Date()
@@ -159,14 +159,14 @@ describe('Basic selector behavior', () => {
 
         // Expected a million calls to a selector with the same arguments to take less than 1 second
         expect(totalTime).toBeLessThan(2000)
-      }
+      },
     )
   })
   test('memoized composite arguments', () => {
     const selector = createSelector(
       (state: StateSub) => state.sub,
       sub => sub,
-      { devModeChecks: { identityFunctionCheck: 'never' } }
+      { devModeChecks: { identityFunctionCheck: 'never' } },
     )
     const state1 = { sub: { a: 1 } }
     expect(selector(state1)).toEqual({ a: 1 })
@@ -182,7 +182,7 @@ describe('Basic selector behavior', () => {
       [state => state.a, state => state.b],
       (a, b) => {
         return a + b
-      }
+      },
     )
     expect(selector({ a: 1, b: 2 })).toBe(3)
     expect(selector({ a: 1, b: 2 })).toBe(3)
@@ -200,7 +200,7 @@ describe('Basic selector behavior', () => {
       (a, b, c) => {
         called++
         return a + b + c
-      }
+      },
     )
     expect(selector({ a: 1, b: 2 }, { c: 100 })).toBe(103)
   })
@@ -212,7 +212,7 @@ describe('Basic selector behavior', () => {
       () => {
         called++
         throw Error('test error')
-      }
+      },
     )
     expect(() => selector({ a: 1 })).toThrow('test error')
     expect(() => selector({ a: 1 })).toThrow('test error')
@@ -228,7 +228,7 @@ describe('Basic selector behavior', () => {
         if (a > 1) throw Error('test error')
         return a
       },
-      { devModeChecks: { identityFunctionCheck: 'never' } }
+      { devModeChecks: { identityFunctionCheck: 'never' } },
     )
     const state1 = { a: 1 }
     const state2 = { a: 2 }
@@ -244,7 +244,7 @@ describe('Combining selectors', () => {
     const selector1 = createSelector(
       (state: StateSub) => state.sub,
       sub => sub,
-      { devModeChecks: { identityFunctionCheck: 'never' } }
+      { devModeChecks: { identityFunctionCheck: 'never' } },
     )
     const selector2 = createSelector(selector1, sub => sub.a)
     const state1 = { sub: { a: 1 } }
@@ -260,12 +260,12 @@ describe('Combining selectors', () => {
     const selector1 = createSelector(
       (state: StateSub) => state.sub,
       (state: StateSub, props: { x: number; y: number }) => props.x,
-      (sub, x) => ({ sub, x })
+      (sub, x) => ({ sub, x }),
     )
     const selector2 = createSelector(
       selector1,
       (state: StateSub, props: { x: number; y: number }) => props.y,
-      (param, y) => param.sub.a + param.x + y
+      (param, y) => param.sub.a + param.x + y,
     )
     const state1 = { sub: { a: 1 } }
     expect(selector2(state1, { x: 100, y: 200 })).toBe(301)
@@ -281,12 +281,12 @@ describe('Combining selectors', () => {
       (state: StateSub) => state.sub,
       (state: StateSub, props: { x: number; y: number }, another: number) =>
         props.x + another,
-      (sub, x) => ({ sub, x })
+      (sub, x) => ({ sub, x }),
     )
     const selector2 = createSelector(
       selector1,
       (state: StateSub, props: { x: number; y: number }) => props.y,
-      (param, y) => param.sub.a + param.x + y
+      (param, y) => param.sub.a + param.x + y,
     )
     const state1 = { sub: { a: 1 } }
     expect(selector2(state1, { x: 100, y: 200 }, 100)).toBe(401)
@@ -301,12 +301,12 @@ describe('Combining selectors', () => {
     // a rather absurd equals operation we can verify in tests
     const createOverridenSelector = createSelectorCreator(
       lruMemoize,
-      (a, b) => typeof a === typeof b
+      (a, b) => typeof a === typeof b,
     )
     const selector = createOverridenSelector(
       (state: StateA) => state.a,
       a => a,
-      { devModeChecks: { identityFunctionCheck: 'never' } }
+      { devModeChecks: { identityFunctionCheck: 'never' } },
     )
     expect(selector({ a: 1 })).toBe(1)
     expect(selector({ a: 2 })).toBe(1) // yes, really true
@@ -325,7 +325,7 @@ describe('Customizing selectors', () => {
     const selector = customSelectorCreator(
       (state: StateAB) => state.a,
       (state: StateAB) => state.b,
-      (a, b) => a + b
+      (a, b) => a + b,
     )
     expect(selector({ a: 1, b: 2 })).toBe(3)
     expect(selector({ a: 1, b: 2 })).toBe(3)
@@ -353,8 +353,8 @@ describe('Customizing selectors', () => {
         memoizeOptions: (a, b) => {
           memoizer1Calls++
           return a === b
-        }
-      }
+        },
+      },
     )
 
     lruMemoizeAcceptsFirstArgDirectly({ a: 1, b: 2 })
@@ -372,9 +372,9 @@ describe('Customizing selectors', () => {
           (a, b) => {
             memoizer2Calls++
             return a === b
-          }
-        ]
-      }
+          },
+        ],
+      },
     )
 
     lruMemoizeAcceptsArgsAsArray({ a: 1, b: 2 })
@@ -387,13 +387,13 @@ describe('Customizing selectors', () => {
       (a, b) => {
         memoizer3Calls++
         return a === b
-      }
+      },
     )
 
     const lruMemoizeAcceptsArgFromCSC = createSelectorWithSeparateArg(
       (state: StateAB) => state.a,
       (state: StateAB) => state.b,
-      (a, b) => a + b
+      (a, b) => a + b,
     )
 
     lruMemoizeAcceptsArgFromCSC({ a: 1, b: 2 })
@@ -414,22 +414,22 @@ describe('Customizing selectors', () => {
           devModeChecks: { inputStabilityCheck: 'always' },
           memoizeOptions: {
             equalityCheck: (a, b) => false,
-            resultEqualityCheck: (a, b) => false
-          }
-        }
+            resultEqualityCheck: (a, b) => false,
+          },
+        },
       )
       selectorOriginal(deepClone(state))
       selectorOriginal(deepClone(state))
       const selectorDefaultParametric = createSelector(
         [
           (state: RootState, id: number) => id,
-          (state: RootState) => state.todos
+          (state: RootState) => state.todos,
         ],
-        (id, todos) => todos.filter(todo => todo.id === id)
+        (id, todos) => todos.filter(todo => todo.id === id),
       )
       selectorDefaultParametric(state, 1)
       selectorDefaultParametric(state, 1)
-    }
+    },
   )
 })
 
@@ -438,12 +438,12 @@ describe('argsMemoize and memoize', () => {
     const state = store.getState()
     const selectorDefault = createSelector(
       (state: RootState) => state.todos,
-      todos => todos.map(({ id }) => id)
+      todos => todos.map(({ id }) => id),
     )
     const selectorDefaultParametric = createSelector(
       [(state: RootState, id: number) => id, (state: RootState) => state.todos],
       (id, todos) => todos.filter(todo => todo.id === id),
-      { memoize: lruMemoize }
+      { memoize: lruMemoize },
     )
     selectorDefaultParametric(state, 0)
     selectorDefaultParametric(state, 1)
@@ -455,7 +455,7 @@ describe('argsMemoize and memoize', () => {
     const selectorAutotrack = createSelector(
       (state: RootState) => state.todos,
       todos => todos.map(({ id }) => id),
-      { memoize: autotrackMemoize }
+      { memoize: autotrackMemoize },
     )
     const outPutSelectorFields: (keyof OutputSelectorFields)[] = [
       'memoize',
@@ -467,7 +467,7 @@ describe('argsMemoize and memoize', () => {
       'recomputations',
       'resetRecomputations',
       'dependencyRecomputations',
-      'resetDependencyRecomputations'
+      'resetDependencyRecomputations',
     ]
     const memoizerFields: Exclude<
       keyof OutputSelector,
@@ -475,7 +475,7 @@ describe('argsMemoize and memoize', () => {
     >[] = ['clearCache', 'resultsCount', 'resetResultsCount']
     const allFields: (keyof OutputSelector)[] = [
       ...outPutSelectorFields,
-      ...memoizerFields
+      ...memoizerFields,
     ]
     const hasUndefinedValues = (object: object) => {
       return Object.values(object).some(e => e == null)
@@ -541,8 +541,8 @@ describe('argsMemoize and memoize', () => {
     store.dispatch(
       addTodo({
         title: 'Figure out if plants are really plotting world domination.',
-        description: 'They may be.'
-      })
+        description: 'They may be.',
+      }),
     )
     selectorAutotrack(store.getState())
     expect(selectorAutotrack.recomputations()).toBe(2)
@@ -552,20 +552,20 @@ describe('argsMemoize and memoize', () => {
   localTest('passing argsMemoize directly to createSelector', ({ store }) => {
     const otherCreateSelector = createSelectorCreator({
       memoize: microMemoize,
-      argsMemoize: microMemoize
+      argsMemoize: microMemoize,
     })
     const selectorDefault = otherCreateSelector(
       [(state: RootState) => state.todos],
       todos => todos.map(({ id }) => id),
-      { memoize: lruMemoize, argsMemoize: lruMemoize }
+      { memoize: lruMemoize, argsMemoize: lruMemoize },
     )
     const selectorAutotrack = createSelector(
       [(state: RootState) => state.todos],
       todos => todos.map(({ id }) => id),
-      { memoize: autotrackMemoize }
+      { memoize: autotrackMemoize },
     )
     expect(selectorDefault(store.getState())).toStrictEqual(
-      selectorAutotrack(store.getState())
+      selectorAutotrack(store.getState()),
     )
     expect(selectorDefault.recomputations()).toBe(1)
     expect(selectorAutotrack.recomputations()).toBe(1)
@@ -627,7 +627,7 @@ describe('argsMemoize and memoize', () => {
     // original options untouched.
     const selectorOriginal = createSelector(
       [(state: RootState) => state.todos],
-      todos => todos.map(({ id }) => id)
+      todos => todos.map(({ id }) => id),
     )
     selectorOriginal(store.getState())
     const start = performance.now()
@@ -645,8 +645,8 @@ describe('argsMemoize and memoize', () => {
         memoize: lruMemoize,
         // WARNING!! This is just for testing purposes, do not use `autotrackMemoize` to memoize the arguments,
         // it can return false positives, since it's not tracking a nested field.
-        argsMemoize: autotrackMemoize
-      }
+        argsMemoize: autotrackMemoize,
+      },
     )
     selectorOverrideArgsMemoize(store.getState())
     for (let i = 0; i < 10; i++) {
@@ -660,7 +660,7 @@ describe('argsMemoize and memoize', () => {
     expect(selectorOriginal.dependencyRecomputations()).toBe(11)
     const selectorDefaultParametric = createSelector(
       [(state: RootState, id: number) => id, (state: RootState) => state.todos],
-      (id, todos) => todos.filter(todo => todo.id === id)
+      (id, todos) => todos.filter(todo => todo.id === id),
     )
     selectorDefaultParametric(store.getState(), 1)
     selectorDefaultParametric(store.getState(), 1)
@@ -676,24 +676,24 @@ describe('argsMemoize and memoize', () => {
     const selectorDefaultParametricArgsWeakMap = createSelector(
       [(state: RootState, id: number) => id, (state: RootState) => state.todos],
       (id, todos) => todos.filter(todo => todo.id === id),
-      { argsMemoize: weakMapMemoize }
+      { argsMemoize: weakMapMemoize },
     )
     const selectorDefaultParametricWeakMap = createSelector(
       [(state: RootState, id: number) => id, (state: RootState) => state.todos],
       (id, todos) => todos.filter(todo => todo.id === id),
-      { memoize: weakMapMemoize }
+      { memoize: weakMapMemoize },
     )
     selectorDefaultParametricArgsWeakMap(store.getState(), 1)
     selectorDefaultParametricArgsWeakMap(store.getState(), 1)
     expect(selectorDefaultParametricArgsWeakMap.recomputations()).toBe(1)
     expect(
-      selectorDefaultParametricArgsWeakMap.dependencyRecomputations()
+      selectorDefaultParametricArgsWeakMap.dependencyRecomputations(),
     ).toBe(1)
     selectorDefaultParametricArgsWeakMap(store.getState(), 2)
     selectorDefaultParametricArgsWeakMap(store.getState(), 1)
     expect(selectorDefaultParametricArgsWeakMap.recomputations()).toBe(2)
     expect(
-      selectorDefaultParametricArgsWeakMap.dependencyRecomputations()
+      selectorDefaultParametricArgsWeakMap.dependencyRecomputations(),
     ).toBe(2)
     selectorDefaultParametricArgsWeakMap(store.getState(), 2)
     // If we call the selector with 1, then 2, then 1 and back to 2 again,
@@ -701,7 +701,7 @@ describe('argsMemoize and memoize', () => {
     // but weakMapMemoize will recompute only twice.
     expect(selectorDefaultParametricArgsWeakMap.recomputations()).toBe(2)
     expect(
-      selectorDefaultParametricArgsWeakMap.dependencyRecomputations()
+      selectorDefaultParametricArgsWeakMap.dependencyRecomputations(),
     ).toBe(2)
     for (let i = 0; i < 10; i++) {
       selectorDefaultParametricArgsWeakMap(store.getState(), 1)
@@ -712,7 +712,7 @@ describe('argsMemoize and memoize', () => {
     }
     expect(selectorDefaultParametricArgsWeakMap.recomputations()).toBe(5)
     expect(
-      selectorDefaultParametricArgsWeakMap.dependencyRecomputations()
+      selectorDefaultParametricArgsWeakMap.dependencyRecomputations(),
     ).toBe(5)
     for (let i = 0; i < 10; i++) {
       selectorDefaultParametric(store.getState(), 1)
@@ -740,11 +740,11 @@ describe('argsMemoize and memoize', () => {
       memoize: microMemoize,
       memoizeOptions: { isEqual: (a, b) => a === b },
       argsMemoize: microMemoize,
-      argsMemoizeOptions: { isEqual: (a, b) => a === b }
+      argsMemoizeOptions: { isEqual: (a, b) => a === b },
     })
     const selectorMicroMemoize = createSelectorMicroMemoize(
       (state: RootState) => state.todos,
-      todos => todos.map(({ id }) => id)
+      todos => todos.map(({ id }) => id),
     )
     expect(selectorMicroMemoize(state)).to.be.an('array').that.is.not.empty
     // Checking existence of fields related to `argsMemoize`
@@ -773,9 +773,9 @@ describe('argsMemoize and memoize', () => {
           id: 0,
           completed: true,
           title: 'Practice telekinesis for 15 minutes',
-          description: 'Just do it'
-        }
-      ])
+          description: 'Just do it',
+        },
+      ]),
     ).to.be.an('array').that.is.not.empty
     expect(selectorMicroMemoize.recomputations()).to.be.a('number')
     expect(selectorMicroMemoize.dependencyRecomputations()).to.be.a('number')
@@ -786,15 +786,15 @@ describe('argsMemoize and memoize', () => {
           id: 0,
           completed: true,
           title: 'Practice telekinesis for 15 minutes',
-          description: 'Just do it'
-        }
-      ])
+          description: 'Just do it',
+        },
+      ]),
     ).to.be.an('array').that.is.not.empty
 
     const selectorMicroMemoizeOverridden = createSelectorMicroMemoize(
       [(state: RootState) => state.todos],
       todos => todos.map(({ id }) => id),
-      { memoize: lruMemoize, argsMemoize: lruMemoize }
+      { memoize: lruMemoize, argsMemoize: lruMemoize },
     )
     expect(selectorMicroMemoizeOverridden(state)).to.be.an('array').that.is.not
       .empty
@@ -810,21 +810,21 @@ describe('argsMemoize and memoize', () => {
     expect(selectorMicroMemoizeOverridden.options).toBeUndefined()
     // Checking existence of fields related to `memoize`
     expect(
-      selectorMicroMemoizeOverridden.memoizedResultFunc.clearCache
+      selectorMicroMemoizeOverridden.memoizedResultFunc.clearCache,
     ).to.be.a('function')
     expect(
       // @ts-expect-error
-      selectorMicroMemoizeOverridden.memoizedResultFunc.cache
+      selectorMicroMemoizeOverridden.memoizedResultFunc.cache,
     ).toBeUndefined()
     // @ts-expect-error
     expect(selectorMicroMemoizeOverridden.memoizedResultFunc.fn).toBeUndefined()
     expect(
       // @ts-expect-error
-      selectorMicroMemoizeOverridden.memoizedResultFunc.isMemoized
+      selectorMicroMemoizeOverridden.memoizedResultFunc.isMemoized,
     ).toBeUndefined()
     expect(
       // @ts-expect-error
-      selectorMicroMemoizeOverridden.memoizedResultFunc.options
+      selectorMicroMemoizeOverridden.memoizedResultFunc.options,
     ).toBeUndefined()
     // Checking existence of fields related to the actual memoized selector
     expect(selectorMicroMemoizeOverridden.dependencies).to.be.an('array').that
@@ -837,13 +837,13 @@ describe('argsMemoize and memoize', () => {
           id: 0,
           completed: true,
           title: 'Practice telekinesis for 15 minutes',
-          description: 'Just do it'
-        }
-      ])
+          description: 'Just do it',
+        },
+      ]),
     ).to.be.an('array').that.is.not.empty
     expect(selectorMicroMemoizeOverridden.recomputations()).to.be.a('number')
     expect(selectorMicroMemoizeOverridden.dependencyRecomputations()).to.be.a(
-      'number'
+      'number',
     )
     expect(
       selectorMicroMemoizeOverridden.resultFunc([
@@ -851,9 +851,9 @@ describe('argsMemoize and memoize', () => {
           id: 0,
           completed: true,
           title: 'Practice telekinesis for 15 minutes',
-          description: 'Just do it'
-        }
-      ])
+          description: 'Just do it',
+        },
+      ]),
     ).to.be.an('array').that.is.not.empty
 
     const selectorMicroMemoizeOverrideArgsMemoizeOnly =
@@ -862,14 +862,14 @@ describe('argsMemoize and memoize', () => {
         todos => todos.map(({ id }) => id),
         {
           argsMemoize: lruMemoize,
-          argsMemoizeOptions: { resultEqualityCheck: (a, b) => a === b }
-        }
+          argsMemoizeOptions: { resultEqualityCheck: (a, b) => a === b },
+        },
       )
     expect(selectorMicroMemoizeOverrideArgsMemoizeOnly(state)).to.be.an('array')
       .that.is.not.empty
     // Checking existence of fields related to `argsMemoize`
     expect(selectorMicroMemoizeOverrideArgsMemoizeOnly.clearCache).to.be.a(
-      'function'
+      'function',
     )
     // @ts-expect-error
     expect(selectorMicroMemoizeOverrideArgsMemoizeOnly.cache).toBeUndefined()
@@ -877,7 +877,7 @@ describe('argsMemoize and memoize', () => {
     expect(selectorMicroMemoizeOverrideArgsMemoizeOnly.fn).toBeUndefined()
     expect(
       // @ts-expect-error
-      selectorMicroMemoizeOverrideArgsMemoizeOnly.isMemoized
+      selectorMicroMemoizeOverrideArgsMemoizeOnly.isMemoized,
     ).toBeUndefined()
     // @ts-expect-error
     expect(selectorMicroMemoizeOverrideArgsMemoizeOnly.options).toBeUndefined()
@@ -885,26 +885,26 @@ describe('argsMemoize and memoize', () => {
       // Checking existence of fields related to `memoize`
       // @ts-expect-error Note that since we did not override `memoize` in the options object,
       // memoizedResultFunc.clearCache becomes an invalid field access, and we get `cache`, `fn`, `isMemoized` and `options` instead.
-      selectorMicroMemoizeOverrideArgsMemoizeOnly.memoizedResultFunc.clearCache
+      selectorMicroMemoizeOverrideArgsMemoizeOnly.memoizedResultFunc.clearCache,
     ).toBeUndefined()
     expect(
-      selectorMicroMemoizeOverrideArgsMemoizeOnly.memoizedResultFunc.cache
+      selectorMicroMemoizeOverrideArgsMemoizeOnly.memoizedResultFunc.cache,
     ).to.be.a('object')
     expect(
-      selectorMicroMemoizeOverrideArgsMemoizeOnly.memoizedResultFunc.fn
+      selectorMicroMemoizeOverrideArgsMemoizeOnly.memoizedResultFunc.fn,
     ).to.be.a('function')
     expect(
-      selectorMicroMemoizeOverrideArgsMemoizeOnly.memoizedResultFunc.isMemoized
+      selectorMicroMemoizeOverrideArgsMemoizeOnly.memoizedResultFunc.isMemoized,
     ).to.be.true
     expect(
-      selectorMicroMemoizeOverrideArgsMemoizeOnly.memoizedResultFunc.options
+      selectorMicroMemoizeOverrideArgsMemoizeOnly.memoizedResultFunc.options,
     ).to.be.a('object')
     // Checking existence of fields related to the actual memoized selector
     expect(selectorMicroMemoizeOverrideArgsMemoizeOnly.dependencies).to.be.an(
-      'array'
+      'array',
     ).that.is.not.empty
     expect(selectorMicroMemoizeOverrideArgsMemoizeOnly.lastResult()).to.be.an(
-      'array'
+      'array',
     ).that.is.not.empty
     expect(
       selectorMicroMemoizeOverrideArgsMemoizeOnly.memoizedResultFunc([
@@ -912,15 +912,15 @@ describe('argsMemoize and memoize', () => {
           id: 0,
           completed: true,
           title: 'Practice telekinesis for 15 minutes',
-          description: 'Just do it'
-        }
-      ])
+          description: 'Just do it',
+        },
+      ]),
     ).to.be.an('array').that.is.not.empty
     expect(
-      selectorMicroMemoizeOverrideArgsMemoizeOnly.recomputations()
+      selectorMicroMemoizeOverrideArgsMemoizeOnly.recomputations(),
     ).to.be.a('number')
     expect(
-      selectorMicroMemoizeOverrideArgsMemoizeOnly.dependencyRecomputations()
+      selectorMicroMemoizeOverrideArgsMemoizeOnly.dependencyRecomputations(),
     ).to.be.a('number')
     expect(
       selectorMicroMemoizeOverrideArgsMemoizeOnly.resultFunc([
@@ -928,15 +928,15 @@ describe('argsMemoize and memoize', () => {
           id: 0,
           completed: true,
           title: 'Practice telekinesis for 15 minutes',
-          description: 'Just do it'
-        }
-      ])
+          description: 'Just do it',
+        },
+      ]),
     ).to.be.an('array').that.is.not.empty
 
     const selectorMicroMemoizeOverrideMemoizeOnly = createSelectorMicroMemoize(
       [(state: RootState) => state.todos],
       todos => todos.map(({ id }) => id),
-      { memoize: lruMemoize }
+      { memoize: lruMemoize },
     )
     expect(selectorMicroMemoizeOverrideMemoizeOnly(state)).to.be.an('array')
       .that.is.not.empty
@@ -958,7 +958,7 @@ describe('argsMemoize and memoize', () => {
       'memoize',
       'argsMemoize',
       'dependencyRecomputations',
-      'resetDependencyRecomputations'
+      'resetDependencyRecomputations',
     ])
     expect(selectorMicroMemoizeOverrideMemoizeOnly.cache).to.be.an('object')
     expect(selectorMicroMemoizeOverrideMemoizeOnly.fn).to.be.a('function')
@@ -969,14 +969,14 @@ describe('argsMemoize and memoize', () => {
       .to.be.a('function')
       .that.has.all.keys(['clearCache', 'resultsCount', 'resetResultsCount'])
     expect(
-      selectorMicroMemoizeOverrideMemoizeOnly.memoizedResultFunc.clearCache
+      selectorMicroMemoizeOverrideMemoizeOnly.memoizedResultFunc.clearCache,
     ).to.be.a('function')
     // Checking existence of fields related to the actual memoized selector
     expect(selectorMicroMemoizeOverrideMemoizeOnly.dependencies).to.be.an(
-      'array'
+      'array',
     ).that.is.not.empty
     expect(selectorMicroMemoizeOverrideMemoizeOnly.lastResult()).to.be.an(
-      'array'
+      'array',
     ).that.is.not.empty
     expect(
       selectorMicroMemoizeOverrideMemoizeOnly.memoizedResultFunc([
@@ -984,15 +984,15 @@ describe('argsMemoize and memoize', () => {
           id: 0,
           completed: true,
           title: 'Practice telekinesis for 15 minutes',
-          description: 'Just do it'
-        }
-      ])
+          description: 'Just do it',
+        },
+      ]),
     ).to.be.an('array').that.is.not.empty
     expect(selectorMicroMemoizeOverrideMemoizeOnly.recomputations()).to.be.a(
-      'number'
+      'number',
     )
     expect(
-      selectorMicroMemoizeOverrideMemoizeOnly.dependencyRecomputations()
+      selectorMicroMemoizeOverrideMemoizeOnly.dependencyRecomputations(),
     ).to.be.a('number')
     expect(
       selectorMicroMemoizeOverrideMemoizeOnly.resultFunc([
@@ -1000,9 +1000,9 @@ describe('argsMemoize and memoize', () => {
           id: 0,
           completed: true,
           title: 'Practice telekinesis for 15 minutes',
-          description: 'Just do it'
-        }
-      ])
+          description: 'Just do it',
+        },
+      ]),
     ).to.be.an('array').that.is.not.empty
   })
 
@@ -1011,36 +1011,36 @@ describe('argsMemoize and memoize', () => {
     ({ store, state }) => {
       const createSelectorMicro = createSelectorCreator({
         memoize: microMemoize,
-        memoizeOptions: { isEqual: (a, b) => a === b }
+        memoizeOptions: { isEqual: (a, b) => a === b },
       })
       const selectorMicro = createSelectorMicro(
         [(state: RootState) => state.todos],
-        todos => todos.map(({ id }) => id)
+        todos => todos.map(({ id }) => id),
       )
       const selector = createSelector(
         [(state: RootState) => state.todos],
-        todos => todos.map(({ id }) => id)
+        todos => todos.map(({ id }) => id),
       )
       const selector1 = createSelector(
         [(state: RootState) => state.todos],
         todos => todos.map(({ id }) => id),
-        { memoize: weakMapMemoize }
+        { memoize: weakMapMemoize },
       )
       expect(() =>
         //@ts-expect-error
-        createSelectorMicro([(state: RootState) => state.todos], 'a')
+        createSelectorMicro([(state: RootState) => state.todos], 'a'),
       ).toThrowError(
         TypeError(
-          `createSelector expects an output function after the inputs, but received: [string]`
-        )
+          `createSelector expects an output function after the inputs, but received: [string]`,
+        ),
       )
       const selectorDefault = createSelector(
         (state: RootState) => state.users,
-        users => users.user.details.preferences.notifications.push.frequency
+        users => users.user.details.preferences.notifications.push.frequency,
       )
       const selectorDefault1 = createSelector(
         (state: RootState) => state.users.user,
-        user => user.details.preferences.notifications.push.frequency
+        user => user.details.preferences.notifications.push.frequency,
       )
       let called = 0
       const selectorDefault2 = createSelector(
@@ -1074,7 +1074,7 @@ describe('argsMemoize and memoize', () => {
         users => {
           return users.user.details.preferences.notifications.push.frequency
         },
-        { devModeChecks: { inputStabilityCheck: 'never' } }
+        { devModeChecks: { inputStabilityCheck: 'never' } },
       )
       const start = performance.now()
       for (let i = 0; i < 10_000_000; i++) {
@@ -1092,6 +1092,6 @@ describe('argsMemoize and memoize', () => {
       expect(stateBeforeChange1.todos[1]).toBe(stateAfterChange.todos[1])
       expect(stateBeforeChange1).toBe(stateBeforeChange)
       expect(stateBeforeChange1.alerts).toBe(stateBeforeChange.alerts)
-    }
+    },
   )
 })

@@ -9,16 +9,16 @@ const state: RootState = {
     { id: 1, category: 'Electronics', name: 'Wireless Headphones' },
     { id: 2, category: 'Books', name: 'The Great Gatsby' },
     { id: 3, category: 'Home Appliances', name: 'Blender' },
-    { id: 4, category: 'Stationery', name: 'Sticky Notes' }
-  ]
+    { id: 4, category: 'Stationery', name: 'Sticky Notes' },
+  ],
 }
 
 const selectItemsByCategory = createSelector(
   [
     (state: RootState) => state.items,
-    (state: RootState, category: string) => category
+    (state: RootState, category: string) => category,
   ],
-  (items, category) => items.filter(item => item.category === category)
+  (items, category) => items.filter(item => item.category === category),
 )
 
 selectItemsByCategory(state, 'Electronics') // Selector runs

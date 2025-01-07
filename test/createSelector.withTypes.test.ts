@@ -13,7 +13,7 @@ describe(createSelector.withTypes, () => {
     expect(createTypedSelector).toBe(createSelector)
 
     const selectTodoIds = createTypedSelector([state => state.todos], todos =>
-      todos.map(({ id }) => id)
+      todos.map(({ id }) => id),
     )
 
     expect(selectTodoIds).toBeMemoizedSelector()

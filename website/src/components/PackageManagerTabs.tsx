@@ -10,7 +10,7 @@ const packageManagers = [
   { value: 'npm', label: 'NPM', command: 'install' },
   { value: 'yarn', label: 'Yarn', command: 'add' },
   { value: 'bun', label: 'Bun', command: 'add' },
-  { value: 'pnpm', label: 'PNPM', command: 'add' }
+  { value: 'pnpm', label: 'PNPM', command: 'add' },
 ] as const
 
 const PackageManagerTabs: FC = () => {

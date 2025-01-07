@@ -6,7 +6,7 @@ import type {
   DevModeChecks,
   Selector,
   SelectorArray,
-  DevModeChecksExecutionInfo
+  DevModeChecksExecutionInfo,
 } from './types'
 
 export const NOT_FOUND = /* @__PURE__ */ Symbol('NOT_FOUND')
@@ -22,7 +22,7 @@ export type NOT_FOUND_TYPE = typeof NOT_FOUND
  */
 export function assertIsFunction<FunctionType extends Function>(
   func: unknown,
-  errorMessage = `expected a function, instead received ${typeof func}`
+  errorMessage = `expected a function, instead received ${typeof func}`,
 ): asserts func is FunctionType {
   if (typeof func !== 'function') {
     throw new TypeError(errorMessage)
@@ -39,7 +39,7 @@ export function assertIsFunction<FunctionType extends Function>(
  */
 export function assertIsObject<ObjectType extends Record<string, unknown>>(
   object: unknown,
-  errorMessage = `expected an object, instead received ${typeof object}`
+  errorMessage = `expected an object, instead received ${typeof object}`,
 ): asserts object is ObjectType {
   if (typeof object !== 'object') {
     throw new TypeError(errorMessage)
@@ -56,7 +56,7 @@ export function assertIsObject<ObjectType extends Record<string, unknown>>(
  */
 export function assertIsArrayOfFunctions<FunctionType extends Function>(
   array: unknown[],
-  errorMessage = `expected all items to be functions, instead received the following types: `
+  errorMessage = `expected all items to be functions, instead received the following types: `,
 ): asserts array is FunctionType[] {
   if (
     !array.every((item): item is FunctionType => typeof item === 'function')
@@ -65,7 +65,7 @@ export function assertIsArrayOfFunctions<FunctionType extends Function>(
       .map(item =>
         typeof item === 'function'
           ? `function ${item.name || 'unnamed'}()`
-          : typeof item
+          : typeof item,
       )
       .join(', ')
     throw new TypeError(`${errorMessage}[${itemTypes}]`)
@@ -97,7 +97,7 @@ export function getDependencies(createSelectorArgs: unknown[]) {
 
   assertIsArrayOfFunctions<Selector>(
     dependencies,
-    `createSelector expects all input-selectors to be functions, but received the following types: `
+    `createSelector expects all input-selectors to be functions, but received the following types: `,
   )
 
   return dependencies as SelectorArray
@@ -112,7 +112,7 @@ export function getDependencies(createSelectorArgs: unknown[]) {
  */
 export function collectInputSelectorResults(
   dependencies: SelectorArray,
-  inputSelectorArgs: unknown[] | IArguments
+  inputSelectorArgs: unknown[] | IArguments,
 ) {
   const inputSelectorResults = []
   const { length } = dependencies
@@ -133,24 +133,24 @@ export function collectInputSelectorResults(
  */
 export const getDevModeChecksExecutionInfo = (
   firstRun: boolean,
-  devModeChecks: Partial<DevModeChecks>
+  devModeChecks: Partial<DevModeChecks>,
 ) => {
   const { identityFunctionCheck, inputStabilityCheck } = {
     ...globalDevModeChecks,
-    ...devModeChecks
+    ...devModeChecks,
   }
   return {
     identityFunctionCheck: {
       shouldRun:
         identityFunctionCheck === 'always' ||
         (identityFunctionCheck === 'once' && firstRun),
-      run: runIdentityFunctionCheck
+      run: runIdentityFunctionCheck,
     },
     inputStabilityCheck: {
       shouldRun:
         inputStabilityCheck === 'always' ||
         (inputStabilityCheck === 'once' && firstRun),
-      run: runInputStabilityCheck
-    }
+      run: runInputStabilityCheck,
+    },
   } satisfies DevModeChecksExecutionInfo
 }

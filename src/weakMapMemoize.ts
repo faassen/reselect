@@ -5,7 +5,7 @@ import type {
   AnyFunction,
   DefaultMemoizeFields,
   EqualityFn,
-  Simplify
+  Simplify,
 } from './types'
 
 class StrongRef<T> {
@@ -76,7 +76,7 @@ function createCacheNode<T>(): CacheNode<T> {
     s: UNTERMINATED,
     v: undefined,
     o: null,
-    p: null
+    p: null,
   }
 }
 
@@ -193,7 +193,7 @@ function maybeDeref(r: any) {
  */
 export function weakMapMemoize<Func extends AnyFunction>(
   func: Func,
-  options: WeakMapMemoizeOptions<ReturnType<Func>> = {}
+  options: WeakMapMemoizeOptions<ReturnType<Func>> = {},
 ) {
   let fnNode = createCacheNode()
   const { resultEqualityCheck } = options

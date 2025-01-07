@@ -94,11 +94,11 @@ const selectCompletedTodosLength = createSelector(
     // ❌ Incorrect Use Case: This input selector will not be
     // memoized properly since it always returns a new reference.
     (state: RootState) =>
-      state.todos.filter(({ completed }) => completed === true)
+      state.todos.filter(({ completed }) => completed === true),
   ],
   completedTodos => completedTodos.length,
   // Will override the global setting.
-  { devModeChecks: { inputStabilityCheck: 'always' } }
+  { devModeChecks: { inputStabilityCheck: 'always' } },
 )
 ```
 
@@ -113,11 +113,11 @@ const selectCompletedTodosLength = createSelector(
   [
     // ❌ Incorrect Use Case: This input selector will not be
     // memoized properly since it always returns a new reference.
-    state => state.todos.filter(({ completed }) => completed === true)
+    state => state.todos.filter(({ completed }) => completed === true),
   ],
   completedTodos => completedTodos.length,
   // Will override the global setting.
-  { devModeChecks: { inputStabilityCheck: 'always' } }
+  { devModeChecks: { inputStabilityCheck: 'always' } },
 )
 ```
 
@@ -150,7 +150,7 @@ const brokenSelector = createSelector(
   // ✔️ GOOD: Contains extraction logic.
   [(state: RootState) => state.todos],
   // ❌ BAD: Does not contain transformation logic.
-  todos => todos
+  todos => todos,
 )
 ```
 
@@ -215,7 +215,7 @@ const selectTodos = createSelector(
   // ❌ BAD: Does not contain transformation logic.
   todos => todos,
   // Will override the global setting.
-  { devModeChecks: { identityFunctionCheck: 'always' } }
+  { devModeChecks: { identityFunctionCheck: 'always' } },
 )
 ```
 
@@ -232,7 +232,7 @@ const selectTodos = createSelector(
   // ❌ BAD: Does not contain transformation logic.
   todos => todos,
   // Will override the global setting.
-  { devModeChecks: { identityFunctionCheck: 'always' } }
+  { devModeChecks: { identityFunctionCheck: 'always' } },
 )
 ```
 

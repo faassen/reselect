@@ -24,7 +24,7 @@ This:
 // ✔️ This is optimal because we have less calculations in input selectors and more in the result function.
 const selectorGood = createSelector(
   [(state: RootState) => state.todos],
-  todos => someExpensiveComputation(todos)
+  todos => someExpensiveComputation(todos),
 )
 ```
 
@@ -34,6 +34,6 @@ Is preferable to this:
 // ❌ This is not optimal!
 const selectorBad = createSelector(
   [(state: RootState) => someExpensiveComputation(state.todos)],
-  someOtherCalculation
+  someOtherCalculation,
 )
 ```

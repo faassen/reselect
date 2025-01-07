@@ -74,7 +74,7 @@
     "memoize-one": "^6.0.0",
     "micro-memoize": "^4.0.9",
     "netlify-plugin-cache": "^1.0.3",
-    "prettier": "^2.7.1",
+    "prettier": "^3.4.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^9.0.4",

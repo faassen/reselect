@@ -81,44 +81,44 @@ const todoState = [
     id: nextTodoId++,
     title: 'Buy groceries',
     description: 'Milk, bread, eggs, and fruits',
-    completed: false
+    completed: false,
   },
   {
     id: nextTodoId++,
     title: 'Schedule dentist appointment',
     description: 'Check available slots for next week',
-    completed: false
+    completed: false,
   },
   {
     id: nextTodoId++,
     title: 'Convince the cat to get a job',
     description: 'Need extra income for cat treats',
-    completed: false
+    completed: false,
   },
   {
     id: nextTodoId++,
     title: 'Figure out if plants are plotting world domination',
     description: 'That cactus looks suspicious...',
-    completed: false
+    completed: false,
   },
   {
     id: nextTodoId++,
     title: 'Practice telekinesis',
     description: 'Try moving the remote without getting up',
-    completed: false
+    completed: false,
   },
   {
     id: nextTodoId++,
     title: 'Determine location of El Dorado',
     description: 'Might need it for the next vacation',
-    completed: false
+    completed: false,
   },
   {
     id: nextTodoId++,
     title: 'Master the art of invisible potato juggling',
     description: 'Great party trick',
-    completed: false
-  }
+    completed: false,
+  },
 ]
 
 export const createTodoItem = () => {
@@ -127,7 +127,7 @@ export const createTodoItem = () => {
     id,
     title: `Task ${id}`,
     description: `Description for task ${id}`,
-    completed: false
+    completed: false,
   }
 }
 
@@ -146,42 +146,42 @@ const alertState = [
     id: 0,
     message: 'You have an upcoming meeting at 3 PM.',
     type: 'reminder',
-    read: false
+    read: false,
   },
   {
     id: 1,
     message: 'New software update available.',
     type: 'notification',
-    read: false
+    read: false,
   },
   {
     id: 3,
     message:
       'The plants have been watered, but keep an eye on that shifty cactus.',
     type: 'notification',
-    read: false
+    read: false,
   },
   {
     id: 4,
     message:
       'Telekinesis class has been moved to 5 PM. Please do not bring any spoons.',
     type: 'reminder',
-    read: false
+    read: false,
   },
   {
     id: 5,
     message:
       'Expedition to El Dorado is postponed. The treasure map is being updated.',
     type: 'notification',
-    read: false
+    read: false,
   },
   {
     id: 6,
     message:
       'Invisible potato juggling championship is tonight. May the best mime win.',
     type: 'reminder',
-    read: false
-  }
+    read: false,
+  },
 ]
 
 // For nested fields tests
@@ -200,8 +200,8 @@ const userState: UserState = {
           street: '456 Main St',
           city: 'AnyTown',
           state: 'CA',
-          zip: '12345'
-        }
+          zip: '12345',
+        },
       },
       preferences: {
         newsletter: true,
@@ -210,21 +210,21 @@ const userState: UserState = {
           sms: false,
           push: {
             enabled: true,
-            frequency: 'daily'
-          }
-        }
-      }
+            frequency: 'daily',
+          },
+        },
+      },
     },
     status: 'active',
     login: {
       lastLogin: '2023-04-30T12:34:56Z',
-      loginCount: 123
-    }
+      loginCount: 123,
+    },
   },
   appSettings: {
     theme: 'dark',
-    language: 'en-US'
-  }
+    language: 'en-US',
+  },
 }
 
 const todoSlice = createSlice({
@@ -244,7 +244,7 @@ const todoSlice = createSlice({
       state.push({
         ...action.payload,
         id: newId,
-        completed: false
+        completed: false,
       })
     },
 
@@ -261,8 +261,8 @@ const todoSlice = createSlice({
 
     clearCompleted: state => {
       return state.filter(todo => !todo.completed)
-    }
-  }
+    },
+  },
 })
 
 const alertSlice = createSlice({
@@ -287,14 +287,14 @@ const alertSlice = createSlice({
       const newId = state.length > 0 ? state[state.length - 1].id + 1 : 0
       state.push({
         ...action.payload,
-        id: newId
+        id: newId,
       })
     },
 
     removeAlert: (state, action: PayloadAction<number>) => {
       return state.filter(alert => alert.id !== action.payload)
-    }
-  }
+    },
+  },
 })
 
 const userSlice = createSlice({
@@ -319,7 +319,7 @@ const userSlice = createSlice({
 
     updateLoginDetails: (
       state,
-      action: PayloadAction<{ lastLogin: string; loginCount: number }>
+      action: PayloadAction<{ lastLogin: string; loginCount: number }>,
     ) => {
       state.user.login = { ...state.user.login, ...action.payload }
     },
@@ -327,14 +327,14 @@ const userSlice = createSlice({
     updateUserAddress: (state, action: PayloadAction<Address>) => {
       state.user.details.address = {
         ...state.user.details.address,
-        ...action.payload
+        ...action.payload,
       }
     },
 
     updateBillingAddress: (state, action: PayloadAction<BillingAddress>) => {
       state.user.details.address.billing = {
         ...state.user.details.address.billing,
-        ...action.payload
+        ...action.payload,
       }
     },
 
@@ -345,24 +345,24 @@ const userSlice = createSlice({
 
     setNotificationPreferences: (
       state,
-      action: PayloadAction<Notifications>
+      action: PayloadAction<Notifications>,
     ) => {
       state.user.details.preferences.notifications = {
         ...state.user.details.preferences.notifications,
-        ...action.payload
+        ...action.payload,
       }
     },
 
     updateAppLanguage: (state, action: PayloadAction<string>) => {
       state.appSettings.language = action.payload
-    }
-  }
+    },
+  },
 })
 
 const rootReducer = combineReducers({
   [todoSlice.name]: todoSlice.reducer,
   [alertSlice.name]: alertSlice.reducer,
-  [userSlice.name]: userSlice.reducer
+  [userSlice.name]: userSlice.reducer,
 })
 
 export const setupStore = (preloadedState?: Partial<RootState>) => {
@@ -386,7 +386,7 @@ export const {
   addTodo,
   removeTodo,
   updateTodo,
-  clearCompleted
+  clearCompleted,
 } = todoSlice.actions
 
 export const { setUserName, setUserEmail, setAppTheme } = userSlice.actions
@@ -401,7 +401,7 @@ export const setFunctionName = (func: AnyFunction, name: string) => {
 
 export const setFunctionNames = (funcObject: Record<string, AnyFunction>) => {
   Object.entries(funcObject).forEach(([key, value]) =>
-    setFunctionName(value, key)
+    setFunctionName(value, key),
   )
 }
 
@@ -410,7 +410,7 @@ const state = store.getState()
 
 export const localTest = test.extend<LocalTestContext>({
   store,
-  state
+  state,
 })
 
 export const resetSelector = <S extends OutputSelector>(selector: S) => {
@@ -427,12 +427,12 @@ export const logRecomputations = <S extends OutputSelector>(selector: S) => {
     `time(s)`,
     `input selectors recalculated:`,
     selector.dependencyRecomputations(),
-    `time(s)`
+    `time(s)`,
   )
 }
 
 export const logSelectorRecomputations = <S extends OutputSelector>(
-  selector: S
+  selector: S,
 ) => {
   console.log(`\x1B[32m\x1B[1m${selector.name}\x1B[0m:`, {
     resultFunc: selector.recomputations(),
@@ -440,7 +440,7 @@ export const logSelectorRecomputations = <S extends OutputSelector>(
     newResults:
       typeof selector.memoizedResultFunc.resultsCount === 'function'
         ? selector.memoizedResultFunc.resultsCount()
-        : undefined
+        : undefined,
   })
   // console.log(
   //   `\x1B[32m\x1B[1m${selector.name}\x1B[0m result function recalculated:`,
@@ -458,21 +458,21 @@ export const logFunctionInfo = (func: AnyFunction, recomputations: number) => {
   console.log(
     `\x1B[32m\x1B[1m${func.name}\x1B[0m was called:`,
     recomputations,
-    'time(s)'
+    'time(s)',
   )
 }
 
 export const safeApply = <Params extends any[], Result>(
   func: (...args: Params) => Result,
-  args: Params
+  args: Params,
 ) => func.apply<null, Params, Result>(null, args)
 
 export const countRecomputations = <
   Params extends any[],
   Result,
-  AdditionalFields
+  AdditionalFields,
 >(
-  func: ((...args: Params) => Result) & AdditionalFields
+  func: ((...args: Params) => Result) & AdditionalFields,
 ) => {
   let recomputations = 0
   const wrapper = (...args: Params) => {
@@ -483,9 +483,9 @@ export const countRecomputations = <
     wrapper,
     {
       recomputations: () => recomputations,
-      resetRecomputations: () => (recomputations = 0)
+      resetRecomputations: () => (recomputations = 0),
     },
-    func
+    func,
   )
 }
 
@@ -535,7 +535,7 @@ export const isMemoizedSelector = (selector: object) => {
     typeof selector.argsMemoize === 'function' &&
     selector.dependencies.length >= 1 &&
     selector.dependencies.every(
-      (dependency): dependency is Function => typeof dependency === 'function'
+      (dependency): dependency is Function => typeof dependency === 'function',
     ) &&
     !selector.lastResult.length &&
     !selector.recomputations.length &&

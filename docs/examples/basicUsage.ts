@@ -8,12 +8,12 @@ interface RootState {
 const state: RootState = {
   todos: [
     { id: 0, completed: false },
-    { id: 1, completed: true }
+    { id: 1, completed: true },
   ],
   alerts: [
     { id: 0, read: false },
-    { id: 1, read: true }
-  ]
+    { id: 1, read: true },
+  ],
 }
 
 const selectCompletedTodos = (state: RootState) => {
@@ -30,7 +30,7 @@ const memoizedSelectCompletedTodos = createSelector(
   todos => {
     console.log('memoized selector ran')
     return todos.filter(todo => todo.completed === true)
-  }
+  },
 )
 
 memoizedSelectCompletedTodos(state) // memoized selector ran
@@ -40,5 +40,5 @@ memoizedSelectCompletedTodos(state)
 console.log(selectCompletedTodos(state) === selectCompletedTodos(state)) //=> false
 
 console.log(
-  memoizedSelectCompletedTodos(state) === memoizedSelectCompletedTodos(state)
+  memoizedSelectCompletedTodos(state) === memoizedSelectCompletedTodos(state),
 ) //=> true

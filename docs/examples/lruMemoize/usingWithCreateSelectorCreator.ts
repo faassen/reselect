@@ -16,17 +16,17 @@ const createSelectorShallowEqual = createSelectorCreator({
   memoizeOptions: {
     equalityCheck: shallowEqual,
     resultEqualityCheck: shallowEqual,
-    maxSize: 10
+    maxSize: 10,
   },
   argsMemoize: lruMemoize,
   argsMemoizeOptions: {
     equalityCheck: shallowEqual,
     resultEqualityCheck: shallowEqual,
-    maxSize: 10
-  }
+    maxSize: 10,
+  },
 })
 
 const selectTodoIds = createSelectorShallowEqual(
   [(state: RootState) => state.todos],
-  todos => todos.map(todo => todo.id)
+  todos => todos.map(todo => todo.id),
 )

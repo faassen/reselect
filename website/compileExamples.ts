@@ -4,7 +4,7 @@ import {
   mkdirSync,
   readFileSync,
   readdirSync,
-  writeFileSync
+  writeFileSync,
 } from 'node:fs'
 import path from 'node:path'
 import ts from 'typescript'
@@ -16,7 +16,7 @@ const preferredTags = {
   NEW_LINE_TAG: ['N', 'n'],
   SPACES_TAG: ['S', 's'],
   SPACES_BEFORE_COLON_TAG: ['C', 'c'],
-  SAME_LINE_ELSE_TAG: ['E', 'e']
+  SAME_LINE_ELSE_TAG: ['E', 'e'],
 }
 
 type PreferredTags = typeof preferredTags
@@ -48,7 +48,7 @@ class ParsedFileMetadata {
 
   public serialize() {
     return `; /*${ParsedFileMetadata.FILE_METADATA_TAG}${JSON.stringify(
-      this.metadata
+      this.metadata,
     )}${ParsedFileMetadata.FILE_METADATA_TAG}*/\n`
   }
 
@@ -57,7 +57,7 @@ class ParsedFileMetadata {
     const endTagRegex = `${ParsedFileMetadata.FILE_METADATA_TAG}\\*\\/\\r?\\n?`
 
     const metadataMatch = fileContents.match(
-      new RegExp(`${startTagRegex}([\\s\\S]*?)${endTagRegex}`)
+      new RegExp(`${startTagRegex}([\\s\\S]*?)${endTagRegex}`),
     )
 
     if (metadataMatch === null) {
@@ -96,13 +96,13 @@ const restoreWhitespace = (contents: string) => {
     NEW_LINE_TAG,
     SPACES_TAG,
     SPACES_BEFORE_COLON_TAG,
-    SAME_LINE_ELSE_TAG
+    SAME_LINE_ELSE_TAG,
   } = metadata
 
   if (options.preserveNewLines) {
     contents = contents.replace(
       new RegExp(`\\/\\*${NEW_LINE_TAG}\\*\\/`, 'g'),
-      ''
+      '',
     )
   }
 
@@ -112,7 +112,7 @@ const restoreWhitespace = (contents: string) => {
       (match, group1: string) => {
         const spacesCount = Number(group1)
         return `${' '.repeat(spacesCount)}:`
-      }
+      },
     )
 
     if (options.collapseSpacesBeforeRemovedColons) {
@@ -121,13 +121,13 @@ const restoreWhitespace = (contents: string) => {
           ' ?\\/\\*' +
             SPACES_BEFORE_COLON_TAG +
             '([0-9]+)\\*\\/(?=[,;\\)\\} \\t\\r\\n])',
-          'g'
+          'g',
         ),
-        ''
+        '',
       )
       contents = contents.replace(
         new RegExp(` ?\\/\\*${SPACES_BEFORE_COLON_TAG}([0-9]+)\\*\\/`, 'g'),
-        ' '
+        ' ',
       )
     } else {
       contents = contents.replace(
@@ -135,7 +135,7 @@ const restoreWhitespace = (contents: string) => {
         (match, group1: string) => {
           const spacesCount = Number(group1)
           return ' '.repeat(spacesCount)
-        }
+        },
       )
     }
   }
@@ -146,7 +146,7 @@ const restoreWhitespace = (contents: string) => {
       (match, group1: string) => {
         const spacesCount = Number(group1)
         return ' '.repeat(spacesCount - 2)
-      }
+      },
     )
   }
 
@@ -154,12 +154,12 @@ const restoreWhitespace = (contents: string) => {
     return contents.replace(
       new RegExp(
         `\\} \\/\\*${SAME_LINE_ELSE_TAG}([0-9]+)\\*\\/\\r?\\n[ \\t]*else`,
-        'g'
+        'g',
       ),
       (match, group1: string) => {
         const spacesCount = Number(group1)
         return `}${' '.repeat(spacesCount)}else`
-      }
+      },
     )
   }
 
@@ -196,7 +196,7 @@ class UnusedTagsFinder {
 
   constructor(
     public fileContents: string,
-    public options: PreserveTypescriptWhitespaceOptions
+    public options: PreserveTypescriptWhitespaceOptions,
   ) {
     this.checkedSimpleTags = new Set<string>()
     this.checkedTagsWithCount = new Set<string>()
@@ -243,7 +243,7 @@ const options = {
   preserveSpacesBeforeColons: true,
   collapseSpacesBeforeRemovedColons: true,
   preserveSameLineElse: true,
-  showDebugOutput: false
+  showDebugOutput: false,
 }
 
 const rebuildCodeFromBlocks = (blocks: Block[]) => {
@@ -255,12 +255,12 @@ const stringOrCommentEnd = {
   '"': /(?<!(?:^|[^\\])(?:\\\\)*\\)"/,
   '`': /(?<!(?:^|[^\\])(?:\\\\)*\\)`/,
   '//': /(?=\r?\n)/,
-  '/*': /\*\//
+  '/*': /\*\//,
 }
 
 const parseStringAndComments = (
   codeToParse: string,
-  skipEmptyCodeBlocks = true
+  skipEmptyCodeBlocks = true,
 ) => {
   const blocks: Block[] = []
 
@@ -312,19 +312,19 @@ const saveWhitespace = (file: string) => {
   const unusedTagsFinder = new UnusedTagsFinder(file, options)
   const NEW_LINE_TAG = unusedTagsFinder.findUnusedTag(
     preferredTags.NEW_LINE_TAG,
-    false
+    false,
   )
   const SPACES_TAG = unusedTagsFinder.findUnusedTag(
     preferredTags.SPACES_TAG,
-    true
+    true,
   )
   const SPACES_BEFORE_COLON_TAG = unusedTagsFinder.findUnusedTag(
     preferredTags.SPACES_BEFORE_COLON_TAG,
-    true
+    true,
   )
   const SAME_LINE_ELSE_TAG = unusedTagsFinder.findUnusedTag(
     preferredTags.SAME_LINE_ELSE_TAG,
-    true
+    true,
   )
 
   const NEW_LINE_REPLACEMENT = `/*${NEW_LINE_TAG}*/$1`
@@ -345,12 +345,12 @@ const saveWhitespace = (file: string) => {
 
     block.code = block.code.replace(
       isFileStart ? /(?<=[^ \n])(  +)(?![ :])/g : /(?<=^|[^ \n])(  +)(?![ :])/g,
-      (match, group1: string) => ` /*${SPACES_TAG}${group1.length}*/ `
+      (match, group1: string) => ` /*${SPACES_TAG}${group1.length}*/ `,
     )
 
     block.code = block.code.replace(
       isFileStart ? /(?<=(?:^|\n)[ \t]*)(\r?\n)/g : /(?<=\n[ \t]*)(\r?\n)/g,
-      NEW_LINE_REPLACEMENT
+      NEW_LINE_REPLACEMENT,
     )
 
     isFileStart = false
@@ -363,7 +363,7 @@ const saveWhitespace = (file: string) => {
     NEW_LINE_TAG,
     SPACES_TAG,
     SPACES_BEFORE_COLON_TAG,
-    SAME_LINE_ELSE_TAG
+    SAME_LINE_ELSE_TAG,
   })
 
   return metadataObj.serialize() + file
@@ -409,8 +409,8 @@ const compileTSFile = (filePath: string, tsconfigPath?: string) => {
   const result = ts.transpileModule(savedWhitespaceContents, {
     compilerOptions: {
       ...config.compilerOptions,
-      jsx
-    }
+      jsx,
+    },
   })
   const { outDir } = config.compilerOptions
   const tsconfigDirectory = path.dirname(tsconfigPath)
@@ -419,7 +419,7 @@ const compileTSFile = (filePath: string, tsconfigPath?: string) => {
     outDir,
     ...inputFileDirectory
       .split(path.sep)
-      .slice(tsconfigDirectory.split(path.sep).length)
+      .slice(tsconfigDirectory.split(path.sep).length),
   )
 
   const restoredWhitespaceContents = restoreWhitespace(result.outputText)
@@ -453,5 +453,5 @@ const compileTSWithWhitespace = (directory: string, tsconfigPath: string) => {
 
 compileTSWithWhitespace(
   EXAMPLES_DIRECTORY,
-  path.join(EXAMPLES_DIRECTORY, 'tsconfig.json')
+  path.join(EXAMPLES_DIRECTORY, 'tsconfig.json'),
 )

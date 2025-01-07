@@ -68,7 +68,7 @@ export const ExternalLinks = {
     <Link to="https://redux-toolkit.js.org" title="Redux-Toolkit">
       {text}
     </Link>
-  ))
+  )),
 } as const satisfies Record<string, FC<Props>>
 
 export const AllExternalLinks: FC = memo(() => {

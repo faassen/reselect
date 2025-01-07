@@ -4,7 +4,7 @@ import {
   createSelectorCreator,
   createStructuredSelector,
   lruMemoize,
-  weakMapMemoize
+  weakMapMemoize,
 } from 'reselect'
 import { describe, expectTypeOf, test } from 'vitest'
 
@@ -26,16 +26,15 @@ interface RootState {
 const rootState: RootState = {
   todos: [
     { id: 0, completed: false },
-    { id: 1, completed: true }
+    { id: 1, completed: true },
   ],
   alerts: [
     { id: 0, read: false },
-    { id: 1, read: true }
-  ]
+    { id: 1, read: true },
+  ],
 }
 
 describe('createStructuredSelector', () => {
-
   // TODO: Remove this test block once `TypedStructuredSelectorCreator` is removed.
   test('TypedStructuredSelectorCreator should lock down state type', () => {
     const createStructuredAppSelector: TypedStructuredSelectorCreator<RootState> =
@@ -51,7 +50,7 @@ describe('createStructuredSelector', () => {
         expectTypeOf(state).toEqualTypeOf<RootState>(rootState)
 
         return state.alerts
-      }
+      },
     })
 
     const { todos, alerts } = structuredSelector(rootState)
@@ -83,7 +82,7 @@ describe('createStructuredSelector', () => {
     >()
 
     expectTypeOf(
-      structuredSelector.resetDependencyRecomputations
+      structuredSelector.resetDependencyRecomputations,
     ).toEqualTypeOf<() => void>()
 
     expectTypeOf(structuredSelector.resetRecomputations).toEqualTypeOf<
@@ -91,14 +90,14 @@ describe('createStructuredSelector', () => {
     >()
 
     expectTypeOf(
-      structuredSelector.lastResult
+      structuredSelector.lastResult,
     ).returns.toEqualTypeOf<RootState>(rootState)
 
     expectTypeOf(
-      structuredSelector.memoizedResultFunc
+      structuredSelector.memoizedResultFunc,
     ).parameters.toEqualTypeOf<[Todo[], Alert[]]>([
       rootState.todos,
-      rootState.alerts
+      rootState.alerts,
     ])
 
     expectTypeOf(structuredSelector.memoizedResultFunc).returns.toEqualTypeOf<
@@ -106,7 +105,7 @@ describe('createStructuredSelector', () => {
     >(structuredSelector.lastResult())
 
     expectTypeOf(structuredSelector.memoizedResultFunc).toHaveProperty(
-      'clearCache'
+      'clearCache',
     )
 
     expectTypeOf(structuredSelector.resultFunc).returns.toEqualTypeOf<
@@ -118,7 +117,7 @@ describe('createStructuredSelector', () => {
   test('TypedStructuredSelectorCreator should correctly infer memoize and argsMemoize', () => {
     const createSelectorLru = createSelectorCreator({
       memoize: lruMemoize,
-      argsMemoize: microMemoize
+      argsMemoize: microMemoize,
     })
 
     const createStructuredAppSelector: TypedStructuredSelectorCreator<RootState> =
@@ -127,9 +126,9 @@ describe('createStructuredSelector', () => {
     const structuredSelector = createStructuredAppSelector(
       {
         todos: state => state.todos,
-        alerts: state => state.alerts
+        alerts: state => state.alerts,
       },
-      createSelectorLru
+      createSelectorLru,
     )
 
     expectTypeOf(structuredSelector.argsMemoize).toEqualTypeOf<
@@ -137,7 +136,7 @@ describe('createStructuredSelector', () => {
     >(microMemoize)
 
     expectTypeOf(structuredSelector.memoize).toEqualTypeOf<typeof lruMemoize>(
-      lruMemoize
+      lruMemoize,
     )
 
     const { todos, alerts } = structuredSelector(rootState)
@@ -157,7 +156,7 @@ describe('createStructuredSelector', () => {
     >()
 
     expectTypeOf(
-      structuredSelector.resetDependencyRecomputations
+      structuredSelector.resetDependencyRecomputations,
     ).toEqualTypeOf<() => void>()
 
     expectTypeOf(structuredSelector.resetRecomputations).toEqualTypeOf<
@@ -165,14 +164,14 @@ describe('createStructuredSelector', () => {
     >()
 
     expectTypeOf(
-      structuredSelector.lastResult
+      structuredSelector.lastResult,
     ).returns.toEqualTypeOf<RootState>(rootState)
 
     expectTypeOf(
-      structuredSelector.memoizedResultFunc
+      structuredSelector.memoizedResultFunc,
     ).parameters.toEqualTypeOf<[Todo[], Alert[]]>([
       rootState.todos,
-      rootState.alerts
+      rootState.alerts,
     ])
 
     expectTypeOf(structuredSelector.memoizedResultFunc).returns.toEqualTypeOf<
@@ -180,7 +179,7 @@ describe('createStructuredSelector', () => {
     >(structuredSelector.lastResult())
 
     expectTypeOf(structuredSelector.memoizedResultFunc).toHaveProperty(
-      'clearCache'
+      'clearCache',
     )
 
     expectTypeOf(structuredSelector.resultFunc).returns.toEqualTypeOf<
@@ -192,7 +191,7 @@ describe('createStructuredSelector', () => {
     const structuredSelector = createStructuredSelector({
       todos: (state: RootState) => state.todos,
       alerts: (state: RootState) => state.alerts,
-      todoById: (state: RootState, id: number) => state.todos[id]
+      todoById: (state: RootState, id: number) => state.todos[id],
     })
 
     const { alerts, todos, todoById } = structuredSelector(rootState, 0)
@@ -228,17 +227,17 @@ describe('createStructuredSelector', () => {
     >()
 
     expectTypeOf(
-      structuredSelector.resetDependencyRecomputations
+      structuredSelector.resetDependencyRecomputations,
     ).returns.toBeVoid()
 
     expectTypeOf(
-      structuredSelector.resetDependencyRecomputations
+      structuredSelector.resetDependencyRecomputations,
     ).parameters.items.toBeNever()
 
     expectTypeOf(structuredSelector.resetRecomputations).returns.toBeVoid()
 
     expectTypeOf(
-      structuredSelector.resetRecomputations
+      structuredSelector.resetRecomputations,
     ).parameters.items.toBeNever()
 
     // Use `.branded` for intersection types https://github.com/mmkal/expect-type#why-is-my-assertion-failing
@@ -247,11 +246,11 @@ describe('createStructuredSelector', () => {
     >()
 
     expectTypeOf(
-      structuredSelector.memoizedResultFunc
+      structuredSelector.memoizedResultFunc,
     ).parameters.toEqualTypeOf<[Todo[], Alert[], Todo]>([
       rootState.todos,
       rootState.alerts,
-      rootState.todos[0]
+      rootState.todos[0],
     ])
 
     expectTypeOf(structuredSelector.resultFunc).parameters.toEqualTypeOf<
@@ -263,7 +262,7 @@ describe('createStructuredSelector', () => {
     >(structuredSelector.lastResult())
 
     expectTypeOf(structuredSelector.memoizedResultFunc).toHaveProperty(
-      'clearCache'
+      'clearCache',
     )
 
     expectTypeOf(structuredSelector.resultFunc).returns.toEqualTypeOf<

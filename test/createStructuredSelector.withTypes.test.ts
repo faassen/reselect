@@ -10,14 +10,14 @@ describe(createStructuredSelector.withTypes, () => {
     expect(createTypedStructuredSelector.withTypes).to.be.a('function')
 
     expect(createTypedStructuredSelector.withTypes().withTypes).to.be.a(
-      'function'
+      'function',
     )
 
     expect(createTypedStructuredSelector).toBe(createStructuredSelector)
 
     const structuredSelector = createTypedStructuredSelector({
       todos: state => state.todos,
-      alerts: state => state.alerts
+      alerts: state => state.alerts,
     })
 
     expect(structuredSelector).toBeMemoizedSelector()

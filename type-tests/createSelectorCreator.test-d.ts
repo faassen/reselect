@@ -5,7 +5,7 @@ import {
   createSelectorCreator,
   lruMemoize,
   unstable_autotrackMemoize as autotrackMemoize,
-  weakMapMemoize
+  weakMapMemoize,
 } from 'reselect'
 import { describe, test } from 'vitest'
 
@@ -17,33 +17,33 @@ interface RootState {
 const state: RootState = {
   todos: [
     { id: 0, completed: false },
-    { id: 1, completed: true }
+    { id: 1, completed: true },
   ],
   alerts: [
     { id: 0, read: false },
-    { id: 1, read: true }
-  ]
+    { id: 1, read: true },
+  ],
 }
 
 describe('createSelectorCreator', () => {
   test('options object as argument', () => {
     const createSelectorDefault = createSelectorCreator({
-      memoize: lruMemoize
+      memoize: lruMemoize,
     })
     const createSelectorWeakMap = createSelectorCreator({
-      memoize: weakMapMemoize
+      memoize: weakMapMemoize,
     })
     const createSelectorAutotrack = createSelectorCreator({
-      memoize: autotrackMemoize
+      memoize: autotrackMemoize,
     })
     const createSelectorMicro = createSelectorCreator({
-      memoize: microMemoize
+      memoize: microMemoize,
     })
     const createSelectorOne = createSelectorCreator({
-      memoize: memoizeOne
+      memoize: memoizeOne,
     })
     const createSelectorLodash = createSelectorCreator({
-      memoize: lodashMemoize
+      memoize: lodashMemoize,
     })
   })
 

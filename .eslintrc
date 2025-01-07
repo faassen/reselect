@@ -10,7 +10,6 @@
   },
   "rules": {
     "array-bracket-spacing": [0],
-    "comma-dangle": [2, "never"],
     "eol-last": 2,
     "no-multiple-empty-lines": 2,
     "object-curly-spacing": [2, "always"],

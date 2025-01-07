@@ -2,7 +2,7 @@ import type {
   AnyFunction,
   DefaultMemoizeFields,
   EqualityFn,
-  Simplify
+  Simplify,
 } from './types'
 
 import type { NOT_FOUND_TYPE } from './utils'
@@ -44,7 +44,7 @@ function createSingletonCache(equals: EqualityFn): Cache {
 
     clear() {
       entry = undefined
-    }
+    },
   }
 }
 
@@ -105,7 +105,7 @@ export const referenceEqualityCheck: EqualityFn = (a, b) => a === b
 export function createCacheKeyComparator(equalityCheck: EqualityFn) {
   return function areArgumentsShallowlyEqual(
     prev: unknown[] | IArguments | null,
-    next: unknown[] | IArguments | null
+    next: unknown[] | IArguments | null,
   ): boolean {
     if (prev === null || next === null || prev.length !== next.length) {
       return false
@@ -187,7 +187,7 @@ export interface LruMemoizeOptions<Result = any> {
  */
 export function lruMemoize<Func extends AnyFunction>(
   func: Func,
-  equalityCheckOrOptions?: EqualityFn | LruMemoizeOptions<ReturnType<Func>>
+  equalityCheckOrOptions?: EqualityFn | LruMemoizeOptions<ReturnType<Func>>,
 ) {
   const providedOptions =
     typeof equalityCheckOrOptions === 'object'
@@ -197,7 +197,7 @@ export function lruMemoize<Func extends AnyFunction>(
   const {
     equalityCheck = referenceEqualityCheck,
     maxSize = 1,
-    resultEqualityCheck
+    resultEqualityCheck,
   } = providedOptions
 
   const comparator = createCacheKeyComparator(equalityCheck)
@@ -220,7 +220,7 @@ export function lruMemoize<Func extends AnyFunction>(
       if (resultEqualityCheck) {
         const entries = cache.getEntries()
         const matchingEntry = entries.find(entry =>
-          resultEqualityCheck(entry.value as ReturnType<Func>, value)
+          resultEqualityCheck(entry.value as ReturnType<Func>, value),
         )
 
         if (matchingEntry) {

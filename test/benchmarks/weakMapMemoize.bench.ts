@@ -3,7 +3,7 @@ import {
   unstable_autotrackMemoize as autotrackMemoize,
   createSelector,
   lruMemoize,
-  weakMapMemoize
+  weakMapMemoize,
 } from 'reselect'
 import { bench } from 'vitest'
 import type { RootState } from '../testUtils'
@@ -11,7 +11,7 @@ import {
   logSelectorRecomputations,
   resetSelector,
   setFunctionNames,
-  setupStore
+  setupStore,
 } from '../testUtils'
 
 import type { Options } from 'tinybench'
@@ -22,7 +22,7 @@ describe('Parametric selectors: weakMapMemoize vs others', () => {
   const arrayOfNumbers = Array.from({ length: 30 }, (num, index) => index)
   const commonOptions: Options = {
     iterations: 10,
-    time: 0
+    time: 0,
   }
   const runSelector = <S extends Selector>(selector: S) => {
     arrayOfNumbers.forEach(num => {
@@ -34,12 +34,12 @@ describe('Parametric selectors: weakMapMemoize vs others', () => {
   }
   const selectorDefault = createSelector(
     [(state: RootState) => state.todos, (state: RootState, id: number) => id],
-    (todos, id) => todos.find(todo => todo.id === id)
+    (todos, id) => todos.find(todo => todo.id === id),
   )
   const selectorDefaultWithCacheSize = createSelector(
     [(state: RootState) => state.todos, (state: RootState, id: number) => id],
     (todos, id) => todos.find(todo => todo.id === id),
-    { memoize: lruMemoize, memoizeOptions: { maxSize: 30 } }
+    { memoize: lruMemoize, memoizeOptions: { maxSize: 30 } },
   )
   const selectorDefaultWithArgsCacheSize = createSelector(
     [(state: RootState) => state.todos, (state: RootState, id: number) => id],
@@ -47,8 +47,8 @@ describe('Parametric selectors: weakMapMemoize vs others', () => {
     {
       memoize: lruMemoize,
       argsMemoize: lruMemoize,
-      argsMemoizeOptions: { maxSize: 30 }
-    }
+      argsMemoizeOptions: { maxSize: 30 },
+    },
   )
   const selectorDefaultWithBothCacheSize = createSelector(
     [(state: RootState) => state.todos, (state: RootState, id: number) => id],
@@ -57,43 +57,43 @@ describe('Parametric selectors: weakMapMemoize vs others', () => {
       memoize: lruMemoize,
       argsMemoize: lruMemoize,
       memoizeOptions: { maxSize: 30 },
-      argsMemoizeOptions: { maxSize: 30 }
-    }
+      argsMemoizeOptions: { maxSize: 30 },
+    },
   )
   const selectorWeakMap = createSelector(
     [(state: RootState) => state.todos, (state: RootState, id: number) => id],
     (todos, id) => todos.find(todo => todo.id === id),
-    { memoize: weakMapMemoize }
+    { memoize: weakMapMemoize },
   )
   const selectorAutotrack = createSelector(
     (state: RootState) => state.todos,
     (state: RootState, id: number) => id,
     (todos, id) => todos.find(todo => todo.id === id),
-    { memoize: autotrackMemoize }
+    { memoize: autotrackMemoize },
   )
   const selectorArgsAutotrack = createSelector(
     (state: RootState) => state.todos,
     (state: RootState, id: number) => id,
     (todos, id) => todos.find(todo => todo.id === id),
-    { argsMemoize: autotrackMemoize }
+    { argsMemoize: autotrackMemoize },
   )
   const selectorBothAutotrack = createSelector(
     (state: RootState) => state.todos,
     (state: RootState, id: number) => id,
     (todos, id) => todos.find(todo => todo.id === id),
-    { argsMemoize: autotrackMemoize, memoize: autotrackMemoize }
+    { argsMemoize: autotrackMemoize, memoize: autotrackMemoize },
   )
   const selectorArgsWeakMap = createSelector(
     (state: RootState) => state.todos,
     (state: RootState, id: number) => id,
     (todos, id) => todos.find(todo => todo.id === id),
-    { argsMemoize: weakMapMemoize }
+    { argsMemoize: weakMapMemoize },
   )
   const selectorBothWeakMap = createSelector(
     (state: RootState) => state.todos,
     (state: RootState, id: number) => id,
     (todos, id) => todos.find(todo => todo.id === id),
-    { argsMemoize: weakMapMemoize, memoize: weakMapMemoize }
+    { argsMemoize: weakMapMemoize, memoize: weakMapMemoize },
   )
   const nonMemoizedSelector = (state: RootState, id: number) => {
     return state.todos.find(todo => todo.id === id)
@@ -109,12 +109,12 @@ describe('Parametric selectors: weakMapMemoize vs others', () => {
     selectorAutotrack,
     selectorArgsAutotrack,
     selectorBothAutotrack,
-    nonMemoizedSelector
+    nonMemoizedSelector,
   })
 
   const createOptions = <S extends OutputSelector>(
     selector: S,
-    commonOptions: Options = {}
+    commonOptions: Options = {},
   ) => {
     const options: Options = {
       setup: (task, mode) => {
@@ -123,9 +123,9 @@ describe('Parametric selectors: weakMapMemoize vs others', () => {
         task.opts = {
           afterAll: () => {
             logSelectorRecomputations(selector)
-          }
+          },
         }
-      }
+      },
     }
     return { ...commonOptions, ...options }
   }
@@ -134,77 +134,77 @@ describe('Parametric selectors: weakMapMemoize vs others', () => {
     () => {
       runSelector(selectorDefault)
     },
-    createOptions(selectorDefault, commonOptions)
+    createOptions(selectorDefault, commonOptions),
   )
   bench(
     selectorDefaultWithCacheSize,
     () => {
       runSelector(selectorDefaultWithCacheSize)
     },
-    createOptions(selectorDefaultWithCacheSize, commonOptions)
+    createOptions(selectorDefaultWithCacheSize, commonOptions),
   )
   bench(
     selectorDefaultWithArgsCacheSize,
     () => {
       runSelector(selectorDefaultWithArgsCacheSize)
     },
-    createOptions(selectorDefaultWithArgsCacheSize, commonOptions)
+    createOptions(selectorDefaultWithArgsCacheSize, commonOptions),
   )
   bench(
     selectorDefaultWithBothCacheSize,
     () => {
       runSelector(selectorDefaultWithBothCacheSize)
     },
-    createOptions(selectorDefaultWithBothCacheSize, commonOptions)
+    createOptions(selectorDefaultWithBothCacheSize, commonOptions),
   )
   bench(
     selectorWeakMap,
     () => {
       runSelector(selectorWeakMap)
     },
-    createOptions(selectorWeakMap, commonOptions)
+    createOptions(selectorWeakMap, commonOptions),
   )
   bench(
     selectorArgsWeakMap,
     () => {
       runSelector(selectorArgsWeakMap)
     },
-    createOptions(selectorArgsWeakMap, commonOptions)
+    createOptions(selectorArgsWeakMap, commonOptions),
   )
   bench(
     selectorBothWeakMap,
     () => {
       runSelector(selectorBothWeakMap)
     },
-    createOptions(selectorBothWeakMap, commonOptions)
+    createOptions(selectorBothWeakMap, commonOptions),
   )
   bench(
     selectorAutotrack,
     () => {
       runSelector(selectorAutotrack)
     },
-    createOptions(selectorAutotrack, commonOptions)
+    createOptions(selectorAutotrack, commonOptions),
   )
   bench(
     selectorArgsAutotrack,
     () => {
       runSelector(selectorArgsAutotrack)
     },
-    createOptions(selectorArgsAutotrack, commonOptions)
+    createOptions(selectorArgsAutotrack, commonOptions),
   )
   bench(
     selectorBothAutotrack,
     () => {
       runSelector(selectorBothAutotrack)
     },
-    createOptions(selectorBothAutotrack, commonOptions)
+    createOptions(selectorBothAutotrack, commonOptions),
   )
   bench(
     nonMemoizedSelector,
     () => {
       runSelector(nonMemoizedSelector)
     },
-    { ...commonOptions }
+    { ...commonOptions },
   )
 })
 
@@ -346,23 +346,23 @@ describe('Simple selectors: weakMapMemoize vs others', () => {
   }
   const selectTodoIdsDefault = createSelector(
     [(state: RootState) => state.todos],
-    todos => todos.map(({ id }) => id)
+    todos => todos.map(({ id }) => id),
   )
   const selectTodoIdsWeakMap = createSelector(
     [(state: RootState) => state.todos],
     todos => todos.map(({ id }) => id),
-    { argsMemoize: weakMapMemoize }
+    { argsMemoize: weakMapMemoize },
   )
   const selectTodoIdsAutotrack = createSelector(
     [(state: RootState) => state.todos],
     todos => todos.map(({ id }) => id),
-    { memoize: autotrackMemoize }
+    { memoize: autotrackMemoize },
   )
 
   setFunctionNames({
     selectTodoIdsDefault,
     selectTodoIdsWeakMap,
-    selectTodoIdsAutotrack
+    selectTodoIdsAutotrack,
   })
 
   const createOptions = <S extends OutputSelector>(selector: S) => {
@@ -373,9 +373,9 @@ describe('Simple selectors: weakMapMemoize vs others', () => {
         task.opts = {
           afterAll: () => {
             logSelectorRecomputations(selector)
-          }
+          },
         }
-      }
+      },
     }
     return { ...commonOptions, ...options }
   }
@@ -385,21 +385,21 @@ describe('Simple selectors: weakMapMemoize vs others', () => {
     () => {
       selectTodoIdsDefault(store.getState())
     },
-    createOptions(selectTodoIdsDefault)
+    createOptions(selectTodoIdsDefault),
   )
   bench(
     selectTodoIdsWeakMap,
     () => {
       selectTodoIdsWeakMap(store.getState())
     },
-    createOptions(selectTodoIdsWeakMap)
+    createOptions(selectTodoIdsWeakMap),
   )
   bench(
     selectTodoIdsAutotrack,
     () => {
       selectTodoIdsAutotrack(store.getState())
     },
-    createOptions(selectTodoIdsAutotrack)
+    createOptions(selectTodoIdsAutotrack),
   )
 })
 
@@ -408,13 +408,13 @@ describe.skip('weakMapMemoize memory leak', () => {
   const state = store.getState()
   const arrayOfNumbers = Array.from(
     { length: 2_000_000 },
-    (num, index) => index
+    (num, index) => index,
   )
   const commonOptions: Options = {
     warmupIterations: 0,
     warmupTime: 0,
     iterations: 1,
-    time: 0
+    time: 0,
   }
   const runSelector = <S extends Selector>(selector: S) => {
     arrayOfNumbers.forEach(num => {
@@ -426,32 +426,32 @@ describe.skip('weakMapMemoize memory leak', () => {
   }
   const selectorDefault = createSelector(
     [(state: RootState) => state.todos, (state: RootState, id: number) => id],
-    todos => todos.map(({ id }) => id)
+    todos => todos.map(({ id }) => id),
   )
   const selectorWeakMap = createSelector(
     [(state: RootState) => state.todos, (state: RootState, id: number) => id],
     todos => todos.map(({ id }) => id),
-    { memoize: weakMapMemoize }
+    { memoize: weakMapMemoize },
   )
   const selectorArgsWeakMap = createSelector(
     [(state: RootState) => state.todos, (state: RootState, id: number) => id],
     todos => todos.map(({ id }) => id),
-    { argsMemoize: weakMapMemoize }
+    { argsMemoize: weakMapMemoize },
   )
   const selectorBothWeakMap = createSelector(
     [(state: RootState) => state.todos, (state: RootState, id: number) => id],
     todos => todos.map(({ id }) => id),
-    { argsMemoize: weakMapMemoize, memoize: weakMapMemoize }
+    { argsMemoize: weakMapMemoize, memoize: weakMapMemoize },
   )
   setFunctionNames({
     selectorDefault,
     selectorWeakMap,
     selectorArgsWeakMap,
-    selectorBothWeakMap
+    selectorBothWeakMap,
   })
   const createOptions = <S extends OutputSelector>(
     selector: S,
-    commonOptions: Options = {}
+    commonOptions: Options = {},
   ) => {
     const options: Options = {
       setup: (task, mode) => {
@@ -459,9 +459,9 @@ describe.skip('weakMapMemoize memory leak', () => {
         task.opts = {
           afterAll: () => {
             logSelectorRecomputations(selector)
-          }
+          },
         }
-      }
+      },
     }
     return { ...commonOptions, ...options }
   }
@@ -470,27 +470,27 @@ describe.skip('weakMapMemoize memory leak', () => {
     () => {
       runSelector(selectorDefault)
     },
-    createOptions(selectorDefault, commonOptions)
+    createOptions(selectorDefault, commonOptions),
   )
   bench(
     selectorWeakMap,
     () => {
       runSelector(selectorWeakMap)
     },
-    createOptions(selectorWeakMap, commonOptions)
+    createOptions(selectorWeakMap, commonOptions),
   )
   bench.skip(
     selectorArgsWeakMap,
     () => {
       runSelector(selectorArgsWeakMap)
     },
-    createOptions(selectorArgsWeakMap, commonOptions)
+    createOptions(selectorArgsWeakMap, commonOptions),
   )
   bench.skip(
     selectorBothWeakMap,
     () => {
       runSelector(selectorBothWeakMap)
     },
-    createOptions(selectorBothWeakMap, commonOptions)
+    createOptions(selectorBothWeakMap, commonOptions),
   )
 })

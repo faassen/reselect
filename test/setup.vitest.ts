@@ -6,7 +6,7 @@ expect.extend({
 
     return {
       pass: isMemoizedSelector(received),
-      message: () => `${received} is${isNot ? '' : ' not'} a memoized selector`
+      message: () => `${received} is${isNot ? '' : ' not'} a memoized selector`,
     }
-  }
+  },
 })

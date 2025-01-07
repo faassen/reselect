@@ -16,7 +16,7 @@ Reselect, at its core, is a library for creating memoized selectors in JavaScrip
 ```ts
 const finalSelector = (...args) => {
   const extractedValues = inputSelectors.map(inputSelector =>
-    inputSelector(...args)
+    inputSelector(...args),
   )
   return resultFunc(...extractedValues)
 }
@@ -91,7 +91,7 @@ So you decide to memoize it:
 
 ```ts
 const selectCompletedTodos = someMemoizeFunction((state: RootState) =>
-  state.todos.filter(todo => todo.completed === true)
+  state.todos.filter(todo => todo.completed === true),
 )
 ```
 
@@ -119,7 +119,7 @@ But with Reselect, we can do something like this:
 ```ts
 const selectCompletedTodos = createSelector(
   [(state: RootState) => state.todos],
-  todos => todos.filter(todo => todo.completed === true)
+  todos => todos.filter(todo => todo.completed === true),
 )
 ```
 
