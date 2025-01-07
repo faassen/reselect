@@ -435,6 +435,7 @@ describe(lruMemoize, () => {
       [(state, id: number) => state[id]],
       state => state,
       {
+        devModeChecks: { identityFunctionCheck: 'never' },
         argsMemoizeOptions: { maxSize: 10 },
         memoizeOptions: { maxSize: 10 }
       }

@@ -1,6 +1,6 @@
 name: CI
 
-on: [push, pull_request]
+on: [push, pull_request, workflow_dispatch]
 
 jobs:
   build:
@@ -65,12 +65,14 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: 'yarn'
 
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: package
+          path: .
+
       - name: Install deps
         run: yarn install
-
-      # Build with the actual TS version in the repo
-      - name: Pack
-        run: yarn build && yarn pack
 
       - name: Install build artifact
         run: yarn add ./package.tgz
@@ -79,17 +81,17 @@ jobs:
       - name: Install TypeScript ${{ matrix.ts }}
         run: yarn add --dev typescript@${{ matrix.ts }}
 
-      - name: 'Remove source to ensure packaged types are used'
-        run: rm -rf src
-
         # Remove config line that points "reselect" to the `src` folder,
         # so that the typetest will use the installed version instead
-      - run: sed -i -e /@remap-prod-remove-line/d ./typescript_test/tsconfig.json vitest.config.mts
+      - name: Erase path aliases
+        run: sed -i -e /@remap-prod-remove-line/d tsconfig.base.json
 
       - name: Test types
+        env:
+          TEST_DIST: true
         run: |
-          ./node_modules/.bin/tsc --version
-          yarn test:typescript
+          yarn tsc --version
+          yarn type-tests
 
   are-the-types-wrong:
     name: Check package config with are-the-types-wrong
@@ -104,7 +106,8 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - uses: actions/download-artifact@v4
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
         with:
           name: package
           path: .
@@ -146,6 +149,12 @@ jobs:
       - name: Clone RTK repo
         run: git clone https://github.com/reduxjs/redux-toolkit.git ./redux-toolkit
 
+      - name: Cache example deps
+        uses: actions/cache@v4
+        with:
+          path: ./redux-toolkit/examples/publish-ci/${{ matrix.example }}/node_modules
+          key: test-published-artifact-${{ matrix.example }}-node_modules
+
       - name: Check folder contents
         run: ls -l .
 
@@ -175,17 +184,6 @@ jobs:
         working-directory: ./redux-toolkit/examples/publish-ci/${{ matrix.example }}
         run: yarn info reselect && yarn why reselect
 
-      - name: Set up JDK 17 for React Native build
-        if: matrix.example == 'react-native'
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17.x'
-          distribution: 'temurin'
-
-      - name: Check MSW version
-        working-directory: ./redux-toolkit/examples/publish-ci/${{ matrix.example }}
-        run: yarn why msw
-
       - name: Build example
         working-directory: ./redux-toolkit/examples/publish-ci/${{ matrix.example }}
         env:
@@ -194,4 +192,46 @@ jobs:
 
       - name: Run test step
         working-directory: ./redux-toolkit/examples/publish-ci/${{ matrix.example }}
+        run: yarn test
+
+  test-dist:
+    name: Run local tests against build artifact
+    needs: [build]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ['20.x']
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Use node ${{ matrix.node }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: package
+          path: .
+
+      - name: Check folder contents
+        run: ls -lah
+
+      - name: Install build artifact
+        run: yarn add ./package.tgz
+
+      - name: Erase path aliases
+        run: sed -i -e /@remap-prod-remove-line/d tsconfig.base.json
+
+      - name: Run local tests against the build artifact
+        env:
+          TEST_DIST: true
         run: yarn test

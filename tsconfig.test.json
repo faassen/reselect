@@ -1,0 +1,9 @@
+{
+  // For type tests during CI.
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "rootDir": "./"
+  },
+  "include": ["type-tests"]
+}

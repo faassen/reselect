@@ -1,5 +1,5 @@
 import { createSelector, lruMemoize } from 'reselect'
-import type { StateA, StateAB } from 'testTypes'
+import type { StateA, StateAB } from './testTypes'
 
 describe('createSelector exposed utils', () => {
   test('resetRecomputations', () => {

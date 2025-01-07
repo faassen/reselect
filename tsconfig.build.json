@@ -1,0 +1,11 @@
+{
+  // For building the library.
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "emitDeclarationOnly": true,
+    "jsx": "react",
+    "outDir": "./dist",
+    "rootDir": "./src"
+  },
+  "include": ["src"]
+}

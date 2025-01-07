@@ -59,7 +59,7 @@
       }
     },
     {
-      "files": ["**/test/**/*.ts", "**/typescript_test/**/*.ts"],
+      "files": ["**/test/**/*.ts", "**/type-test/**/*.ts"],
       "rules": {
         "consistent-return": "off",
         "max-lines": "off",

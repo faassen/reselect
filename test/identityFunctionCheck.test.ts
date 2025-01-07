@@ -1,5 +1,5 @@
 import { createSelector, setGlobalDevModeChecks } from 'reselect'
-import type { LocalTestContext, RootState } from './testUtils'
+import type { RootState } from './testUtils'
 import { localTest } from './testUtils'
 
 describe('identityFunctionCheck', () => {

@@ -3,7 +3,7 @@
  */
 
 import * as rtl from '@testing-library/react'
-import React, { useLayoutEffect, useMemo } from 'react'
+import { memo, useLayoutEffect, useMemo } from 'react'
 import type { TypedUseSelectorHook } from 'react-redux'
 import { Provider, shallowEqual, useSelector } from 'react-redux'
 import {
@@ -15,18 +15,9 @@ import {
 
 import type { OutputSelector } from 'reselect'
 import type { RootState, Todo } from './testUtils'
-import { addTodo, setupStore, toggleCompleted } from './testUtils'
+import { setupStore, toggleCompleted } from './testUtils'
 
 describe('Computations and re-rendering with React components', () => {
-  const selector = createSelector(
-    (a: number) => a,
-    a => a
-  )
-
-  test('passes', () => {
-    console.log(selector(1))
-  })
-
   let store: ReturnType<typeof setupStore>
 
   beforeEach(() => {
@@ -37,37 +28,40 @@ describe('Computations and re-rendering with React components', () => {
   })
 
   type SelectTodoIds = OutputSelector<
-    [(state: RootState) => RootState['todos']],
+    [(state: RootState) => Todo[]],
     number[],
     typeof lruMemoize | typeof weakMapMemoize,
     typeof lruMemoize | typeof weakMapMemoize
   >
 
   type SelectTodoById = OutputSelector<
-    [
-      (state: RootState) => RootState['todos'],
-      (state: RootState, id: number) => number
-    ],
+    [(state: RootState) => Todo[], (state: RootState, id: number) => number],
     readonly [todo: Todo | undefined],
     typeof lruMemoize | typeof weakMapMemoize,
     typeof lruMemoize | typeof weakMapMemoize
   >
 
   const selectTodos = (state: RootState) => state.todos
-  const mapTodoIds = (todos: RootState['todos']) => todos.map(({ id }) => id)
-  const selectTodoId = (todos: RootState, id: number) => id
-  const mapTodoById = (todos: RootState['todos'], id: number) => {
+  const mapTodoIds = (todos: Todo[]) => todos.map(({ id }) => id)
+  const selectTodoId = (state: RootState, id: number) => id
+  const mapTodoById = (todos: Todo[], id: number) => {
     // Intentionally return this wrapped in an array to force a new reference each time
     return [todos.find(todo => todo.id === id)] as const
   }
 
-  const selectTodoIdsDefault = createSelector([selectTodos], mapTodoIds)
-  console.log(`selectTodoIdsDefault name: ${selectTodoIdsDefault.name}`)
+  const selectTodoIdsLru = createSelector([selectTodos], mapTodoIds, {
+    argsMemoize: lruMemoize,
+    memoize: lruMemoize
+  })
 
-  const selectTodoIdsResultEquality = createSelector(
+  const selectTodoIdsLruResultEquality = createSelector(
     [selectTodos],
     mapTodoIds,
-    { memoizeOptions: { resultEqualityCheck: shallowEqual } }
+    {
+      memoizeOptions: { resultEqualityCheck: shallowEqual },
+      memoize: lruMemoize,
+      argsMemoize: lruMemoize
+    }
   )
 
   const selectTodoIdsWeakMap = createSelector([selectTodos], mapTodoIds, {
@@ -85,16 +79,18 @@ describe('Computations and re-rendering with React components', () => {
     }
   )
 
-  const selectTodoByIdDefault = createSelector(
+  const selectTodoByIdLru = createSelector(
     [selectTodos, selectTodoId],
-    mapTodoById
+    mapTodoById,
+    { memoize: lruMemoize, argsMemoize: lruMemoize }
   )
 
-  const selectTodoByIdResultEquality = createSelector(
+  const selectTodoByIdLruResultEquality = createSelector(
     [selectTodos, selectTodoId],
     mapTodoById,
     {
       memoize: lruMemoize,
+      argsMemoize: lruMemoize,
       memoizeOptions: { resultEqualityCheck: shallowEqual, maxSize: 500 }
     }
   )
@@ -111,7 +107,7 @@ describe('Computations and re-rendering with React components', () => {
   let listRenders = 0
   let listItemMounts = 0
 
-  const TodoListItem = React.memo(function TodoListItem({
+  const TodoListItem = memo(function TodoListItem({
     id,
     selectTodoById
   }: {
@@ -160,11 +156,11 @@ describe('Computations and re-rendering with React components', () => {
   }
 
   const testCases: [string, SelectTodoIds, SelectTodoById][] = [
-    ['default', selectTodoIdsDefault, selectTodoByIdDefault],
+    ['lru', selectTodoIdsLru, selectTodoByIdLru],
     [
-      'resultEquality',
-      selectTodoIdsResultEquality,
-      selectTodoByIdResultEquality
+      'lruResultEquality',
+      selectTodoIdsLruResultEquality,
+      selectTodoByIdLruResultEquality
     ],
     ['weakMap', selectTodoIdsWeakMap, selectTodoByIdWeakMap],
 
@@ -175,7 +171,7 @@ describe('Computations and re-rendering with React components', () => {
     ]
   ]
 
-  test.each(testCases)(`%s`, async (name, selectTodoIds, selectTodoById) => {
+  test.each(testCases)(`%s`, (name, selectTodoIds, selectTodoById) => {
     selectTodoIds.resetRecomputations()
     selectTodoIds.resetDependencyRecomputations()
     selectTodoById.resetRecomputations()
@@ -193,51 +189,7 @@ describe('Computations and re-rendering with React components', () => {
       </Provider>
     )
 
-    // console.log(`Recomputations after render (${name}): `)
-    // console.log('selectTodoIds: ')
-    // logSelectorRecomputations(selectTodoIds as any)
-    // console.log('selectTodoById: ')
-    // logSelectorRecomputations(selectTodoById as any)
-
-    // console.log('Render count: ', {
-    //   listRenders,
-    //   listItemRenders,
-    //   listItemMounts
-    // })
-
     expect(listItemRenders).toBe(numTodos)
-
-    rtl.act(() => {
-      store.dispatch(toggleCompleted(3))
-    })
-
-    // console.log(`\nRecomputations after toggle completed (${name}): `)
-    // console.log('selectTodoIds: ')
-    // logSelectorRecomputations(selectTodoIds as any)
-    // console.log('selectTodoById: ')
-    // logSelectorRecomputations(selectTodoById as any)
-
-    // console.log('Render count: ', {
-    //   listRenders,
-    //   listItemRenders,
-    //   listItemMounts
-    // })
-
-    rtl.act(() => {
-      store.dispatch(addTodo({ title: 'a', description: 'b' }))
-    })
-
-    // console.log(`\nRecomputations after added (${name}): `)
-    // console.log('selectTodoIds: ')
-    // // logSelectorRecomputations(selectTodoIds as any)
-    // console.log('selectTodoById: ')
-    // // logSelectorRecomputations(selectTodoById as any)
-
-    // console.log('Render count: ', {
-    //   listRenders,
-    //   listItemRenders,
-    //   listItemMounts
-    // })
   })
 })
 

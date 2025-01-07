@@ -1,28 +1,11 @@
 {
+  // For general development and intellisense.
+  // Scans the entire source code against the current TS version
+  // we are using during development.
+  "extends": "./tsconfig.test.json",
   "compilerOptions": {
-    "strict": true,
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "esModuleInterop": true,
-    "skipLibCheck": true,
     "allowJs": true,
-    "jsx": "react",
-    "noErrorTruncation": true,
-    "declaration": true,
-    "emitDeclarationOnly": true,
-    "outDir": "dist",
-    "forceConsistentCasingInFileNames": true,
-    "experimentalDecorators": true,
-    "rootDirs": ["./src"],
-    "rootDir": ".",
-    "types": ["vitest/globals", "vitest/importMeta"],
-    "baseUrl": ".",
-    "paths": {
-      "reselect": ["src/index.ts"], // @remap-prod-remove-line
-      "@internal/*": ["src/*"]
-    }
+    "checkJs": true
   },
-  "include": ["./src/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["."]
 }

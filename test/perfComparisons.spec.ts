@@ -252,7 +252,7 @@ describe('More perf comparisons', () => {
     // })
   })
 
-  it.skip('weakMapMemoizer recalcs', () => {
+  it.skip('weakMapMemoize recalculations', () => {
     const state1 = store.getState()
 
     store.dispatch(counterSlice.actions.increment1())

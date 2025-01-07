@@ -1,3 +1,4 @@
+import type { AnyFunction } from '@internal/types'
 import type {
   OutputSelector,
   Selector,
@@ -39,7 +40,7 @@ test('empty array', () => {
 })
 
 test('identity', () => {
-  const identity = <Func extends (...args: any[]) => any>(func: Func) => func
+  const identity = <Func extends AnyFunction>(func: Func) => func
   const createNonMemoizedSelector = createSelectorCreator({
     memoize: identity,
     argsMemoize: identity

@@ -15,6 +15,8 @@ if (process.env.NODE_ENV === 'production') {
   )
 }
 
+const tsconfig = 'tsconfig.build.json' satisfies Options['tsconfig']
+
 export default defineConfig((options): Options[] => {
   const commonOptions: Options = {
     entry: {
@@ -22,6 +24,7 @@ export default defineConfig((options): Options[] => {
     },
     sourcemap: true,
     target: ['esnext'],
+    tsconfig,
     clean: true,
     ...options
   }

@@ -299,11 +299,11 @@ describe('Combining selectors', () => {
 
   test('override valueEquals', () => {
     // a rather absurd equals operation we can verify in tests
-    const createOverridenSelector = createSelectorCreator(
+    const createOverriddenSelector = createSelectorCreator(
       lruMemoize,
       (a, b) => typeof a === typeof b
     )
-    const selector = createOverridenSelector(
+    const selector = createOverriddenSelector(
       (state: StateA) => state.a,
       a => a,
       { devModeChecks: { identityFunctionCheck: 'never' } }

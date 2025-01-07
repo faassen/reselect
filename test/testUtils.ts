@@ -1,7 +1,8 @@
+import type { AnyFunction, Simplify } from '@internal/types'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { combineReducers, configureStore, createSlice } from '@reduxjs/toolkit'
 import { test } from 'vitest'
-import type { AnyFunction, OutputSelector, Simplify } from '../src/types'
+import type { OutputSelector } from 'reselect'
 
 export interface Todo {
   id: number
