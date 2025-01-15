@@ -89,5 +89,13 @@ export const InternalLinks = {
     <Link to="/api/createStructuredSelector" title="createStructuredSelector">
       <code>createStructuredSelector</code>
     </Link>
+  )),
+  ConvertInputSelectorsToArray: memo(() => (
+    <Link
+      to="/codemods#convertInputSelectorsToArray"
+      title="convertInputSelectorsToArray"
+    >
+      <code>convertInputSelectorsToArray</code>
+    </Link>
   ))
 } as const satisfies Record<string, FC<Props>>

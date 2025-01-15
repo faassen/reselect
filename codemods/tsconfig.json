@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "checkJs": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "noEmit": true,
+    "noErrorTruncation": true,
+    "noFallthroughCasesInSwitch": true,
+    "outDir": "./dist",
+    "rootDir": "./",
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ESNext",
+    "types": ["vitest/globals", "vitest/importMeta"],
+    "useDefineForClassFields": true,
+    "useUnknownInCatchVariables": true
+  },
+  "exclude": ["**/__testfixtures__/**"]
+}

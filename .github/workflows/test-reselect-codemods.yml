@@ -1,0 +1,46 @@
+name: Test Reselect Codemods
+
+on: [push, pull_request, workflow_dispatch]
+
+defaults:
+  run:
+    working-directory: codemods
+
+jobs:
+  test:
+    name: Run test Suite
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [18, 20, lts/*]
+        os: [ubuntu-latest]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'yarn'
+
+      - name: Check folder contents
+        run: ls -l .
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Lint Files
+        run: yarn lint
+
+      - name: Check formatting
+        run: yarn format-check
+
+      - name: Check for duplicate dependencies
+        run: yarn dedupe --strategy highest --check
+
+      - name: Run test suite
+        run: yarn test

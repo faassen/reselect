@@ -57,7 +57,8 @@ const sidebars: SidebarsConfig = {
     },
     'FAQ',
     'external-references',
-    'related-projects'
+    'related-projects',
+    'codemods'
   ]
 }
 

@@ -1,0 +1,109 @@
+---
+id: codemods
+title: Codemods
+sidebar_label: Codemods
+hide_title: true
+description: Codemods
+---
+
+import TabItem from '@theme/TabItem'
+import Tabs from '@theme/Tabs'
+import { InternalLinks } from '@site/src/components/InternalLinks'
+
+# Codemods
+
+## `convertInputSelectorsToArray`
+
+Transforms the usage of Reselect's <InternalLinks.CreateSelector /> API by consolidating multiple inline input selector arguments into a single array.
+
+It should work with both JavaScript and TypeScript files.
+
+**Before**:
+
+{/* START: codemods/convertInputSelectorsToArray/before.ts */}
+
+<Tabs
+  groupId='language'
+  defaultValue='ts'
+  values={[
+    {label: 'TypeScript', value: 'ts'},
+    {label: 'JavaScript', value: 'js'},
+  ]}>
+  <TabItem value='ts'>
+
+```ts title="codemods/convertInputSelectorsToArray/before.ts"
+import { createSelector } from 'reselect'
+
+export interface RootState {
+  todos: { id: number; completed: boolean }[]
+  alerts: { id: number; read: boolean }[]
+}
+
+const selectTodoById = createSelector(
+  (state: RootState) => state.todos,
+  (state: RootState, id: number) => id,
+  (todos, id) => todos.find(todo => todo.id === id)
+)
+```
+
+  </TabItem>
+  <TabItem value='js'>
+
+```js title="codemods/convertInputSelectorsToArray/before.js"
+import { createSelector } from 'reselect'
+
+const selectTodoById = createSelector(
+  state => state.todos,
+  (state, id) => id,
+  (todos, id) => todos.find(todo => todo.id === id)
+)
+```
+
+  </TabItem>
+</Tabs>
+
+{/* END: codemods/convertInputSelectorsToArray/before.ts */}
+
+**After**:
+
+{/* START: codemods/convertInputSelectorsToArray/after.ts */}
+
+<Tabs
+  groupId='language'
+  defaultValue='ts'
+  values={[
+    {label: 'TypeScript', value: 'ts'},
+    {label: 'JavaScript', value: 'js'},
+  ]}>
+  <TabItem value='ts'>
+
+```ts title="codemods/convertInputSelectorsToArray/after.ts"
+import { createSelector } from 'reselect'
+
+export interface RootState {
+  todos: { id: number; completed: boolean }[]
+  alerts: { id: number; read: boolean }[]
+}
+
+const selectTodoById = createSelector(
+  [(state: RootState) => state.todos, (state: RootState, id: number) => id],
+  (todos, id) => todos.find(todo => todo.id === id)
+)
+```
+
+  </TabItem>
+  <TabItem value='js'>
+
+```js title="codemods/convertInputSelectorsToArray/after.js"
+import { createSelector } from 'reselect'
+
+const selectTodoById = createSelector(
+  [state => state.todos, (state, id) => id],
+  (todos, id) => todos.find(todo => todo.id === id)
+)
+```
+
+  </TabItem>
+</Tabs>
+
+{/* END: codemods/convertInputSelectorsToArray/after.ts */}
